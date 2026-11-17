@@ -1,0 +1,59 @@
+{
+  "identifier" : "6F6E2B1C-4D9A-4C6E-9B8B-2C1D0E7A5F11",
+  "nonRenewingSubscriptions" : [ ],
+  "products" : [
+    {
+      "displayPrice" : "4.99",
+      "familyShareable" : false,
+      "internalID" : "6740000001",
+      "localizations" : [
+        { "description" : "Garść 500 monet", "displayName" : "500 monet", "locale" : "pl" }
+      ],
+      "productID" : "com.twojafirma.coinrush.coins500",
+      "referenceName" : "500 Coins",
+      "type" : "Consumable"
+    },
+    {
+      "displayPrice" : "19.99",
+      "familyShareable" : false,
+      "internalID" : "6740000002",
+      "localizations" : [
+        { "description" : "Worek 3000 monet – najpopularniejszy", "displayName" : "3000 monet", "locale" : "pl" }
+      ],
+      "productID" : "com.twojafirma.coinrush.coins3000",
+      "referenceName" : "3000 Coins",
+      "type" : "Consumable"
+    },
+    {
+      "displayPrice" : "49.99",
+      "familyShareable" : false,
+      "internalID" : "6740000003",
+      "localizations" : [
+        { "description" : "Skarbiec 10 000 monet – najlepsza cena", "displayName" : "10 000 monet", "locale" : "pl" }
+      ],
+      "productID" : "com.twojafirma.coinrush.coins10000",
+      "referenceName" : "10000 Coins",
+      "type" : "Consumable"
+    },
+    {
+      "displayPrice" : "14.99",
+      "familyShareable" : true,
+      "internalID" : "6740000004",
+      "localizations" : [
+        { "description" : "Każda złapana moneta liczy się podwójnie – na zawsze", "displayName" : "Podwójne monety", "locale" : "pl" }
+      ],
+      "productID" : "com.twojafirma.coinrush.doublecoins",
+      "referenceName" : "Double Coins",
+      "type" : "NonConsumable"
+    }
+  ],
+  "settings" : {
+    "_applicationInternalID" : "6740000000",
+    "_failTransactionsEnabled" : false,
+    "_locale" : "pl",
+    "_storefront" : "POL",
+    "_storeKitErrors" : [ ]
+  },
+  "subscriptionGroups" : [ ],
+  "version" : { "major" : 4, "minor" : 0 }
+}
