@@ -8,6 +8,13 @@ const defaults = () => ({
   games: 0,
   ownedSkins: ['classic'],
   skin: 'classic',
+  character: 'kuba',
+  ownedChars: ['kuba'],
+  difficulty: 'medium',
+  bestBy: { easy: 0, medium: 0, hard: 0 },
+  storyDone: { easy: false, medium: false, hard: false },
+  introSeen: false,
+  iapOwned: [],
   upgrades: { magnet: 0, shield: 0, boost: 0 },
   doubleCoins: false,
   starterGranted: false,
@@ -21,6 +28,11 @@ try {
   state = { ...defaults(), ...JSON.parse(localStorage.getItem(KEY) || '{}') };
   state.upgrades = { ...defaults().upgrades, ...state.upgrades };
   state.settings = { ...defaults().settings, ...state.settings };
+  state.bestBy = { ...defaults().bestBy, ...state.bestBy };
+  state.storyDone = { ...defaults().storyDone, ...state.storyDone };
+  state.bestBy.medium = Math.max(state.bestBy.medium, state.best || 0);
+  if (state.doubleCoins && !state.iapOwned.includes('double_coins')) state.iapOwned.push('double_coins');
+  if (state.starterGranted && !state.iapOwned.includes('starter_pack')) state.iapOwned.push('starter_pack');
 } catch {
   state = defaults();
 }

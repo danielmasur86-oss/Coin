@@ -23,10 +23,7 @@ export const billing = {
   },
 
   owned(id) {
-    const s = save.get();
-    if (id === 'double_coins') return s.doubleCoins;
-    if (id === 'starter_pack') return s.starterGranted;
-    return false;
+    return save.get().iapOwned.includes(id);
   },
 
   async buy(id) {
@@ -95,18 +92,16 @@ function deliver(productId, txId) {
 
 function grantNonConsumable(id, notify) {
   const s = save.get();
-  if (id === 'double_coins' && !s.doubleCoins) {
-    s.doubleCoins = true; save.commit();
-    if (notify) onDelivered(IAP_PRODUCTS.find((p) => p.id === id));
-  }
-  if (id === 'starter_pack' && !s.starterGranted) {
-    const p = IAP_PRODUCTS.find((x) => x.id === id);
-    s.starterGranted = true;
-    s.coins += p.coins;
-    if (!s.ownedSkins.includes(p.skin)) s.ownedSkins.push(p.skin);
-    save.commit();
-    if (notify) onDelivered(p);
-  }
+  const p = IAP_PRODUCTS.find((x) => x.id === id);
+  if (!p || s.iapOwned.includes(id)) return;
+  s.iapOwned.push(id);
+  if (id === 'double_coins') s.doubleCoins = true;
+  if (id === 'starter_pack') s.starterGranted = true;
+  if (p.coins) s.coins += p.coins;
+  if (p.skin && !s.ownedSkins.includes(p.skin)) s.ownedSkins.push(p.skin);
+  if (p.char && !s.ownedChars.includes(p.char)) { s.ownedChars.push(p.char); s.character = p.char; }
+  save.commit();
+  if (notify) onDelivered(p);
 }
 
 function syncOwned() {

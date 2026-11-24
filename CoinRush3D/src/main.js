@@ -5,7 +5,8 @@ import { Game } from './game.js';
 import { save } from './save.js';
 import { billing } from './billing.js';
 import { sfx } from './audio.js';
-import { IAP_PRODUCTS, SKINS, UPGRADES, upgradeCost, continueCost, DAILY_REWARDS } from './config.js';
+import { IAP_PRODUCTS, SKINS, UPGRADES, upgradeCost, continueCost, DAILY_REWARDS, CHARACTERS, DIFFICULTIES, CHAPTERS, STORY_INTRO, STORY_BONUS } from './config.js';
+import { renderPortraits } from './characters.js';
 
 const $ = (s) => document.querySelector(s);
 const $$ = (s) => [...document.querySelectorAll(s)];
@@ -51,8 +52,14 @@ const game = new Game($('#c'), {
     $('#pw-shield i').style.transform = `scaleX(${s})`;
   },
   onDeath: (r) => gameOver(r),
+  onChapter: (i) => onChapter(i),
 });
 game.setSkin(S().skin);
+game.setCharacter(S().character);
+let portraits = {};
+try { portraits = renderPortraits([...CHARACTERS.map((c) => c.id), 'baron']); } catch (e) { console.warn('portrety', e); }
+if (location.hash === '#debug') window.__game = game; // tylko do testów
+const diff = () => DIFFICULTIES[S().difficulty] || DIFFICULTIES.medium;
 game.setQuality(S().settings.quality);
 
 function upgradeValue(id) {
@@ -62,6 +69,7 @@ function upgradeValue(id) {
 
 function startGame() {
   sfx.unlock();
+  if (!S().introSeen) { showStory(STORY_INTRO, () => { S().introSeen = true; save.commit(); startGame(); }); return; }
   closeOverlays();
   ['menu', 'over', 'pause'].forEach(hide);
   show('hud');
@@ -74,6 +82,8 @@ function startGame() {
   mode = 'play';
   game.start({
     skin: S().skin,
+    character: S().character,
+    diff: diff(),
     magnetTime: upgradeValue('magnet'),
     shieldTime: upgradeValue('shield'),
     coinValue: upgradeValue('boost') * (S().doubleCoins ? 2 : 1),
@@ -86,8 +96,10 @@ function gameOver({ distance, coins }) {
   haptic.heavy();
   hide('hud');
   $('#ov-dist').textContent = distance + ' m';
-  $('#ov-coins').textContent = coins;
-  const record = distance > S().best;
+  const mult = diff().reward;
+  $('#ov-coins').textContent = mult > 1 ? `${coins} ×${mult}` : coins;
+  $('#ov-chapter').textContent = `${diff().icon} ${diff().name} · ${CHAPTERS[game.chapterIdx].title}`;
+  const record = distance > (S().bestBy[S().difficulty] || 0);
   $('#ov-record').classList.toggle('hidden', !record);
   $('#ov-double').classList.toggle('hidden', S().doubleCoins);
 
@@ -113,9 +125,11 @@ function finalizeRun() {
   clearTimeout(contTimer);
   $('#continue-box').classList.add('hidden');
   const s = S();
-  s.coins += game.coins;
-  s.totalCoins += game.coins;
+  const earned = Math.round(game.coins * diff().reward);
+  s.coins += earned;
+  s.totalCoins += earned;
   s.best = Math.max(s.best, Math.floor(game.distance));
+  s.bestBy[s.difficulty] = Math.max(s.bestBy[s.difficulty] || 0, Math.floor(game.distance));
   s.games += 1;
   save.commit();
 }
@@ -149,6 +163,7 @@ function toMenu() {
   closeOverlays();
   show('menu');
   mode = 'menu';
+  game.setMenuMode(true);
   renderAll();
 }
 
@@ -228,6 +243,26 @@ function renderCoinsTab() {
   refreshPrices();
 }
 
+function renderCharsTab() {
+  const el = $('#tab-chars');
+  el.innerHTML = '<div class="grid"></div>';
+  const grid = el.firstChild;
+  for (const c of CHARACTERS) {
+    const owned = S().ownedChars.includes(c.id);
+    const sel = S().character === c.id;
+    let action;
+    if (sel) action = '<button class="btn" disabled>Wybrany</button>';
+    else if (owned) action = `<button class="btn" data-char-equip="${c.id}">Wybierz</button>`;
+    else if (c.iap) action = `<button class="btn gold-btn" data-buy="${c.iap}"><span data-price="${c.iap}"></span></button>`;
+    else action = `<button class="btn gold-btn" data-char="${c.id}">🪙 ${c.price.toLocaleString('pl-PL')}</button>`;
+    const card = document.createElement('div');
+    card.className = 'card char' + (sel ? ' sel' : '');
+    card.innerHTML = `${c.iap ? '<span class="badge">PREMIUM</span>' : ''}<img src="${portraits[c.id] || ''}" alt="" /><b>${c.name}</b><small>${c.bio}</small>${action}`;
+    grid.appendChild(card);
+  }
+  refreshPrices();
+}
+
 function renderSkinsTab() {
   const el = $('#tab-skins');
   el.innerHTML = '<div class="grid"></div>';
@@ -272,7 +307,11 @@ function refreshPrices() {
 
 function renderAll() {
   $$('.coins').forEach((e) => { e.textContent = S().coins.toLocaleString('pl-PL'); });
-  $('#best').textContent = S().best;
+  $('#best').textContent = S().bestBy[S().difficulty] || 0;
+  $$('#diff button').forEach((b) => b.classList.toggle('active', b.dataset.diff === S().difficulty));
+  $('#story-progress').textContent = S().storyDone[S().difficulty] ? '🏆 Historia ukończona' : `Cel: ${CHAPTERS[CHAPTERS.length - 1].at} m`;
+  $('#hero-name').textContent = CHARACTERS.find((c) => c.id === S().character)?.name || '';
+  renderCharsTab();
   $('#daily-dot').classList.toggle('hidden', !dailyAvailable());
   renderCoinsTab();
   renderSkinsTab();
@@ -296,6 +335,7 @@ billing.onDelivered((p) => {
   haptic.success();
   toast(p.type === 'consumable' ? `✅ +${p.coins.toLocaleString('pl-PL')} monet!` : `✅ ${p.title} – dziękujemy!`, 3000);
   if (p.id === 'double_coins' && mode === 'play') game.coinValue *= 2;
+  if (p.char && mode !== 'play') game.setCharacter(S().character);
   renderAll();
 });
 billing.onChange(() => { refreshPrices(); });
@@ -340,6 +380,15 @@ document.addEventListener('click', (e) => {
   if (b.dataset.tab && b.closest('.tabs')) { selectTab(b.dataset.tab); sfx.click(); return; }
   if (b.hasAttribute('data-close')) { closeOverlays(); sfx.click(); if (mode === 'over' && !runFinalized) armContinue(); return; }
   if (b.dataset.buy) return buy(b.dataset.buy);
+  if (b.dataset.diff) { S().difficulty = b.dataset.diff; save.commit(); sfx.click(); renderAll(); return; }
+  if (b.dataset.charEquip) { S().character = b.dataset.charEquip; save.commit(); game.setCharacter(b.dataset.charEquip); sfx.click(); renderAll(); return; }
+  if (b.dataset.char) {
+    const c = CHARACTERS.find((x) => x.id === b.dataset.char);
+    if (!save.spend(c.price)) { toast('Za mało monet'); selectTab('coins'); return; }
+    S().ownedChars.push(c.id); S().character = c.id; save.commit();
+    game.setCharacter(c.id); sfx.buy(); haptic.success(); toast(`🦸 Nowy bohater: ${c.name}!`);
+    renderAll(); return;
+  }
   if (b.dataset.equip) { S().skin = b.dataset.equip; save.commit(); game.setSkin(b.dataset.equip); sfx.click(); renderSkinsTab(); return; }
   if (b.dataset.skin) {
     const sk = SKINS.find((s) => s.id === b.dataset.skin);
@@ -382,6 +431,8 @@ $('#btn-restore').onclick = async () => {
 // ---------- Android: przycisk wstecz, wstrzymanie aplikacji ----------
 if (Capacitor.isNativePlatform()) {
   App.addListener('backButton', () => {
+    if (story) { endStory(); return; }
+    if (!$('#victory').classList.contains('hidden')) { $('#vic-ok').click(); return; }
     if (overlayOpen()) { closeOverlays(); if (mode === 'over' && !runFinalized) armContinue(); }
     else if (mode === 'play') pause();
     else if (mode === 'pause') resume();
@@ -391,6 +442,66 @@ if (Capacitor.isNativePlatform()) {
   App.addListener('appStateChange', ({ isActive }) => { if (!isActive) pause(); });
 }
 document.addEventListener('visibilitychange', () => { if (document.hidden) pause(); });
+
+// ---------- historia ----------
+let story = null;
+function showStory(slides, done) {
+  story = { slides, i: 0, done };
+  ['menu', 'over'].forEach(hide);
+  closeOverlays();
+  show('story');
+  renderStory();
+}
+function renderStory() {
+  const sl = story.slides[story.i];
+  $('#st-img').src = portraits[sl.who] || '';
+  $('#st-name').textContent = sl.name;
+  $('#st-text').textContent = sl.text;
+  $('#st-dots').innerHTML = story.slides.map((_, i) => `<i class="${i === story.i ? 'on' : ''}"></i>`).join('');
+  $('#st-next').textContent = story.i === story.slides.length - 1 ? 'GRAMY! ▶' : 'Dalej ▶';
+}
+function endStory() {
+  hide('story');
+  const done = story?.done;
+  story = null;
+  if (done) done(); else show('menu');
+}
+$('#st-next').onclick = () => { sfx.click(); if (++story.i >= story.slides.length) endStory(); else renderStory(); };
+$('#st-skip').onclick = () => { sfx.click(); endStory(); };
+$('#btn-story').onclick = () => { sfx.unlock(); showStory(STORY_INTRO, () => { S().introSeen = true; save.commit(); show('menu'); }); };
+
+function onChapter(i) {
+  const ch = CHAPTERS[i];
+  const who = CHARACTERS.find((c) => c.id === ch.who)?.name || 'Baron Szaruch';
+  $('#cb-img').src = portraits[ch.who] || '';
+  $('#cb-title').textContent = ch.title;
+  $('#cb-line').textContent = `${who}: „${ch.line}”`;
+  const el = $('#chapter-banner');
+  el.classList.remove('hidden');
+  el.style.animation = 'none'; void el.offsetWidth; el.style.animation = '';
+  clearTimeout(onChapter.t);
+  onChapter.t = setTimeout(() => el.classList.add('hidden'), 4600);
+  sfx.power();
+  haptic.success();
+  if (ch.final) {
+    const d = S().difficulty;
+    let text = `Pokonałeś Barona Szarucha na poziomie ${diff().name}! Światło wróciło do Neo-Miasta.`;
+    if (!S().storyDone[d]) {
+      S().storyDone[d] = true;
+      S().coins += STORY_BONUS[d];
+      save.commit();
+      text += ` Nagroda: 🪙 ${STORY_BONUS[d]}!`;
+    }
+    text += ' Możesz jechać dalej i bić rekord.';
+    $('#vic-text').textContent = text;
+    mode = 'pause';
+    game.setPaused(true);
+    hide('hud');
+    show('victory');
+    sfx.buy();
+  }
+}
+$('#vic-ok').onclick = () => { hide('victory'); show('hud'); mode = 'play'; game.setPaused(false); };
 
 // ---------- start ----------
 renderAll();

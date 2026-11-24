@@ -1,6 +1,43 @@
 # 🪙 Coin Rush 3D – gra 3D na Androida z mikropłatnościami
 
-Nieskończony bieg po neonowej trasie w stylu synthwave. Toczysz złotą kulę po 3 pasach, zbierasz monety, przeskakujesz bariery i omijasz ściany. Gra stale przyspiesza.
+Bohater stoi na Złotej Kuli i pędzi nią po podniebnej autostradzie nad neonowym miastem. Zbiera monety, przeskakuje bariery i omija ściany. Gra stale przyspiesza.
+
+## Historia
+
+Zły **Baron Szaruch** ukradł światło Neo-Miasta i zamienił je w monety. Gracz przejeżdża 4 dzielnice, a każda ma własne kolory i dialog:
+
+1. **Dzielnica Neonów** (0 m)
+2. **Port Świateł** (600 m)
+3. **Cyber-Ogrody** (1400 m)
+4. **Wieża Barona** (2400 m) – nad miastem unosi się hologram Barona
+5. **Finał** (3500 m): Baron pokonany. Za pierwsze ukończenie historii gracz dostaje nagrodę: 500 / 1000 / 2500 monet zależnie od poziomu. Potem gra toczy się dalej bez końca.
+
+Intro z dialogami pokazuje się przy pierwszej grze. Można je obejrzeć ponownie przyciskiem 📖 Historia.
+
+## Poziomy trudności
+
+| Poziom | Prędkość | Przeszkody | Mnożnik monet |
+|---|---|---|---|
+| 🙂 Łatwy | wolno, łagodne przyspieszanie | rzadko | ×1 |
+| 😎 Średni | normalnie | normalnie | ×1,5 |
+| 🔥 Trudny | bardzo szybko | gęsto | ×2 |
+
+Każdy poziom ma osobny rekord i osobną nagrodę za ukończenie historii.
+
+## Bohaterowie
+
+Wszystkie postacie to modele 3D zbudowane w kodzie, więc nie ma żadnych plików ani licencji. Mają animacje biegu, skoku i przechyłu, a do tego powiewające peleryny, ogony i opaski.
+
+| Bohater | Jak zdobyć |
+|---|---|
+| Kuba „Turbo” – kurier | na start |
+| Mila – DJ-ka | 800 monet |
+| Mruczek – kot | 1500 monet |
+| BIT-0 – robot | 2500 monet |
+| Astro Ola – astronautka | 4000 monet |
+| Cień – ninja | 7000 monet |
+| Iskra – strażniczka Złotej Kuli | Pakiet startowy (zakup) |
+| Złoty Rycerz | osobny zakup w sklepie |
 
 **Technologia:** Three.js (grafika 3D z efektem bloom) + Capacitor 8 (aplikacja Android) + Google Play Billing 9 (przez `cordova-plugin-purchase`).
 
@@ -15,7 +52,8 @@ Nieskończony bieg po neonowej trasie w stylu synthwave. Toczysz złotą kulę p
 
 | Produkt | Typ w Play Console | Product ID | Proponowana cena |
 |---|---|---|---|
-| Pakiet startowy (2000 monet + skórka Aurora) | Jednorazowy, bez konsumpcji | `starter_pack` | 9,99 zł |
+| Pakiet startowy (2000 monet + bohaterka Iskra + kula Aurora) | Jednorazowy, bez konsumpcji | `starter_pack` | 9,99 zł |
+| Bohater Złoty Rycerz | Jednorazowy, bez konsumpcji | `hero_knight` | 12,99 zł |
 | 500 monet | Konsumpcyjny | `coins_500` | 4,99 zł |
 | 3000 monet | Konsumpcyjny | `coins_3000` | 19,99 zł |
 | 10 000 monet | Konsumpcyjny | `coins_10000` | 49,99 zł |
@@ -23,6 +61,7 @@ Nieskończony bieg po neonowej trasie w stylu synthwave. Toczysz złotą kulę p
 
 Na co gracze wydają monety:
 - **kontynuacja po przegranej**: 150, potem 300, potem 600 monet (maks. 3 razy na rundę, 6 sekund na decyzję),
+- **6 bohaterów** w cenie od 800 do 7000 monet,
 - **7 skórek kuli** w cenie od 500 do 7500 monet,
 - **ulepszenia** magnesu, tarczy i wartości monet (od 300 monet, każdy kolejny poziom kosztuje 2× więcej).
 
@@ -91,10 +130,11 @@ W Android Studio wybierz *Build → Generate Signed App Bundle*.
 ```
 CoinRush3D/
   index.html           – ekrany UI (menu, HUD, sklep, pauza, koniec gry)
-  src/game.js          – silnik 3D: świat, gracz, przeszkody, kolizje, efekty
+  src/game.js          – silnik 3D: świat, dzielnice, gracz, przeszkody, kolizje, efekty
+  src/characters.js    – modele 3D bohaterów i Barona, animacje, portrety
   src/main.js          – logika ekranów, sterowanie, sklep, nagrody dzienne
   src/billing.js       – Google Play Billing + tryb testowy w przeglądarce
-  src/config.js        – produkty, ceny, skórki, ulepszenia
+  src/config.js        – produkty, ceny, bohaterowie, poziomy trudności, historia
   src/save.js          – zapis postępu
   src/audio.js         – proceduralne dźwięki (bez plików i licencji)
   public/privacy.html  – szablon polityki prywatności

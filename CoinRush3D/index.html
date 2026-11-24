@@ -21,6 +21,10 @@
       <div class="power" id="pw-magnet"><span>🧲</span><i></i></div>
       <div class="power" id="pw-shield"><span>🛡️</span><i></i></div>
     </div>
+    <div id="chapter-banner" class="chapter-banner hidden">
+      <img id="cb-img" alt="" />
+      <div><b id="cb-title"></b><span id="cb-line"></span></div>
+    </div>
     <div id="hint" class="hint">Przesuń palcem ← → aby zmienić pas<br/>↑ skok · ↓ szybkie lądowanie</div>
   </div>
 
@@ -34,17 +38,28 @@
       <div class="logo-1">COIN</div>
       <div class="logo-2">RUSH 3D</div>
     </div>
-    <div class="best">Rekord: <b id="best">0</b> m</div>
+    <div class="menu-spacer"></div>
+    <div class="hero-name" id="hero-name">Kuba</div>
+    <div class="diff" id="diff">
+      <button data-diff="easy">🙂 Łatwy</button>
+      <button data-diff="medium">😎 Średni</button>
+      <button data-diff="hard">🔥 Trudny</button>
+    </div>
+    <div class="best">Rekord: <b id="best">0</b> m · <span id="story-progress"></span></div>
     <button id="btn-play" class="btn primary huge">GRAJ</button>
     <div class="row">
-      <button class="btn" data-open="shop" data-tab="skins">🎨 Skórki</button>
-      <button class="btn" data-open="shop" data-tab="upgrades">⚡ Ulepszenia</button>
+      <button class="btn" data-open="shop" data-tab="chars">🦸 Postacie</button>
+      <button class="btn" data-open="shop" data-tab="skins">🔮 Kule</button>
+      <button class="btn" data-open="shop" data-tab="upgrades">⚡ Ulepsz</button>
     </div>
     <div class="row">
       <button class="btn gold-btn" data-open="shop" data-tab="coins">🛒 Sklep</button>
       <button class="btn" id="btn-daily">🎁 Nagroda <span id="daily-dot" class="dot hidden"></span></button>
     </div>
-    <button id="btn-settings" class="link">⚙️ Ustawienia</button>
+    <div class="row links">
+      <button id="btn-story" class="link">📖 Historia</button>
+      <button id="btn-settings" class="link">⚙️ Ustawienia</button>
+    </div>
   </div>
 
   <!-- PAUZA -->
@@ -61,6 +76,7 @@
       <div><small>Dystans</small><b id="ov-dist">0</b></div>
       <div><small>Monety</small><b id="ov-coins">0</b></div>
     </div>
+    <div id="ov-chapter" class="ov-chapter"></div>
     <div id="ov-record" class="record hidden">🏆 NOWY REKORD!</div>
     <div id="continue-box">
       <button id="btn-continue" class="btn primary huge">▶ KONTYNUUJ <small>🪙 <span id="cont-cost">150</span></small></button>
@@ -81,13 +97,39 @@
         <button class="icon-btn" data-close aria-label="Zamknij">✕</button>
       </div>
       <div class="tabs">
-        <button data-tab="coins">Monety</button>
-        <button data-tab="skins">Skórki</button>
-        <button data-tab="upgrades">Ulepszenia</button>
+        <button data-tab="coins">Sklep</button>
+        <button data-tab="chars">Postacie</button>
+        <button data-tab="skins">Kule</button>
+        <button data-tab="upgrades">Ulepsz</button>
       </div>
       <div class="tab-body" id="tab-coins"></div>
+      <div class="tab-body" id="tab-chars"></div>
       <div class="tab-body" id="tab-skins"></div>
       <div class="tab-body" id="tab-upgrades"></div>
+    </div>
+  </div>
+
+  <!-- HISTORIA -->
+  <div id="story" class="screen hidden dim">
+    <div class="story-card">
+      <img id="st-img" alt="" />
+      <div class="st-name" id="st-name"></div>
+      <p id="st-text"></p>
+      <div class="st-dots" id="st-dots"></div>
+      <div class="row">
+        <button id="st-skip" class="btn">Pomiń</button>
+        <button id="st-next" class="btn primary">Dalej ▶</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- FINAŁ -->
+  <div id="victory" class="screen hidden dim">
+    <div class="story-card">
+      <div class="trophy">🏆</div>
+      <h2>Miasto ocalone!</h2>
+      <p id="vic-text"></p>
+      <button id="vic-ok" class="btn primary huge">JEDŹ DALEJ ▶</button>
     </div>
   </div>
 

@@ -4,7 +4,8 @@ import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
 import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
 import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
 import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
-import { SKINS } from './config.js';
+import { SKINS, CHAPTERS } from './config.js';
+import { buildCharacter, animateCharacter } from './characters.js';
 
 const LANES = [-2.2, 0, 2.2];
 const SPAWN_Z = -130;
@@ -12,8 +13,6 @@ const DESPAWN_Z = 12;
 const BALL_R = 0.45;
 const GRAVITY = 34;
 const JUMP_V = 11.5;
-const START_SPEED = 15;
-const MAX_SPEED = 38;
 
 export class Game {
   constructor(canvas, hooks) {
@@ -31,13 +30,20 @@ export class Game {
 
     this.camera = new THREE.PerspectiveCamera(62, 1, 0.1, 300);
     this.camera.position.set(0, 3.6, 7.5);
-    this.camLook = new THREE.Vector3(0, 1, -6);
+    this.camLook = new THREE.Vector3(0, 1.3, -6);
+    this.menuMode = true;
+    this.camZ = 7.5;
+    this.camPos = new THREE.Vector3();
+    this.camTarget = new THREE.Vector3();
 
     this.clock = { last: performance.now(), getDelta() { const n = performance.now(); const d = (n - this.last) / 1000; this.last = n; return d; } };
     this.running = false;
     this.paused = false;
     this.time = 0;
 
+    this.pal = { sky: new THREE.Color(), a: new THREE.Color(), b: new THREE.Color() };
+    this.palTarget = { sky: new THREE.Color(), a: new THREE.Color(), b: new THREE.Color() };
+    this.chapterIdx = 0;
     this.#buildWorld();
     this.#buildPlayer();
     this.#buildPools();
@@ -75,13 +81,20 @@ export class Game {
     s.add(track);
 
     // Neonowe krawędzie
+    this.rails = [];
     for (const x of [-3.7, 3.7]) {
       const rail = new THREE.Mesh(
         new THREE.BoxGeometry(0.15, 0.15, 260),
         new THREE.MeshBasicMaterial({ color: x < 0 ? 0xff2fd6 : 0x22e6ff })
       );
       rail.position.set(x, 0.08, -115);
+      rail.userData.pal = x < 0 ? 'a' : 'b';
       s.add(rail);
+      this.rails.push(rail);
+      // boczna ściana autostrady – widać, że jedziemy wysoko nad miastem
+      const side = new THREE.Mesh(new THREE.BoxGeometry(0.1, 1.2, 260), new THREE.MeshStandardMaterial({ color: 0x150a30, roughness: 0.6 }));
+      side.position.set(x, -0.6, -115);
+      s.add(side);
     }
 
     // Wieżowce po bokach (przewijane)
@@ -90,13 +103,14 @@ export class Game {
     const winTex = this.#windowTexture();
     for (let i = 0; i < 44; i++) {
       const side = i % 2 ? 1 : -1;
-      const h = 4 + Math.random() * 18;
-      const hue = Math.random() < 0.5 ? 0xff2fd6 : 0x22e6ff;
+      const h = -6 + Math.random() * 26; // wysokość dachu względem autostrady (część budynków jest pod nami)
+      const pal = Math.random() < 0.5 ? 'a' : 'b';
       const m = new THREE.Mesh(bGeo, new THREE.MeshStandardMaterial({
-        color: 0x140b2e, roughness: 0.8, emissive: hue, emissiveMap: winTex, emissiveIntensity: 0.9,
+        color: 0x140b2e, roughness: 0.8, emissive: pal === 'a' ? 0xff2fd6 : 0x22e6ff, emissiveMap: winTex, emissiveIntensity: 0.9,
       }));
-      m.scale.set(2 + Math.random() * 3, h, 2 + Math.random() * 3);
-      m.position.set(side * (7 + Math.random() * 8), h / 2 - 1, SPAWN_Z + (i / 44) * 140);
+      m.userData.pal = pal;
+      m.scale.set(2 + Math.random() * 3, h + 40, 2 + Math.random() * 3);
+      m.position.set(side * (6.5 + Math.random() * 9), h - (h + 40) / 2, SPAWN_Z + (i / 44) * 140);
       s.add(m);
       this.buildings.push(m);
     }
@@ -115,6 +129,75 @@ export class Game {
     );
     sunDisc.position.set(0, 18, -200);
     s.add(sunDisc);
+    this.sunDisc = sunDisc;
+
+    // Latające auta przecinające niebo
+    this.cars = [];
+    const carGeo = new THREE.BoxGeometry(1.4, 0.4, 0.7);
+    for (let i = 0; i < 10; i++) {
+      const car = new THREE.Mesh(carGeo, new THREE.MeshBasicMaterial({ color: i % 2 ? 0xff2fd6 : 0x22e6ff }));
+      car.userData = { pal: i % 2 ? 'a' : 'b', v: (Math.random() < 0.5 ? -1 : 1) * (6 + Math.random() * 10) };
+      car.position.set((Math.random() - 0.5) * 80, 4 + Math.random() * 14, -20 - Math.random() * 100);
+      s.add(car);
+      this.cars.push(car);
+    }
+
+    // Hologram Barona nad jego wieżą (widoczny w rozdziale 4)
+    this.baron = buildCharacter('baron');
+    this.baron.traverse((o) => { if (o.isMesh) { o.material = o.material.clone(); o.material.fog = false; o.material.transparent = true; o.material.opacity = 0; o.castShadow = false; } });
+    this.baron.scale.setScalar(26);
+    this.baron.position.set(0, -6, -175);
+    this.baron.visible = false;
+    s.add(this.baron);
+    this.baronAlpha = 0;
+    this.setChapter(0, true);
+  }
+
+  setChapter(i, instant = false) {
+    const c = CHAPTERS[Math.min(i, CHAPTERS.length - 1)];
+    this.chapterIdx = i;
+    this.palTarget.sky.setHex(c.sky);
+    this.palTarget.a.setHex(c.a);
+    this.palTarget.b.setHex(c.b);
+    if (instant) { this.pal.sky.copy(this.palTarget.sky); this.pal.a.copy(this.palTarget.a); this.pal.b.copy(this.palTarget.b); }
+    this.#applyPalette();
+  }
+
+  #applyPalette() {
+    this.scene.background.copy(this.pal.sky);
+    this.scene.fog.color.copy(this.pal.sky);
+    for (const b of this.buildings) b.material.emissive.copy(this.pal[b.userData.pal]);
+    for (const r of this.rails) r.material.color.copy(this.pal[r.userData.pal]);
+    for (const c of this.cars) c.material.color.copy(this.pal[c.userData.pal]);
+  }
+
+  #worldTick(dt, v) {
+    // płynne przejście kolorów dzielnicy
+    const k = Math.min(1, dt * 1.5);
+    let moving = false;
+    for (const key of ['sky', 'a', 'b']) {
+      if (!this.pal[key].equals(this.palTarget[key])) { this.pal[key].lerp(this.palTarget[key], k); moving = true; }
+    }
+    if (moving) this.#applyPalette();
+    this.trackTex.offset.y += v / 8.6;
+    for (const b of this.buildings) { b.position.z += v; if (b.position.z > DESPAWN_Z) b.position.z -= 140; }
+    for (const c of this.cars) {
+      c.position.x += c.userData.v * dt;
+      c.position.z += v * 0.3;
+      c.rotation.y = 0;
+      if (Math.abs(c.position.x) > 45 || c.position.z > 0) {
+        c.position.set(-Math.sign(c.userData.v) * 44, 4 + Math.random() * 14, -40 - Math.random() * 80);
+      }
+    }
+    // Baron pojawia się w rozdziale 4
+    const want = this.running && CHAPTERS[this.chapterIdx]?.title.includes('Wieża') ? 0.55 : 0;
+    this.baronAlpha += (want - this.baronAlpha) * Math.min(1, dt * 0.8);
+    this.baron.visible = this.baronAlpha > 0.01;
+    if (this.baron.visible) {
+      this.baron.traverse((o) => { if (o.isMesh) o.material.opacity = this.baronAlpha; });
+      animateCharacter(this.baron, this.time * 0.6);
+      this.baron.rotation.y = Math.sin(this.time * 0.4) * 0.3;
+    }
   }
 
   #trackTexture() {
@@ -171,16 +254,22 @@ export class Game {
     this.ball.add(ring);
     this.ballRing = ring;
     this.player.add(this.ball);
+    this.charHolder = new THREE.Group();
+    this.charHolder.position.y = BALL_R - 0.03;
+    this.player.add(this.charHolder);
+    this.charFacing = 0;
 
     this.shieldMesh = new THREE.Mesh(
-      new THREE.IcosahedronGeometry(BALL_R * 1.7, 2),
+      new THREE.IcosahedronGeometry(BALL_R * 1.9, 2),
       new THREE.MeshBasicMaterial({ color: 0x4dfcff, wireframe: true, transparent: true, opacity: 0.6 })
     );
     this.shieldMesh.visible = false;
+    this.shieldMesh.scale.y = 1.6;
+    this.shieldMesh.position.y = 0.45;
     this.player.add(this.shieldMesh);
 
-    this.playerLight = new THREE.PointLight(0xffd75e, 3, 5);
-    this.playerLight.position.y = 0.5;
+    this.playerLight = new THREE.PointLight(0xffd75e, 1.6, 4);
+    this.playerLight.position.set(0, 0, 0.6);
     this.player.add(this.playerLight);
     this.scene.add(this.player);
 
@@ -196,6 +285,15 @@ export class Game {
     }
     this.trailIdx = 0;
     this.setSkin('classic');
+  }
+
+  setCharacter(id) {
+    if (this.character) {
+      this.charHolder.remove(this.character);
+      this.character.traverse((o) => { if (o.isMesh) { o.geometry.dispose(); o.material.dispose?.(); } });
+    }
+    this.character = buildCharacter(id);
+    this.charHolder.add(this.character);
   }
 
   setSkin(id) {
@@ -258,7 +356,8 @@ export class Game {
     const d = Math.min(1, this.distance / 2500); // trudność 0..1
     const lanes = [0, 1, 2];
     const kinds = ['none', 'none', 'none'];
-    const nBlocked = Math.random() < 0.25 - d * 0.2 ? 0 : Math.random() < 0.45 + d * 0.4 ? 2 : 1;
+    const dens = this.diff.density;
+    const nBlocked = Math.random() < (0.3 - d * 0.2) / dens ? 0 : Math.random() < (0.35 + d * 0.4) * dens ? 2 : 1;
     shuffle(lanes);
     for (let i = 0; i < nBlocked; i++) kinds[lanes[i]] = Math.random() < 0.55 ? 'wall' : 'barrier';
     // zawsze zostaw przynajmniej jeden pas bez ściany
@@ -317,14 +416,18 @@ export class Game {
   drop() { if (this.y > 0.01) this.vy = -JUMP_V * 1.4; }
 
   // ---------- cykl gry ----------
-  start({ skin, magnetTime, shieldTime, coinValue }) {
+  start({ skin, character, diff, magnetTime, shieldTime, coinValue }) {
+    this.diff = diff;
+    this.menuMode = false;
+    this.setChapter(0, true);
     for (const o of this.objects) { o.active = false; o.mesh.visible = false; }
     Object.assign(this, {
       running: true, paused: false, lane: 1, x: 0, y: 0, vy: 0,
-      speed: START_SPEED, distance: 0, coins: 0, nextRow: 0,
+      speed: diff.start, distance: 0, coins: 0, nextRow: 0,
       magnet: 0, shield: 0, invuln: 0, magnetTime, shieldTime, coinValue, shake: 0,
     });
     this.setSkin(skin);
+    if (character) this.setCharacter(character);
     this.player.position.set(0, BALL_R, 0);
     this.clock.getDelta();
   }
@@ -335,8 +438,13 @@ export class Game {
     this.running = true;
     this.paused = false;
     this.invuln = 2;
-    this.speed = Math.max(START_SPEED, this.speed * 0.85);
+    this.speed = Math.max(this.diff.start, this.speed * 0.85);
     this.clock.getDelta();
+  }
+
+  setMenuMode(on) {
+    this.menuMode = on;
+    if (on) for (const o of this.objects) { o.active = false; o.mesh.visible = false; }
   }
 
   setPaused(p) { this.paused = p; this.clock.getDelta(); }
@@ -354,13 +462,17 @@ export class Game {
     else if (!this.running) this.#idle(dt);
 
     // kamera
+    // w menu kamera jest blisko bohatera, w grze – za nim
     const px = this.player.position.x;
-    this.camera.position.x += (px * 0.55 - this.camera.position.x) * Math.min(1, dt * 6);
-    this.camLook.x = px * 0.4;
+    if (this.menuMode) { this.camPos.set(0, 1.3, 6.4); this.camTarget.set(0, 0.2, 0); }
+    else { this.camPos.set(px * 0.55, 3.6, this.camZ); this.camTarget.set(px * 0.4, 1.3, -6); }
+    const k = Math.min(1, dt * (this.menuMode ? 3 : 6));
+    this.camera.position.lerp(this.camPos, k);
+    this.camLook.lerp(this.camTarget, k);
     if (this.shake > 0) {
       this.shake = Math.max(0, this.shake - dt);
       this.camera.position.x += (Math.random() - 0.5) * this.shake;
-      this.camera.position.y = 3.6 + (Math.random() - 0.5) * this.shake;
+      this.camera.position.y += (Math.random() - 0.5) * this.shake;
     }
     this.camera.lookAt(this.camLook);
 
@@ -371,16 +483,18 @@ export class Game {
   #idle(dt) {
     // animacja tła w menu
     const v = 6 * dt;
-    this.trackTex.offset.y += v / 8.6;
-    for (const b of this.buildings) { b.position.z += v; if (b.position.z > DESPAWN_Z) b.position.z -= 140; }
+    this.#worldTick(dt, v);
     this.ball.rotation.x -= v / BALL_R;
-    this.ball.rotation.y += dt * 0.5;
-    this.player.position.y = BALL_R + Math.abs(Math.sin(this.time * 3)) * 0.15;
+    this.player.position.set(0, BALL_R + Math.abs(Math.sin(this.time * 3)) * 0.12, 0);
+    this.ball.visible = true;
+    // w menu bohater patrzy na gracza
+    this.charFacing += (0 - this.charFacing) * Math.min(1, dt * 4);
+    if (this.character) { this.character.visible = true; this.character.rotation.y = this.charFacing; animateCharacter(this.character, this.time); }
     for (const o of this.objects) if (o.active && o.type === 'coin') o.mesh.rotation.y += dt * 3;
   }
 
   #update(dt) {
-    this.speed = Math.min(MAX_SPEED, this.speed + dt * 0.32);
+    this.speed = Math.min(this.diff.max, this.speed + dt * this.diff.accel);
     const v = this.speed * dt;
     this.distance += v;
     this.hooks.onScore?.(Math.floor(this.distance), this.coins);
@@ -389,7 +503,7 @@ export class Game {
     this.nextRow -= v;
     if (this.nextRow <= 0) {
       this.#spawnRow();
-      this.nextRow = 11 + Math.random() * 7 + this.speed * 0.12;
+      this.nextRow = Math.max(9, 11 + Math.random() * 7 + this.speed * 0.12 + this.diff.gap);
     }
 
     // ruch gracza
@@ -401,6 +515,19 @@ export class Game {
     this.player.position.set(this.x, BALL_R + this.y, 0);
     this.ball.rotation.x -= v / BALL_R;
     this.ball.rotation.z = (this.x - tx) * 0.4;
+    this.charFacing += (Math.PI - this.charFacing) * Math.min(1, dt * 6);
+    if (this.character) {
+      animateCharacter(this.character, this.time, { running: true, air: this.y > 0.15, lean: (this.x - tx) * 0.35 });
+      this.character.rotation.y = this.charFacing;
+      this.character.visible = this.ball.visible;
+    }
+
+    // kolejne rozdziały historii
+    const next = CHAPTERS[this.chapterIdx + 1];
+    if (next && this.distance >= next.at) {
+      this.setChapter(this.chapterIdx + 1);
+      this.hooks.onChapter?.(this.chapterIdx);
+    }
 
     // power-upy
     this.magnet = Math.max(0, this.magnet - dt);
@@ -412,8 +539,7 @@ export class Game {
     this.hooks.onPower?.(this.magnet / this.magnetTime, this.shield / this.shieldTime);
 
     // świat
-    this.trackTex.offset.y += v / 8.6;
-    for (const b of this.buildings) { b.position.z += v; if (b.position.z > DESPAWN_Z) b.position.z -= 140; }
+    this.#worldTick(dt, v);
 
     // ślad
     const t = this.trail[this.trailIdx++ % this.trail.length];
@@ -479,7 +605,7 @@ export class Game {
     }
 
     // lekkie przybliżanie FOV przy dużej prędkości
-    const fov = 62 + (this.speed - START_SPEED) * 0.35;
+    const fov = 62 + (this.speed - this.diff.start) * 0.35;
     if (Math.abs(this.camera.fov - fov) > 0.05) { this.camera.fov = fov; this.camera.updateProjectionMatrix(); }
   }
 
@@ -508,7 +634,7 @@ export class Game {
     this.composer?.setSize(w, h);
     this.camera.aspect = w / h;
     // na wąskich ekranach (telefon w pionie) cofamy kamerę, żeby widać było 3 pasy
-    this.camera.position.z = w / h < 0.7 ? 8.2 : 7;
+    this.camZ = w / h < 0.7 ? 8.2 : 7;
     this.camera.updateProjectionMatrix();
   }
 }
