@@ -24,6 +24,10 @@ jobs:
         with:
           distribution: temurin
           java-version: 21
+          cache: gradle
+          cache-dependency-path: |
+            CoinRush3D/android/**/*.gradle*
+            CoinRush3D/android/**/gradle-wrapper.properties
       - name: Build web + sync Capacitor
         run: |
           npm ci
@@ -32,7 +36,10 @@ jobs:
 
       - name: Build debug APK (do testów na telefonie)
         working-directory: CoinRush3D/android
-        run: ./gradlew assembleDebug --no-daemon
+        # ponowienie przy chwilowych błędach serwerów z bibliotekami (np. 429 Too Many Requests)
+        run: |
+          for i in 1 2 3; do ./gradlew assembleDebug --no-daemon && exit 0; echo "Próba $i nieudana, ponawiam..."; sleep $((i * 30)); done
+          exit 1
       - uses: actions/upload-artifact@v4
         with:
           name: coinrush3d-debug-apk
@@ -52,7 +59,8 @@ jobs:
         run: |
           echo "$KEYSTORE_BASE64" | base64 -d > "$RUNNER_TEMP/upload.jks"
           export KEYSTORE_FILE="$RUNNER_TEMP/upload.jks"
-          ./gradlew bundleRelease --no-daemon
+          for i in 1 2 3; do ./gradlew bundleRelease --no-daemon && exit 0; sleep $((i * 30)); done
+          exit 1
       - uses: actions/upload-artifact@v4
         if: ${{ hashFiles('CoinRush3D/android/app/build/outputs/bundle/release/*.aab') != '' }}
         with:
