@@ -2,12 +2,12 @@
 
 // ID produktów MUSZĄ być identyczne jak w Google Play Console (Zarabianie → Produkty → Produkty w aplikacji).
 export const IAP_PRODUCTS = [
-  { id: 'starter_pack', type: 'non-consumable', coins: 2000, skin: 'aurora', char: 'iskra', title: 'Pakiet startowy', icon: '🎁', fallbackPrice: '9,99 zł', badge: 'JEDNORAZOWO', desc: '2000 monet + bohaterka Iskra + kula Aurora' },
-  { id: 'hero_knight', type: 'non-consumable', char: 'rycerz', title: 'Złoty Rycerz', icon: '🛡️', fallbackPrice: '12,99 zł', badge: 'LEGENDARNY', desc: 'Legendarny bohater ze złotą zbroją i peleryną' },
-  { id: 'coins_500', type: 'consumable', coins: 500, title: 'Garść monet', icon: '🪙', fallbackPrice: '4,99 zł' },
-  { id: 'coins_3000', type: 'consumable', coins: 3000, title: 'Worek monet', icon: '💰', fallbackPrice: '19,99 zł', badge: 'POPULARNE' },
-  { id: 'coins_10000', type: 'consumable', coins: 10000, title: 'Skrzynia skarbów', icon: '👑', fallbackPrice: '49,99 zł', badge: 'NAJLEPSZA OFERTA' },
-  { id: 'double_coins', type: 'non-consumable', title: 'Podwójne monety na zawsze', icon: '⚡', fallbackPrice: '14,99 zł' },
+  { id: 'starter_pack', type: 'non-consumable', coins: 2000, skin: 'aurora', char: 'iskra', title: 'Pakiet startowy', icon: '🎁', fallbackPrice: '$2.99', badge: 'JEDNORAZOWO', desc: '2000 monet + bohaterka Iskra + kula Aurora' },
+  { id: 'hero_knight', type: 'non-consumable', char: 'rycerz', title: 'Złoty Rycerz', icon: '🛡️', fallbackPrice: '$3.99', badge: 'LEGENDARNY', desc: 'Legendarny bohater ze złotą zbroją i peleryną' },
+  { id: 'coins_500', type: 'consumable', coins: 500, title: 'Garść monet', icon: '🪙', fallbackPrice: '$0.99' },
+  { id: 'coins_3000', type: 'consumable', coins: 3000, title: 'Worek monet', icon: '💰', fallbackPrice: '$4.99', badge: 'POPULARNE' },
+  { id: 'coins_10000', type: 'consumable', coins: 10000, title: 'Skrzynia skarbów', icon: '👑', fallbackPrice: '$9.99', badge: 'NAJLEPSZA OFERTA' },
+  { id: 'double_coins', type: 'non-consumable', title: 'Podwójne monety na zawsze', icon: '⚡', fallbackPrice: '$3.99' },
 ];
 
 export const SKINS = [

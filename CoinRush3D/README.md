@@ -36,8 +36,8 @@ Wszystkie postacie to modele 3D zbudowane w kodzie, więc nie ma żadnych plikó
 | BIT-0 – robot | 2500 monet |
 | Astro Ola – astronautka | 4000 monet |
 | Cień – ninja | 7000 monet |
-| Iskra – strażniczka Złotej Kuli | Pakiet startowy (zakup) |
-| Złoty Rycerz | osobny zakup w sklepie |
+| Iskra – strażniczka Złotej Kuli | Pakiet startowy ($2.99) |
+| Złoty Rycerz | osobny zakup ($3.99) |
 
 **Technologia:** Three.js (grafika 3D z efektem bloom) + Capacitor 8 (aplikacja Android) + Google Play Billing 9 (przez `cordova-plugin-purchase`).
 
@@ -50,14 +50,16 @@ Wszystkie postacie to modele 3D zbudowane w kodzie, więc nie ma żadnych plikó
 
 ## Model zarobkowy
 
-| Produkt | Typ w Play Console | Product ID | Proponowana cena |
+| Produkt | Typ w Play Console | Product ID | Cena (USD) |
 |---|---|---|---|
-| Pakiet startowy (2000 monet + bohaterka Iskra + kula Aurora) | Jednorazowy, bez konsumpcji | `starter_pack` | 9,99 zł |
-| Bohater Złoty Rycerz | Jednorazowy, bez konsumpcji | `hero_knight` | 12,99 zł |
-| 500 monet | Konsumpcyjny | `coins_500` | 4,99 zł |
-| 3000 monet | Konsumpcyjny | `coins_3000` | 19,99 zł |
-| 10 000 monet | Konsumpcyjny | `coins_10000` | 49,99 zł |
-| Podwójne monety na zawsze | Jednorazowy, bez konsumpcji | `double_coins` | 14,99 zł |
+| Pakiet startowy (2000 monet + bohaterka Iskra + kula Aurora) | Jednorazowy, bez konsumpcji | `starter_pack` | $2.99 |
+| Bohater Złoty Rycerz | Jednorazowy, bez konsumpcji | `hero_knight` | $3.99 |
+| 500 monet | Konsumpcyjny | `coins_500` | $0.99 |
+| 3000 monet | Konsumpcyjny | `coins_3000` | $4.99 |
+| 10 000 monet | Konsumpcyjny | `coins_10000` | $9.99 |
+| Podwójne monety na zawsze | Jednorazowy, bez konsumpcji | `double_coins` | $3.99 |
+
+**Waluta:** w Play Console ustaw dla każdego produktu **cenę domyślną w USD**. Google przeliczy ją automatycznie na waluty pozostałych krajów, np. na złotówki w Polsce czy euro w Niemczech. Ceny krajowe możesz też poprawić ręcznie. Gra zawsze pokazuje cenę, którą Google podaje dla kraju gracza. Wpłaty od Google trafiają na Twoje konto w walucie ustawionej w profilu płatności.
 
 Na co gracze wydają monety:
 - **kontynuacja po przegranej**: 150, potem 300, potem 600 monet (maks. 3 razy na rundę, 6 sekund na decyzję),
