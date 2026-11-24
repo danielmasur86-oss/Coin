@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
+  <meta name="theme-color" content="#0a0420" />
+  <title>Coin Rush 3D</title>
+  <link rel="stylesheet" href="/src/style.css" />
+</head>
+<body>
+  <canvas id="c"></canvas>
+
+  <!-- HUD -->
+  <div id="hud" class="hidden">
+    <div class="hud-top">
+      <div class="pill"><span id="hud-dist">0</span> m</div>
+      <div class="pill gold">🪙 <span id="hud-coins">0</span></div>
+      <button id="btn-pause" class="icon-btn" aria-label="Pauza">❚❚</button>
+    </div>
+    <div class="powers">
+      <div class="power" id="pw-magnet"><span>🧲</span><i></i></div>
+      <div class="power" id="pw-shield"><span>🛡️</span><i></i></div>
+    </div>
+    <div id="hint" class="hint">Przesuń palcem ← → aby zmienić pas<br/>↑ skok · ↓ szybkie lądowanie</div>
+  </div>
+
+  <!-- MENU -->
+  <div id="menu" class="screen">
+    <div class="topbar">
+      <div class="pill gold big">🪙 <span class="coins">0</span></div>
+      <button class="pill plus" data-open="shop" data-tab="coins">＋</button>
+    </div>
+    <div class="logo">
+      <div class="logo-1">COIN</div>
+      <div class="logo-2">RUSH 3D</div>
+    </div>
+    <div class="best">Rekord: <b id="best">0</b> m</div>
+    <button id="btn-play" class="btn primary huge">GRAJ</button>
+    <div class="row">
+      <button class="btn" data-open="shop" data-tab="skins">🎨 Skórki</button>
+      <button class="btn" data-open="shop" data-tab="upgrades">⚡ Ulepszenia</button>
+    </div>
+    <div class="row">
+      <button class="btn gold-btn" data-open="shop" data-tab="coins">🛒 Sklep</button>
+      <button class="btn" id="btn-daily">🎁 Nagroda <span id="daily-dot" class="dot hidden"></span></button>
+    </div>
+    <button id="btn-settings" class="link">⚙️ Ustawienia</button>
+  </div>
+
+  <!-- PAUZA -->
+  <div id="pause" class="screen hidden dim">
+    <h2>Pauza</h2>
+    <button id="btn-resume" class="btn primary huge">WZNÓW</button>
+    <button id="btn-quit" class="btn">Menu główne</button>
+  </div>
+
+  <!-- KONIEC GRY -->
+  <div id="over" class="screen hidden dim">
+    <h2>Rozbity!</h2>
+    <div class="stats">
+      <div><small>Dystans</small><b id="ov-dist">0</b></div>
+      <div><small>Monety</small><b id="ov-coins">0</b></div>
+    </div>
+    <div id="ov-record" class="record hidden">🏆 NOWY REKORD!</div>
+    <div id="continue-box">
+      <button id="btn-continue" class="btn primary huge">▶ KONTYNUUJ <small>🪙 <span id="cont-cost">150</span></small></button>
+      <div class="timer"><i id="cont-timer"></i></div>
+    </div>
+    <div class="row">
+      <button id="btn-again" class="btn">↻ Jeszcze raz</button>
+      <button id="btn-menu" class="btn">Menu</button>
+    </div>
+    <button id="ov-double" class="promo hidden" data-buy="double_coins">⚡ Zdobywaj podwójne monety na zawsze → <span class="price" data-price="double_coins"></span></button>
+  </div>
+
+  <!-- SKLEP -->
+  <div id="shop" class="screen hidden dim panel-screen">
+    <div class="panel">
+      <div class="panel-head">
+        <div class="pill gold">🪙 <span class="coins">0</span></div>
+        <button class="icon-btn" data-close aria-label="Zamknij">✕</button>
+      </div>
+      <div class="tabs">
+        <button data-tab="coins">Monety</button>
+        <button data-tab="skins">Skórki</button>
+        <button data-tab="upgrades">Ulepszenia</button>
+      </div>
+      <div class="tab-body" id="tab-coins"></div>
+      <div class="tab-body" id="tab-skins"></div>
+      <div class="tab-body" id="tab-upgrades"></div>
+    </div>
+  </div>
+
+  <!-- NAGRODA DZIENNA -->
+  <div id="daily" class="screen hidden dim panel-screen">
+    <div class="panel">
+      <div class="panel-head"><h3>Nagroda dzienna</h3><button class="icon-btn" data-close>✕</button></div>
+      <div class="days" id="days"></div>
+      <button id="btn-claim" class="btn primary huge">ODBIERZ</button>
+    </div>
+  </div>
+
+  <!-- USTAWIENIA -->
+  <div id="settings" class="screen hidden dim panel-screen">
+    <div class="panel">
+      <div class="panel-head"><h3>Ustawienia</h3><button class="icon-btn" data-close>✕</button></div>
+      <label class="setting"><span>Dźwięk</span><input type="checkbox" id="set-sound" /></label>
+      <label class="setting"><span>Wibracje</span><input type="checkbox" id="set-haptics" /></label>
+      <label class="setting"><span>Wysoka jakość grafiki</span><input type="checkbox" id="set-quality" /></label>
+      <button id="btn-restore" class="btn">Przywróć zakupy</button>
+      <a class="link" href="privacy.html" target="_blank">Polityka prywatności</a>
+      <p class="ver">Coin Rush 3D v1.0.0</p>
+    </div>
+  </div>
+
+  <div id="toast" class="toast hidden"></div>
+  <div id="busy" class="busy hidden"><div class="spinner"></div></div>
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>

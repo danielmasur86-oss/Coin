@@ -1,3 +1,5 @@
+> **Nowość:** wersja **3D na Androida (Sklep Play)** jest w folderze [`CoinRush3D/`](CoinRush3D/README.md).
+
 # 🪙 Coin Rush – gra iOS z mikropłatnościami
 
 Gra zręcznościowa na iPhone'a: przesuwasz koszyk palcem, łapiesz spadające monety 🪙 i diamenty 💎, unikasz bomb 💣. Gra przyspiesza z czasem.

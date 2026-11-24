@@ -1,0 +1,62 @@
+name: Android build (Coin Rush 3D)
+
+on:
+  push:
+    paths: ['CoinRush3D/**', '.github/workflows/android.yml']
+  pull_request:
+    paths: ['CoinRush3D/**']
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: CoinRush3D
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: CoinRush3D/package-lock.json
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+      - name: Build web + sync Capacitor
+        run: |
+          npm ci
+          npm run build
+          npx cap sync android
+
+      - name: Build debug APK (do testów na telefonie)
+        working-directory: CoinRush3D/android
+        run: ./gradlew assembleDebug --no-daemon
+      - uses: actions/upload-artifact@v4
+        with:
+          name: coinrush3d-debug-apk
+          path: CoinRush3D/android/app/build/outputs/apk/debug/*.apk
+
+      # Podpisany AAB do Google Play – działa, gdy w Settings → Secrets dodasz:
+      # KEYSTORE_BASE64, KEYSTORE_PASSWORD, KEY_ALIAS, KEY_PASSWORD
+      - name: Build signed release AAB
+        if: ${{ env.KEYSTORE_BASE64 != '' }}
+        env:
+          KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+          VERSION_CODE: ${{ github.run_number }}
+        working-directory: CoinRush3D/android
+        run: |
+          echo "$KEYSTORE_BASE64" | base64 -d > "$RUNNER_TEMP/upload.jks"
+          export KEYSTORE_FILE="$RUNNER_TEMP/upload.jks"
+          ./gradlew bundleRelease --no-daemon
+      - uses: actions/upload-artifact@v4
+        if: ${{ hashFiles('CoinRush3D/android/app/build/outputs/bundle/release/*.aab') != '' }}
+        with:
+          name: coinrush3d-release-aab
+          path: CoinRush3D/android/app/build/outputs/bundle/release/*.aab
+    env:
+      KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}

@@ -2,7 +2,9 @@ name: iOS build
 
 on:
   push:
+    paths-ignore: ['CoinRush3D/**', '.github/workflows/android.yml']
   pull_request:
+    paths-ignore: ['CoinRush3D/**']
   workflow_dispatch:
 
 jobs:
