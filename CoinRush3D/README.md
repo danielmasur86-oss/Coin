@@ -1,16 +1,18 @@
-# 🪙 Coin Rush 3D – gra 3D na Androida z mikropłatnościami
+# 🪙 Coin Rush 3D: Bajkogród – bajkowa gra 3D na Androida z mikropłatnościami
 
-Bohater stoi na Złotej Kuli i pędzi nią po podniebnej autostradzie nad neonowym miastem. Zbiera monety, przeskakuje bariery i omija ściany. Gra stale przyspiesza.
+Bohater stoi na Złotej Kuli i pędzi nią złotą ceglaną drogą przez **Bajkogród**: kolorowe domki ze spiczastymi dachami, domki-grzybki, drzewa-lizaki, kwiaty, latarenki, motylki, tęczę i zamek na horyzoncie. Zbiera monety, przeskakuje płotki i omija dynie oraz wieże z prezentów. Gra stale przyspiesza.
+
+Grafika, postacie, muzyka i dźwięki powstają w kodzie, więc nie ma żadnych plików z cudzymi licencjami. Czcionka Fredoka jest na licencji OFL, darmowej także komercyjnie.
 
 ## Historia
 
-Zły **Baron Szaruch** ukradł światło Neo-Miasta i zamienił je w monety. Gracz przejeżdża 4 dzielnice, a każda ma własne kolory i dialog:
+Zły **Czarnoksiężnik Szaruch** zaklął kolory Bajkogrodu w złote monety i rozrzucił je po królestwie. Gracz przejeżdża 4 krainy, a każda ma własne kolory nieba, światła i dialog:
 
-1. **Dzielnica Neonów** (0 m)
-2. **Port Świateł** (600 m)
-3. **Cyber-Ogrody** (1400 m)
-4. **Wieża Barona** (2400 m) – nad miastem unosi się hologram Barona
-5. **Finał** (3500 m): Baron pokonany. Za pierwsze ukończenie historii gracz dostaje nagrodę: 500 / 1000 / 2500 monet zależnie od poziomu. Potem gra toczy się dalej bez końca.
+1. **Miodowa Wioska** (0 m) – słońce i tęcza
+2. **Cukierkowe Wzgórza** (600 m)
+3. **Grzybowy Las** (1400 m) – zmierzch, świecące latarenki
+4. **Szary Zamek Szarucha** (2400 m) – świat traci kolory, a nad zamkiem unosi się zjawa czarnoksiężnika
+5. **Finał** (3500 m): kolory wracają. Za pierwsze ukończenie historii gracz dostaje nagrodę: 500 / 1000 / 2500 monet zależnie od poziomu. Potem gra toczy się dalej bez końca.
 
 Intro z dialogami pokazuje się przy pierwszej grze. Można je obejrzeć ponownie przyciskiem 📖 Historia.
 
@@ -24,22 +26,31 @@ Intro z dialogami pokazuje się przy pierwszej grze. Można je obejrzeć ponowni
 
 Każdy poziom ma osobny rekord i osobną nagrodę za ukończenie historii.
 
-## Bohaterowie
+## Bajkowi bohaterowie
 
-Wszystkie postacie to modele 3D zbudowane w kodzie, więc nie ma żadnych plików ani licencji. Mają animacje biegu, skoku i przechyłu, a do tego powiewające peleryny, ogony i opaski.
+Postacie są w stylu „chibi”: duże głowy, błyszczące oczy, rumieńce i uśmiechy. Mają animacje biegu, skoku i przechyłu, a do tego powiewające peleryny, trzepoczące skrzydełka, kołyszące się ogony i świecące różdżki.
 
 | Bohater | Jak zdobyć |
 |---|---|
-| Kuba „Turbo” – kurier | na start |
-| Mila – DJ-ka | 800 monet |
-| Mruczek – kot | 1500 monet |
-| BIT-0 – robot | 2500 monet |
-| Astro Ola – astronautka | 4000 monet |
-| Cień – ninja | 7000 monet |
-| Iskra – strażniczka Złotej Kuli | Pakiet startowy ($2.99) |
-| Złoty Rycerz | osobny zakup ($3.99) |
+| Rycerzyk Kuba – hełm z pióropuszem, tarcza i mieczyk | na start |
+| Wróżka Mila – skrzydełka i różdżka z gwiazdką | 800 monet |
+| Kot w Butach – kapelusz z piórem, buty, peleryna | 1500 monet |
+| Smoczek Bzik – rogi, skrzydełka, ogon | 2500 monet |
+| Księżniczka Ola – korona i suknia | 4000 monet |
+| Skrzat Brodacz – szpiczasta czapka, broda, latarenka | 7000 monet |
+| Czarodziejka Iskra – płonące włosy | Pakiet startowy ($2.99) |
+| Złoty Rycerz – legendarna zbroja i lśniący miecz | osobny zakup ($3.99) |
 
-**Technologia:** Three.js (grafika 3D z efektem bloom) + Capacitor 8 (aplikacja Android) + Google Play Billing 9 (przez `cordova-plugin-purchase`).
+## Efekty i płynność
+
+- Iskierki przy zbieraniu monet, iskrzący ślad za kulą i kurz przy lądowaniu
+- Kula spłaszcza się przy lądowaniu i rozciąga przy skoku
+- Przy zderzeniu: spowolnienie, wstrząs kamery i wybuch gwiazdek
+- Bańka-tarcza mieniąca się jak bańka mydlana, odbicia na złocie i metalu
+- Wesoła muzyka w tle generowana na żywo
+- Płynne przejścia kolorów między krainami, delikatny przechył kamery na zakrętach
+- Optymalizacja: każdy domek i drzewo to jedno wywołanie rysowania, cząsteczki działają w jednym systemie
+- **Automatyczna jakość:** jeśli telefon nie wyrabia 40 klatek na sekundę, gra sama wyłącza cienie i poświatę
 
 ## Rozgrywka
 
@@ -132,13 +143,13 @@ W Android Studio wybierz *Build → Generate Signed App Bundle*.
 ```
 CoinRush3D/
   index.html           – ekrany UI (menu, HUD, sklep, pauza, koniec gry)
-  src/game.js          – silnik 3D: świat, dzielnice, gracz, przeszkody, kolizje, efekty
-  src/characters.js    – modele 3D bohaterów i Barona, animacje, portrety
+  src/game.js          – silnik 3D: Bajkogród, krainy, gracz, przeszkody, kolizje, iskierki
+  src/characters.js    – bajkowe modele 3D bohaterów i Szarucha, animacje, portrety
   src/main.js          – logika ekranów, sterowanie, sklep, nagrody dzienne
   src/billing.js       – Google Play Billing + tryb testowy w przeglądarce
   src/config.js        – produkty, ceny, bohaterowie, poziomy trudności, historia
   src/save.js          – zapis postępu
-  src/audio.js         – proceduralne dźwięki (bez plików i licencji)
+  src/audio.js         – proceduralne dźwięki i muzyka w tle (bez plików i licencji)
   public/privacy.html  – szablon polityki prywatności
   assets/              – źródła ikony i ekranu startowego
   android/             – projekt Android Studio (Capacitor)

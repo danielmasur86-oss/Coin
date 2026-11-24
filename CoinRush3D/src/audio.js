@@ -36,3 +36,62 @@ export const sfx = {
   buy: () => [523, 659, 784, 1046].forEach((f, i) => setTimeout(() => tone(f, 0.18, 'triangle', 0.12), i * 70)),
   click: () => tone(660, 0.04, 'square', 0.04),
 };
+
+// ---------- Muzyka w tle: wesoła bajkowa melodia generowana na żywo ----------
+const N = (n) => 440 * Math.pow(2, (n - 69) / 12); // numer MIDI -> Hz
+const CHORDS = [[60, 64, 67], [57, 60, 64], [53, 57, 60], [55, 59, 62]]; // C, Am, F, G
+const MELODY = [
+  76, 0, 79, 0, 77, 76, 74, 0, 72, 0, 74, 76, 79, 0, 0, 0,
+  76, 0, 72, 0, 74, 0, 76, 74, 72, 0, 69, 0, 72, 0, 0, 0,
+  77, 0, 76, 0, 74, 0, 72, 0, 74, 76, 77, 0, 79, 0, 81, 0,
+  79, 0, 77, 76, 74, 0, 71, 0, 72, 0, 0, 0, 0, 0, 0, 0,
+];
+let timer = null, step = 0, nextT = 0, master = null;
+
+function note(freq, t, dur, type, vol) {
+  const c = ac();
+  const o = c.createOscillator(), g = c.createGain();
+  o.type = type;
+  o.frequency.setValueAtTime(freq, t);
+  g.gain.setValueAtTime(0.0001, t);
+  g.gain.exponentialRampToValueAtTime(vol, t + 0.01);
+  g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+  o.connect(g).connect(master);
+  o.start(t);
+  o.stop(t + dur + 0.02);
+}
+
+export const music = {
+  start() {
+    if (timer || !save.get().settings.sound) return;
+    const c = ac();
+    if (!master) { master = c.createGain(); master.connect(c.destination); }
+    master.gain.cancelScheduledValues(c.currentTime);
+    master.gain.setValueAtTime(0.0001, c.currentTime);
+    master.gain.exponentialRampToValueAtTime(0.5, c.currentTime + 0.6);
+    const spb = 60 / 132 / 2; // ósemki przy 132 BPM
+    nextT = c.currentTime + 0.05;
+    timer = setInterval(() => {
+      while (nextT < c.currentTime + 0.25) {
+        const bar = Math.floor(step / 16) % 4, s16 = step % 16;
+        const chord = CHORDS[bar];
+        if (s16 % 4 === 0) note(N(chord[0] - 24), nextT, spb * 3.5, 'triangle', 0.22);
+        note(N(chord[s16 % 3] + 12), nextT, spb * 0.9, 'sine', 0.05);
+        const m = MELODY[step % MELODY.length];
+        if (m) note(N(m), nextT, spb * 1.8, 'triangle', 0.09);
+        if (s16 % 4 === 2) note(N(96), nextT, 0.03, 'square', 0.012);
+        nextT += spb;
+        step++;
+      }
+    }, 60);
+  },
+  stop() {
+    if (!timer) return;
+    clearInterval(timer);
+    timer = null;
+    const c = ac();
+    master.gain.cancelScheduledValues(c.currentTime);
+    master.gain.setValueAtTime(master.gain.value, c.currentTime);
+    master.gain.exponentialRampToValueAtTime(0.0001, c.currentTime + 0.3);
+  },
+};

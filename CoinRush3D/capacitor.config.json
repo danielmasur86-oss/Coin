@@ -3,6 +3,6 @@
   "appName": "Coin Rush 3D",
   "webDir": "dist",
   "android": {
-    "backgroundColor": "#0a0420"
+    "backgroundColor": "#ffd6ea"
   }
 }

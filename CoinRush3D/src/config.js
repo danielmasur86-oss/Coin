@@ -32,15 +32,16 @@ export const continueCost = (used) => 150 * Math.pow(2, used); // 150, 300, 600 
 export const DAILY_REWARDS = [100, 150, 200, 300, 400, 600, 1000];
 
 // Bohaterowie jeżdżący na kuli. price: -1 = tylko z zakupu w sklepie (iap).
+// (id zostają stare, żeby zachować zapisy graczy)
 export const CHARACTERS = [
-  { id: 'kuba', name: 'Kuba „Turbo”', bio: 'Kurier z Dzielnicy Neonów. Zna każdy skrót w mieście i nigdy się nie spóźnia.', price: 0 },
-  { id: 'mila', name: 'Mila', bio: 'DJ-ka z dachów miasta. Słyszy rytm ulic nawet przez słuchawki.', price: 800 },
-  { id: 'mruczek', name: 'Mruczek', bio: 'Kot, który spadł na kulę i… polubił to. Zawsze ląduje na czterech łapach.', price: 1500 },
-  { id: 'bit', name: 'BIT-0', bio: 'Robot sprzątający, który zbuntował się przeciw Baronowi. Kocha błyszczące monety.', price: 2500 },
-  { id: 'astro', name: 'Astro Ola', bio: 'Astronautka, której rakieta wylądowała w porcie. Szuka paliwa ze złotych monet.', price: 4000 },
-  { id: 'cien', name: 'Cień', bio: 'Tajemniczy ninja. Mówią, że był kiedyś ochroniarzem Barona…', price: 7000 },
-  { id: 'iskra', name: 'Iskra', bio: 'Ostatnia strażniczka Złotej Kuli. Jej włosy płoną światłem miasta.', price: -1, iap: 'starter_pack' },
-  { id: 'rycerz', name: 'Złoty Rycerz', bio: 'Legenda Neo-Miasta. Wraca tylko wtedy, gdy miasto gaśnie.', price: -1, iap: 'hero_knight' },
+  { id: 'kuba', name: 'Rycerzyk Kuba', bio: 'Najmłodszy rycerz Bajkogrodu. Ma drewniany miecz i wielkie serce.', price: 0 },
+  { id: 'mila', name: 'Wróżka Mila', bio: 'Jej różdżka sypie gwiezdnym pyłem. Uwielbia zbierać złote monety.', price: 800 },
+  { id: 'mruczek', name: 'Kot w Butach', bio: 'Elegancki kocur w kapeluszu z piórem. Zawsze ląduje na czterech łapach.', price: 1500 },
+  { id: 'bit', name: 'Smoczek Bzik', bio: 'Mały smok, który zamiast ognia kicha iskierkami. Kocha błyskotki.', price: 2500 },
+  { id: 'astro', name: 'Księżniczka Ola', bio: 'Zamiast czekać na ratunek, sama wskoczyła na Złotą Kulę!', price: 4000 },
+  { id: 'cien', name: 'Skrzat Brodacz', bio: 'Strażnik leśnych ścieżek. Jego latarenka rozświetla każdą ciemność.', price: 7000 },
+  { id: 'iskra', name: 'Czarodziejka Iskra', bio: 'Strażniczka Złotej Kuli. Jej włosy płoną magicznym światłem.', price: -1, iap: 'starter_pack' },
+  { id: 'rycerz', name: 'Złoty Rycerz', bio: 'Legenda Bajkogrodu. Wraca zawsze, gdy miasto traci kolory.', price: -1, iap: 'hero_knight' },
 ];
 
 // Poziomy trudności.
@@ -50,25 +51,25 @@ export const DIFFICULTIES = {
   hard: { name: 'Trudny', icon: '🔥', start: 19, max: 44, accel: 0.48, density: 1.45, gap: -2.5, reward: 2 },
 };
 
-// Rozdziały historii – dzielnice miasta (od dystansu `at` w metrach).
+// Rozdziały historii – krainy Bajkogrodu (od dystansu `at` w metrach) i ich kolory.
 export const CHAPTERS = [
-  { at: 0, title: 'Rozdział 1: Dzielnica Neonów', line: 'Baron ukradł światło miasta! Zbieraj monety, by je przywrócić!', who: 'iskra',
-    sky: 0x0a0420, a: 0xff2fd6, b: 0x22e6ff },
-  { at: 600, title: 'Rozdział 2: Port Świateł', line: 'Hahaha! Moje drony zgaszą każdą latarnię w porcie!', who: 'baron',
-    sky: 0x04161f, a: 0xff8a1f, b: 0x1fffd2 },
-  { at: 1400, title: 'Rozdział 3: Cyber-Ogrody', line: 'Jesteśmy blisko! Ogrody już odzyskują kolory!', who: 'iskra',
-    sky: 0x041a0c, a: 0x7dff3a, b: 0xffe14d },
-  { at: 2400, title: 'Rozdział 4: Wieża Barona', line: 'Nikt nie dotrze na szczyt mojej wieży! NIKT!', who: 'baron',
-    sky: 0x1a0208, a: 0xff1a3c, b: 0xb026ff },
-  { at: 3500, title: 'FINAŁ: Miasto ocalone!', line: 'Nieeeee! Moje światło… wraca do miasta!', who: 'baron', final: true,
-    sky: 0x120630, a: 0xffc928, b: 0x22e6ff },
+  { at: 0, title: 'Rozdział 1: Miodowa Wioska', line: 'Szaruch kradnie kolory miasta! Zbieraj złote monety, by je przywrócić!', who: 'iskra',
+    skyTop: 0x3fa9ff, skyBottom: 0xffe1f0, grass: 0x8fdc6a, tint: 0xffffff, sun: 0xfff1d6, lamp: 0xffc94d, light: 1, rainbow: true },
+  { at: 600, title: 'Rozdział 2: Cukierkowe Wzgórza', line: 'Hehehe! Zamienię wasze cukierki w szary kamień!', who: 'baron',
+    skyTop: 0xb48cff, skyBottom: 0xffd6ea, grass: 0xa8e88a, tint: 0xfff0f8, sun: 0xffe0f0, lamp: 0xff8fc8, light: 0.95, rainbow: false },
+  { at: 1400, title: 'Rozdział 3: Grzybowy Las', line: 'Zmierzcha się… ale latarenki skrzatów wskażą nam drogę!', who: 'iskra',
+    skyTop: 0x3c4aa8, skyBottom: 0xffa98a, grass: 0x58b884, tint: 0xe6deff, sun: 0xffb27a, lamp: 0xffc94d, light: 0.72, rainbow: false },
+  { at: 2400, title: 'Rozdział 4: Szary Zamek Szarucha', line: 'Tu wszystko jest szare i MOJE! Nikt nie dotrze do zamku!', who: 'baron', villain: true,
+    skyTop: 0x3d3852, skyBottom: 0x9a93ad, grass: 0x7d8577, tint: 0xa6a1b5, sun: 0xd6d0e6, lamp: 0xb388ff, light: 0.6, rainbow: false },
+  { at: 3500, title: 'FINAŁ: Kolory wróciły!', line: 'Nieeee! Moja szarość… znika! Wszystko znów jest kolorowe!', who: 'baron', final: true,
+    skyTop: 0x38b4ff, skyBottom: 0xfff0b0, grass: 0x7ee36a, tint: 0xffffff, sun: 0xfff6d6, lamp: 0xffd23f, light: 1.05, rainbow: true },
 ];
 export const STORY_BONUS = { easy: 500, medium: 1000, hard: 2500 };
 
 export const STORY_INTRO = [
-  { who: 'iskra', name: 'Iskra', text: 'Neo-Miasto zawsze świeciło najjaśniej na świecie. Jego sercem była Złota Kula – źródło całego światła.' },
-  { who: 'baron', name: 'Baron Szaruch', text: 'Ha! Od dziś całe światło należy do mnie! Zamienię je w monety i schowam w mojej wieży!' },
-  { who: 'iskra', name: 'Iskra', text: 'Baron rozrzucił złote monety po podniebnych autostradach. Każda moneta to kawałek światła miasta.' },
-  { who: 'kuba', name: 'Kuba „Turbo”', text: 'Wskakuję na Złotą Kulę! Zbiorę każdą monetę i dotrę do Wieży Barona!' },
-  { who: 'iskra', name: 'Iskra', text: 'Uważaj na bariery i ściany Barona! Przejedź 4 dzielnice i ocal miasto. Powodzenia, bohaterze!' },
+  { who: 'iskra', name: 'Czarodziejka Iskra', text: 'Dawno, dawno temu było sobie Bajkogród – najbardziej kolorowe miasto na świecie. Jego sercem była Złota Kula.' },
+  { who: 'baron', name: 'Czarnoksiężnik Szaruch', text: 'Hehehe! Nie znoszę kolorów! Zamknę je w złotych monetach i rozrzucę po całym królestwie!' },
+  { who: 'iskra', name: 'Czarodziejka Iskra', text: 'Każda złota moneta to zaklęty kawałek koloru. Jeśli je zbierzemy, Bajkogród znów rozkwitnie!' },
+  { who: 'kuba', name: 'Rycerzyk Kuba', text: 'Wskakuję na Złotą Kulę! Przejadę przez wszystkie krainy aż do Szarego Zamku!' },
+  { who: 'iskra', name: 'Czarodziejka Iskra', text: 'Uważaj na płotki i zaczarowane przeszkody! Zbieraj monety i odczaruj miasto. Powodzenia, bohaterze!' },
 ];

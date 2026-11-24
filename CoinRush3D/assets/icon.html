@@ -1,19 +1,31 @@
 <html><body style="margin:0">
 <svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
 <defs>
-<linearGradient id="bg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2a0b5e"/><stop offset="1" stop-color="#0a0420"/></linearGradient>
-<linearGradient id="sun" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffe45e"/><stop offset=".6" stop-color="#ff4fa3"/><stop offset="1" stop-color="#7a1cff"/></linearGradient>
-<radialGradient id="coin" cx=".38" cy=".32" r=".75"><stop offset="0" stop-color="#fff6b0"/><stop offset=".45" stop-color="#ffc928"/><stop offset="1" stop-color="#c26a00"/></radialGradient>
-<filter id="glow"><feGaussianBlur stdDeviation="14" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+<linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3fa9ff"/><stop offset=".75" stop-color="#ffe1f0"/></linearGradient>
+<radialGradient id="coin" cx=".38" cy=".32" r=".75"><stop offset="0" stop-color="#fff6b0"/><stop offset=".45" stop-color="#ffc928"/><stop offset="1" stop-color="#d98200"/></radialGradient>
+<filter id="sh"><feDropShadow dx="0" dy="14" stdDeviation="14" flood-color="#7a3a00" flood-opacity=".35"/></filter>
 </defs>
-<rect width="1024" height="1024" fill="url(#bg)"/>
-<circle cx="512" cy="430" r="300" fill="url(#sun)" opacity=".9"/>
-<g fill="#0a0420"><rect y="520" width="1024" height="14"/><rect y="575" width="1024" height="20"/><rect y="640" width="1024" height="28"/></g>
-<polygon points="380,640 644,640 1024,1024 0,1024" fill="#140a30"/>
-<g stroke="#b14bff" stroke-width="10" filter="url(#glow)"><line x1="468" y1="640" x2="300" y2="1024"/><line x1="556" y1="640" x2="724" y2="1024"/></g>
-<line x1="380" y1="640" x2="0" y2="1024" stroke="#ff2fd6" stroke-width="16" filter="url(#glow)"/>
-<line x1="644" y1="640" x2="1024" y2="1024" stroke="#22e6ff" stroke-width="16" filter="url(#glow)"/>
-<g filter="url(#glow)"><circle cx="512" cy="640" r="210" fill="url(#coin)" stroke="#8a4a00" stroke-width="14"/>
-<circle cx="512" cy="640" r="160" fill="none" stroke="#c78400" stroke-width="10"/>
-<text x="512" y="712" text-anchor="middle" font-family="Arial Black, Arial, sans-serif" font-weight="900" font-size="210" fill="#8a4a00">$</text></g>
+<rect width="1024" height="1024" fill="url(#sky)"/>
+<g fill="none" stroke-width="30" opacity=".75">
+<path d="M-40 760 A552 552 0 0 1 1064 760" stroke="#ff6b6b"/><path d="M-10 760 A522 522 0 0 1 1034 760" stroke="#ffb14d"/>
+<path d="M20 760 A492 492 0 0 1 1004 760" stroke="#ffe14d"/><path d="M50 760 A462 462 0 0 1 974 760" stroke="#6fe07a"/>
+<path d="M80 760 A432 432 0 0 1 944 760" stroke="#5ab8ff"/><path d="M110 760 A402 402 0 0 1 914 760" stroke="#a07bff"/>
+</g>
+<g fill="#fff"><circle cx="170" cy="250" r="60"/><circle cx="240" cy="230" r="75"/><circle cx="310" cy="255" r="55"/>
+<circle cx="760" cy="190" r="50"/><circle cx="830" cy="170" r="65"/><circle cx="890" cy="200" r="45"/></g>
+<g>
+<rect x="300" y="430" width="424" height="300" fill="#fff0f6"/>
+<rect x="250" y="360" width="90" height="370" fill="#fff0f6"/><polygon points="230,365 360,365 295,230" fill="#7b9bff"/>
+<rect x="684" y="360" width="90" height="370" fill="#fff0f6"/><polygon points="664,365 794,365 729,230" fill="#7b9bff"/>
+<rect x="455" y="300" width="114" height="430" fill="#fff0f6"/><polygon points="430,305 594,305 512,150" fill="#ff6f91"/>
+<rect x="510" y="110" width="6" height="50" fill="#8a6a4a"/><polygon points="516,112 566,124 516,138" fill="#ffd23f"/>
+<path d="M462 730 L462 640 A50 50 0 0 1 562 640 L562 730 Z" fill="#9b7bd6"/>
+</g>
+<rect y="730" width="1024" height="294" fill="#8fdc6a"/>
+<polygon points="430,730 594,730 820,1024 204,1024" fill="#ffc94d"/>
+<g filter="url(#sh)">
+<circle cx="512" cy="735" r="215" fill="url(#coin)" stroke="#fff" stroke-width="18"/>
+<circle cx="512" cy="735" r="165" fill="none" stroke="#e8a400" stroke-width="10"/>
+<polygon fill="#fff6c9" stroke="#d98200" stroke-width="8" points="512,615 547,697 636,701 567,757 590,843 512,795 434,843 457,757 388,701 477,697"/>
+</g>
 </svg></body></html>

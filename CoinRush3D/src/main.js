@@ -1,10 +1,16 @@
+import '@fontsource/fredoka/latin-500.css';
+import '@fontsource/fredoka/latin-ext-500.css';
+import '@fontsource/fredoka/latin-600.css';
+import '@fontsource/fredoka/latin-ext-600.css';
+import '@fontsource/fredoka/latin-700.css';
+import '@fontsource/fredoka/latin-ext-700.css';
 import { Capacitor } from '@capacitor/core';
 import { App } from '@capacitor/app';
 import { Haptics, ImpactStyle, NotificationType } from '@capacitor/haptics';
 import { Game } from './game.js';
 import { save } from './save.js';
 import { billing } from './billing.js';
-import { sfx } from './audio.js';
+import { sfx, music } from './audio.js';
 import { IAP_PRODUCTS, SKINS, UPGRADES, upgradeCost, continueCost, DAILY_REWARDS, CHARACTERS, DIFFICULTIES, CHAPTERS, STORY_INTRO, STORY_BONUS } from './config.js';
 import { renderPortraits } from './characters.js';
 
@@ -42,9 +48,16 @@ let contTimer = null;
 
 const game = new Game($('#c'), {
   onScore: (d) => { $('#hud-dist').textContent = d; },
-  onCoin: (c) => { $('#hud-coins').textContent = c; sfx.coin(); },
+  onCoin: (c) => {
+    $('#hud-coins').textContent = c;
+    sfx.coin();
+    const pill = $('#hud-coins').parentElement;
+    pill.classList.remove('pop'); void pill.offsetWidth; pill.classList.add('pop');
+  },
   onPickup: (type) => { sfx.power(); haptic.light(); toast(type === 'magnet' ? '🧲 Magnes!' : '🛡️ Tarcza!', 1000); },
   onShieldBreak: () => { sfx.shieldBreak(); haptic.light(); },
+  onCrash: () => { sfx.crash(); haptic.heavy(); music.stop(); },
+  onAutoQuality: (q) => { S().settings.quality = q; save.commit(); },
   onPower: (m, s) => {
     $('#pw-magnet').classList.toggle('on', m > 0);
     $('#pw-shield').classList.toggle('on', s > 0);
@@ -69,6 +82,7 @@ function upgradeValue(id) {
 
 function startGame() {
   sfx.unlock();
+  music.start();
   if (!S().introSeen) { showStory(STORY_INTRO, () => { S().introSeen = true; save.commit(); startGame(); }); return; }
   closeOverlays();
   ['menu', 'over', 'pause'].forEach(hide);
@@ -92,8 +106,6 @@ function startGame() {
 
 function gameOver({ distance, coins }) {
   mode = 'over';
-  sfx.crash();
-  haptic.heavy();
   hide('hud');
   $('#ov-dist').textContent = distance + ' m';
   const mult = diff().reward;
@@ -154,9 +166,11 @@ function tryContinue() {
   mode = 'play';
   sfx.buy();
   game.revive();
+  music.start();
 }
 
 function toMenu() {
+  music.stop();
   if (mode === 'over') finalizeRun();
   game.running = false;
   ['over', 'pause', 'hud'].forEach(hide);
@@ -171,12 +185,14 @@ function pause() {
   if (mode !== 'play') return;
   mode = 'pause';
   game.setPaused(true);
+  music.stop();
   show('pause');
 }
 function resume() {
   hide('pause');
   mode = 'play';
   game.setPaused(false);
+  music.start();
 }
 
 // ---------- sterowanie: dotyk + klawiatura ----------
@@ -420,7 +436,7 @@ $('#btn-settings').onclick = () => {
   $('#set-quality').checked = S().settings.quality === 'high';
   openOverlay('settings');
 };
-$('#set-sound').onchange = (e) => { S().settings.sound = e.target.checked; save.commit(); };
+$('#set-sound').onchange = (e) => { S().settings.sound = e.target.checked; save.commit(); if (!e.target.checked) music.stop(); };
 $('#set-haptics').onchange = (e) => { S().settings.haptics = e.target.checked; save.commit(); };
 $('#set-quality').onchange = (e) => { S().settings.quality = e.target.checked ? 'high' : 'low'; save.commit(); game.setQuality(S().settings.quality); };
 $('#btn-restore').onclick = async () => {
@@ -472,7 +488,7 @@ $('#btn-story').onclick = () => { sfx.unlock(); showStory(STORY_INTRO, () => { S
 
 function onChapter(i) {
   const ch = CHAPTERS[i];
-  const who = CHARACTERS.find((c) => c.id === ch.who)?.name || 'Baron Szaruch';
+  const who = CHARACTERS.find((c) => c.id === ch.who)?.name || 'Czarnoksiężnik Szaruch';
   $('#cb-img').src = portraits[ch.who] || '';
   $('#cb-title').textContent = ch.title;
   $('#cb-line').textContent = `${who}: „${ch.line}”`;
@@ -485,7 +501,7 @@ function onChapter(i) {
   haptic.success();
   if (ch.final) {
     const d = S().difficulty;
-    let text = `Pokonałeś Barona Szarucha na poziomie ${diff().name}! Światło wróciło do Neo-Miasta.`;
+    let text = `Odczarowałeś Bajkogród na poziomie ${diff().name}! Szaruch uciekł, a kolory wróciły do miasta.`;
     if (!S().storyDone[d]) {
       S().storyDone[d] = true;
       S().coins += STORY_BONUS[d];
