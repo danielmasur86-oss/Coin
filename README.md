@@ -63,3 +63,63 @@ W Xcode wybierz symulator iPhone'a i naciśnij ▶︎. Sklep działa od razu –
 - Monety są zapisywane lokalnie (`UserDefaults`). Każda transakcja jest naliczana tylko raz. Przy większej skali warto dodać własny serwer i weryfikację transakcji po stronie serwera (App Store Server API).
 - Jeśli dodajesz nowe pakiety monet, dopisz je w `ProductID.coinAmounts` i w App Store Connect.
 - GitHub Actions (`.github/workflows/ios-build.yml`) kompiluje projekt na macOS przy każdym pushu.
+
+---
+
+# ⛏️ Imperium Kopalni – gra idle z mikropłatnościami
+
+Druga aplikacja w tym repozytorium (osobny target `MineEmpire`, własne Bundle ID). Gra typu *idle tycoon*: rozbudowujesz kopalnię, a pieniądze płyną nawet wtedy, gdy nie grasz.
+
+## Jak działa rozgrywka
+
+1. **Szyby** – górnicy ⛏️ wydobywają urobek 🪨, który odkłada się w szybie.
+2. **Winda** 🛗 – wywozi urobek z szybów (od góry) na powierzchnię.
+3. **Magazyn** 🚚 – sprzedaje urobek za gotówkę 💰.
+
+Dochód = najwolniejsze ogniwo z tych trzech, więc trzeba ulepszać wszystko po kolei.
+
+- **Dotknij pracownika** – pracuje przez 8 sekund.
+- **Kierownik** 🧑‍💼 – jednostka pracuje sama, bez przerwy, także gdy aplikacja jest zamknięta.
+- **Poziomy** – przycisk „Poziom” (x1 / x10 / x50 / MAX). Co 25 poziomów szyb pracuje 2× szybciej.
+- **Nowe szyby** – każdy kolejny jest ~10× wydajniejszy; można je odblokować gotówką albo diamentami.
+- **Dochód offline** – po powrocie gra wypłaca zarobki kierowników (do 4 h, z „Sejfem offline” do 24 h).
+- **Darmowy boost x2** – 10 minut co 4 godziny (zachęca do powrotów).
+
+## Mikropłatności
+
+Waluta premium to **diamenty 💎**.
+
+| Produkt | Typ (App Store Connect) | Product ID | Cena (propozycja) |
+|---|---|---|---|
+| 80 diamentów | Consumable | `com.twojafirma.mineempire.diamonds80` | 4,99 zł |
+| 500 diamentów | Consumable | `com.twojafirma.mineempire.diamonds500` | 24,99 zł |
+| 1200 diamentów | Consumable | `com.twojafirma.mineempire.diamonds1200` | 49,99 zł |
+| Podwójny dochód (na zawsze) | Non-Consumable | `com.twojafirma.mineempire.doubleincome` | 29,99 zł |
+| Sejf offline – 24 h (na zawsze) | Non-Consumable | `com.twojafirma.mineempire.offlinevault` | 14,99 zł |
+
+Na co gracz wydaje diamenty:
+- **Boost x2 na 30 min** – 15 💎,
+- **Walizka gotówki** (1 h produkcji od razu) – 25 💎,
+- **Odbierz dochód offline x2** – 10 💎,
+- **Odblokowanie szybu** bez czekania – od 30 💎 (drożej za dalsze szyby).
+
+Każda transakcja jest naliczana tylko raz (zapamiętane ID transakcji), zwroty odbierają ulepszenia na zawsze, jest przycisk **„Przywróć zakupy”**.
+
+## Struktura
+
+```
+MineEmpire.storekit         – lokalny sklep do testów w Xcode
+MineEmpire/App              – punkt wejścia, start/zatrzymanie symulacji
+MineEmpire/Model            – Economy.swift (cały balans gry w jednym pliku), stan gracza
+MineEmpire/Game             – MineEngine: symulacja 10×/s, zakupy, zapis, dochód offline
+MineEmpire/Store            – MineStore: StoreKit 2
+MineEmpire/Views            – ekran kopalni, ulepszenia, sklep, „Witaj z powrotem”
+```
+
+## Uruchomienie
+
+Jak wyżej: `xcodegen generate`, otwórz `CoinRush.xcodeproj`, wybierz schemat **MineEmpire** i naciśnij ▶︎. Zakupy są symulowane z pliku `MineEmpire.storekit`.
+
+Publikacja – te same kroki co dla Coin Rush, tylko z Bundle ID `com.twojafirma.mineempire` (zmień prefiks w `project.yml`, `MineEmpire/Store/MineStore.swift` i `MineEmpire.storekit`) oraz produktami z tabeli powyżej. Kategoria w App Store: *Games → Simulation*.
+
+Balans (ceny, tempo, czasy boostów) zmienisz w jednym miejscu: `MineEmpire/Model/Economy.swift`.

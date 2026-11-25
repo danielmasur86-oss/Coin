@@ -14,10 +14,17 @@ jobs:
         run: brew install xcodegen
       - name: Generate Xcode project
         run: xcodegen generate
-      - name: Build for iOS Simulator
+      - name: Build Coin Rush for iOS Simulator
         run: |
           xcodebuild build \
             -project CoinRush.xcodeproj \
             -scheme CoinRush \
+            -destination 'generic/platform=iOS Simulator' \
+            CODE_SIGNING_ALLOWED=NO
+      - name: Build Imperium Kopalni for iOS Simulator
+        run: |
+          xcodebuild build \
+            -project CoinRush.xcodeproj \
+            -scheme MineEmpire \
             -destination 'generic/platform=iOS Simulator' \
             CODE_SIGNING_ALLOWED=NO
