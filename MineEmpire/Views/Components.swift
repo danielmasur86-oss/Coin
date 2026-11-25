@@ -100,7 +100,6 @@ struct WorkerButton: View {
         let working = engine.isWorking(kind)
         let managed = engine.isManaged(kind)
         let remaining = engine.cycleRemaining(kind)
-        let swing = working && (engine.frame / 3) % 2 == 0
 
         Button {
             Haptics.tap()
@@ -115,10 +114,9 @@ struct WorkerButton: View {
                         .stroke(Color.gold, style: StrokeStyle(lineWidth: 4, lineCap: .round))
                         .rotationEffect(.degrees(-90))
                 }
-                Text(kind.emoji)
-                    .font(.system(size: 30))
-                    .rotationEffect(.degrees(swing ? -18 : 12))
-                    .offset(y: swing ? -2 : 0)
+                IdleCharacter(role: kind == .elevator ? .lift : .seller, busy: working)
+                    .frame(width: 34, height: 48)
+                    .offset(y: 2)
                 if !working {
                     Text("DOTKNIJ")
                         .font(.system(size: 9, weight: .black))
@@ -138,7 +136,6 @@ struct WorkerButton: View {
                 }
             }
             .frame(width: 60, height: 60)
-            .animation(.easeInOut(duration: 0.15), value: swing)
         }
         .buttonStyle(.plain)
         .accessibilityLabel(working ? "\(kind.title) pracuje" : "Uruchom: \(kind.title)")

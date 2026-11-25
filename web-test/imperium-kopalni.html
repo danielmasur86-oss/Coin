@@ -21,10 +21,10 @@ button{font:inherit;color:inherit;border:0;background:none;cursor:pointer;paddin
 .pill span{font-weight:900;font-size:15px;white-space:nowrap;font-variant-numeric:tabular-nums}
 .pill .ic{font-size:19px}
 .plus{margin-left:auto;background:var(--green);border-radius:6px;width:22px;height:22px;display:grid;place-items:center;font-weight:900}
-.mine{flex:1;overflow-y:auto;overscroll-behavior:contain}
+.mine{flex:1;overflow-y:auto;overscroll-behavior:contain;position:relative}
 .surface{position:relative;height:270px;background:linear-gradient(#5aa6f2,#b5ddfa);overflow:hidden}
-.surface svg{position:absolute;inset:0;width:100%;height:100%}
-.stations{position:absolute;inset:auto 8px 10px;display:flex;align-items:flex-end;justify-content:space-between;gap:6px}
+.surface>svg{position:absolute;inset:0;width:100%;height:100%}
+.stations{position:absolute;inset:auto 8px 10px;display:flex;align-items:flex-end;justify-content:space-between;gap:6px;pointer-events:none}.station{pointer-events:auto}
 .station{background:rgba(31,111,224,.93);border-radius:14px;padding:7px;display:flex;flex-direction:column;align-items:center;gap:6px;box-shadow:0 3px 0 var(--blue2)}
 .tag{font:12px Lilita One,sans-serif;letter-spacing:.02em;background:var(--blue2);border-radius:99px;padding:1px 9px}
 .mid{display:flex;flex-direction:column;align-items:center;gap:4px;padding-bottom:4px}
@@ -76,6 +76,58 @@ button{font:inherit;color:inherit;border:0;background:none;cursor:pointer;paddin
 .test{display:inline-block;background:#fff1c2;color:#7a5400;border-radius:8px;padding:4px 10px;font-weight:900;font-size:13px}
 .toast{position:absolute;left:50%;top:80px;transform:translateX(-50%);background:#1b1b1f;color:#fff;padding:10px 16px;border-radius:99px;font-weight:900;z-index:9;white-space:nowrap;transition:opacity .3s}
 @media (prefers-reduced-motion:reduce){.worker.on em,.lvl.ok{animation:none}}
+/* --- ruchome postacie --- */
+.ch{display:block;overflow:visible}
+.ch .lL{transform-origin:16px 39px}.ch .lR{transform-origin:24px 39px}.ch .arm{transform-origin:28px 27px}
+.ch .bod{transform-origin:20px 56px}
+.tun{position:relative;height:100%;background:linear-gradient(#3a2b27,#241a18);border-radius:14px;overflow:hidden;box-shadow:inset 0 4px 0 rgba(0,0,0,.35);cursor:pointer}
+.tun .lamp{position:absolute;left:42%;top:6px;width:8px;height:8px;border-radius:50%;background:#ffe9a0;box-shadow:0 0 18px 8px rgba(255,220,130,.35)}
+.tun .floor{position:absolute;left:0;right:0;bottom:0;height:7px;background:#5a4034}
+.dep{position:absolute;left:6px;top:6px;font-weight:900;font-size:15px;white-space:nowrap;text-shadow:0 1px 2px #000}
+.rateL{position:absolute;left:6px;top:24px;font-size:11px;opacity:.7;white-space:nowrap}
+.crate{position:absolute;left:4px;bottom:5px;width:44px}
+.wall{position:absolute;top:0;bottom:0;right:72px;width:22%}
+.wall svg{width:100%;height:100%}
+.tun .lvl{position:absolute;right:6px;top:50%;margin-top:-29px}
+.tun .mgr{position:absolute;left:50px;top:6px;padding:3px 6px;font-size:10px}
+.boss{position:absolute;left:46px;bottom:5px;width:30px}
+.boss .bod{animation:bob 2.4s ease-in-out infinite}
+.walker{position:absolute;bottom:5px;width:34px;left:86px}
+.on .walker{animation:mPos 4s linear infinite}
+.walker .sack{opacity:0}
+.on .walker .sack{animation:sack 4s linear infinite}
+.on .walker .lL{animation:mLegL 4s linear infinite}.on .walker .lR{animation:mLegR 4s linear infinite}
+.on .walker .arm{animation:mArm 4s linear infinite}
+.chips{position:absolute;bottom:22px;right:calc(72px + 22% - 6px);width:14px;height:14px;opacity:0}
+.on .chips{animation:chips 4s linear infinite}
+.hint{position:absolute;left:118px;bottom:52px;pointer-events:none;background:var(--gold);color:#000;font-size:10px;font-weight:900;border-radius:99px;padding:2px 7px;animation:pulse 1s ease-in-out infinite alternate}
+.on .hint{display:none}
+@keyframes pulse{to{transform:scale(1.12)}}
+@keyframes bob{50%{transform:translateY(-2px) scaleY(1.02)}}
+.liftcol{position:absolute;left:0;top:270px;width:46px;overflow:hidden;pointer-events:none;z-index:2}
+.cabin{position:absolute;left:4px;top:2px;width:38px;height:46px;border-radius:7px;background:#f0a92a;border:2px solid #b06f0d;overflow:hidden}
+.cabin::before{content:"";position:absolute;left:50%;bottom:100%;width:2px;height:3000px;background:#ccc}
+.cabin .ch{position:absolute;left:3px;bottom:-14px;width:30px}
+.cabin .ore{position:absolute;left:3px;right:3px;bottom:2px;height:7px;border-radius:3px;background:#6b5144;opacity:0}
+.liftcol.on .cabin{animation:lift var(--dur,3s) ease-in-out infinite}
+.liftcol.on .cabin .ore{animation:oreload var(--dur,3s) linear infinite}
+@keyframes lift{0%,8%{top:2px}46%,54%{top:calc(100% - 50px)}92%,100%{top:2px}}
+@keyframes oreload{0%,50%{opacity:0}51%,92%{opacity:1}93%,100%{opacity:0}}
+
+.hauler{position:absolute;bottom:14px;width:64px;left:31%}
+.surface.on .hauler{animation:hPos 5s linear infinite}
+.surface.on .hauler .lL{animation:hLegL 5s linear infinite}.surface.on .hauler .lR{animation:hLegR 5s linear infinite}
+.surface.on .hauler .load{animation:hLoad 5s linear infinite}
+.hauler .load{opacity:0}
+.worker .ch{width:34px;margin-top:2px}
+.worker.on .ch .bod{animation:bob .6s ease-in-out infinite}
+.worker.on .ch .arm{animation:wave .6s ease-in-out infinite alternate}
+@keyframes wave{from{rotate:10deg}to{rotate:-60deg}}
+.mid{position:absolute;left:50%;top:10px;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:4px}
+.pop{position:absolute;right:70px;bottom:80px;font-weight:900;font-size:16px;color:#fff;text-shadow:0 1px 3px #000;animation:pop 1.4s ease-out forwards;pointer-events:none;white-space:nowrap}
+@keyframes pop{from{transform:translateY(0);opacity:1}to{transform:translateY(-50px);opacity:0}}
+@media (prefers-reduced-motion:reduce){.on .walker,.on .walker *,.liftcol.on .cabin,.surface.on .hauler,.surface.on .hauler *,.boss .bod,.hint{animation:none!important}}
+
 </style>
 
 <div id="app">
@@ -137,13 +189,62 @@ function step(dt,t){
 function offline(){const t=Date.now(),el=t-S.saved;S.saved=t;if(el<60e3)return;const sec=Math.min(el,(S.vault?24:4)*H)/1000;const amt=thru(true)*mult(t,false)*sec;if(amt>=1)sheet('offline',{sec,amt})}
 
 const $=id=>document.getElementById(id),mine=$('mine'),layer=$('layer');
+// --- postacie (SVG) ---
+const SKIN='#f6c79c';
+const ROLES={
+ miner:{shirt:'#f39a1e',pants:'#3d5a9e',hat:'helmet'},
+ lift:{shirt:'#e0453a',pants:'#2f3d66',hat:'cap',cap:'#c62f2f'},
+ hauler:{shirt:'#2f9ad6',pants:'#2b3a55',hat:'cap',cap:'#3ca34a'},
+ seller:{shirt:'#7b4fd6',pants:'#2b3a55',hat:'cap',cap:'#ffcc2e'},
+ boss:{shirt:'#2c3e66',pants:'#222c44',hat:'hair'}};
+function charSVG(role,extra=''){
+ const r=ROLES[role];
+ const hat=r.hat==='helmet'?`<path d="M9 14 Q20 0 31 14Z" fill="#ffc61a"/><rect x="7.5" y="12.5" width="25" height="3.2" rx="1.6" fill="#e9a800"/><circle cx="20" cy="8" r="2.7" fill="#fff7b0" stroke="#d39b00"/>`
+  :r.hat==='cap'?`<path d="M10 13 Q20 2 30 13Z" fill="${r.cap}"/><rect x="18" y="11" width="15" height="3" rx="1.5" fill="${r.cap}"/>`
+  :`<path d="M10 13 Q11 3 20 4 Q30 3 30 13 Q26 8 20 9 Q14 8 10 13Z" fill="#3b2a20"/>`;
+ const tool=role==='miner'?`<line x1="28.5" y1="40" x2="35" y2="22" stroke="#8a5a2b" stroke-width="2.6" stroke-linecap="round"/><path d="M29 20 Q36 16 42 24" stroke="#a7b0ba" stroke-width="3.2" fill="none" stroke-linecap="round"/>`
+  :role==='boss'?`<rect x="27" y="33" width="9" height="11" rx="1.5" fill="#f4f1e8" stroke="#9a8a6a"/><line x1="29" y1="37" x2="34" y2="37" stroke="#999"/><line x1="29" y1="40" x2="34" y2="40" stroke="#999"/>`:'';
+ const chest=role==='miner'?`<rect x="10" y="32" width="20" height="2.6" fill="#fff" opacity=".85"/>`
+  :role==='boss'?`<path d="M17 24 L20 31 L23 24Z" fill="#fff"/><path d="M19.2 26 L20 34 L20.8 26Z" fill="#d33"/>`:`<rect x="15" y="28" width="10" height="8" rx="2" fill="#000" opacity=".15"/>`;
+ const sack=role==='miner'?`<g class="sack"><ellipse cx="9" cy="30" rx="6" ry="7" fill="#a5784a"/><path d="M6 24 Q9 21 12 24" stroke="#6e4a26" stroke-width="1.5" fill="none"/></g>`:'';
+ return `<svg class="ch" viewBox="0 0 40 56" aria-hidden="true">${extra}<g class="bod">${sack}
+  <g class="lL"><rect x="13" y="38" width="6" height="14" rx="2" fill="${r.pants}"/><ellipse cx="16" cy="53" rx="4.6" ry="2.6" fill="#3a2a22"/></g>
+  <g class="lR"><rect x="21" y="38" width="6" height="14" rx="2" fill="${r.pants}"/><ellipse cx="24" cy="53" rx="4.6" ry="2.6" fill="#3a2a22"/></g>
+  <rect x="8" y="26" width="5" height="11" rx="2.5" fill="${r.shirt}"/><circle cx="10.5" cy="37.5" r="2.5" fill="${SKIN}"/>
+  <rect x="10" y="23" width="20" height="18" rx="6" fill="${r.shirt}"/>${chest}
+  <circle cx="20" cy="15" r="10" fill="${SKIN}"/><circle cx="16.8" cy="15.5" r="1.5" fill="#222"/><circle cx="23.2" cy="15.5" r="1.5" fill="#222"/>
+  <circle cx="15" cy="19" r="1.6" fill="#f29a8a" opacity=".6"/><circle cx="25" cy="19" r="1.6" fill="#f29a8a" opacity=".6"/>
+  <path d="M17 19.5 Q20 22.5 23 19.5" stroke="#5a2a1a" stroke-width="1.3" fill="none" stroke-linecap="round"/>${hat}
+  <g class="arm"><rect x="26" y="26" width="5" height="11" rx="2.5" fill="${r.shirt}"/>${tool}<circle cx="28.5" cy="38" r="2.6" fill="${SKIN}"/></g></g></svg>`}
+function haulerSVG(){return `<svg class="ch" viewBox="0 0 74 56" aria-hidden="true">
+  <g transform="translate(36 0)"><path d="M2 32 H36 L32 48 H6Z" fill="#7b8794" stroke="#4d5862" stroke-width="1.5"/><g class="load"><circle cx="11" cy="31" r="5" fill="#6b5144"/><circle cx="19" cy="29" r="6" fill="#7d6152"/><circle cx="27" cy="31" r="5" fill="#6b5144"/><circle cx="19" cy="25" r="2" fill="#ffcc2e"/></g>
+  <circle cx="11" cy="50" r="4.5" fill="#333"/><circle cx="27" cy="50" r="4.5" fill="#333"/><circle cx="11" cy="50" r="1.6" fill="#aaa"/><circle cx="27" cy="50" r="1.6" fill="#aaa"/></g>
+  <svg x="0" y="0" width="40" height="56" viewBox="0 0 40 56" overflow="visible">${charSVG('hauler').replace(/^<svg[^>]*>/,'').replace(/<\/svg>$/,'')}</svg></svg>`}
+const crateSVG=`<svg viewBox="0 0 44 32" aria-hidden="true"><rect x="1" y="6" width="42" height="25" rx="2" fill="#a86f3c" stroke="#6e4522" stroke-width="2"/><path d="M1 18 H43 M14 6 V31 M30 6 V31" stroke="#6e4522" stroke-width="1.6"/><circle cx="12" cy="6" r="5" fill="#6b5144"/><circle cx="22" cy="4" r="6" fill="#7d6152"/><circle cx="32" cy="6" r="5" fill="#6b5144"/><circle cx="24" cy="2" r="1.8" fill="#ffcc2e"/></svg>`;
+function wallSVG(i){let s=i*977+13;const rnd=()=>(s=s*16807%2147483647)/2147483647;
+ const gem=['#ffcc2e','#ff7a59','#7ee0ff','#b48cff','#7dff9a'][i%5];let dots='';
+ for(let j=0;j<9;j++)dots+=`<circle cx="${10+rnd()*70}" cy="${10+rnd()*80}" r="${3+rnd()*4}" fill="${j%3?'#4a342c':gem}"/>`;
+ return `<svg viewBox="0 0 80 100" preserveAspectRatio="none" aria-hidden="true"><path d="M14 0 Q2 25 10 50 Q0 75 12 100 H80 V0Z" fill="#c07b5a"/><path d="M14 0 Q2 25 10 50 Q0 75 12 100 H22 Q12 75 20 50 Q12 25 24 0Z" fill="#a8654a"/>${dots}</svg>`}
+const chipsSVG=`<svg class="chips" viewBox="0 0 14 14" aria-hidden="true"><path d="M7 0 L8.5 5 L14 7 L8.5 9 L7 14 L5.5 9 L0 7 L5.5 5Z" fill="#fff6a0"/></svg>`;
+// klatki kluczowe chodu i kopania generowane z odcinków czasu
+function walkKF(name,segs,sign){let k='';for(let p=0;p<=100;p+=2.5){const inSeg=segs.some(([a,b])=>p>a&&p<b);const st=Math.round((p/2.5))%2?1:-1;k+=`${p}%{rotate:${inSeg?sign*st*28:0}deg}`}return `@keyframes ${name}{${k}}`}
+function armKF(){let k='0%,29%{rotate:0deg}';for(let i=0;i<4;i++){const b=30+i*10;k+=`${b+1}%{rotate:-115deg}${b+7}%{rotate:-115deg}${b+9}%{rotate:22deg}`}k+='70%,100%{rotate:0deg}';return `@keyframes mArm{${k}}`}
+function chipsKF(){let k='0%{opacity:0}';for(let i=0;i<4;i++){const b=30+i*10+9;k+=`${b-.5}%{opacity:0;transform:scale(.3)}${b}%{opacity:1;transform:scale(1.2)}${b+1.5}%{opacity:0;transform:scale(.4)}`}return `@keyframes chips{${k}100%{opacity:0}}`}
+const kf=document.createElement('style');kf.textContent=[
+ walkKF('mLegL',[[0,30],[70,100]],1),walkKF('mLegR',[[0,30],[70,100]],-1),armKF(),chipsKF(),
+ '@keyframes mPos{0%{left:86px;transform:scaleX(1)}30%,69.9%{left:calc(78% - 98px);transform:scaleX(1)}70%{left:calc(78% - 98px);transform:scaleX(-1)}100%{left:86px;transform:scaleX(-1)}}',
+ '@keyframes sack{0%,69.9%{opacity:0}70%,99%{opacity:1}100%{opacity:0}}',
+ walkKF('hLegL',[[8,45],[55,92]],1),walkKF('hLegR',[[8,45],[55,92]],-1),
+ '@keyframes hPos{0%,8%{left:31%;transform:scaleX(1)}45%,54.9%{left:calc(69% - 64px);transform:scaleX(1)}55%{left:calc(69% - 64px);transform:scaleX(-1)}92%,100%{left:31%;transform:scaleX(-1)}}',
+ '@keyframes hLoad{0%,8%{opacity:1}45%,100%{opacity:0}}'].join('\n');
+document.head.append(kf);
 function station(k){return`<div class="station"><span class="tag">${title(k).toUpperCase()}</span>${lvlBtn(k)}${worker(k)}${mgr(k)}</div>`}
 const lvlBtn=k=>`<button class="lvl" data-act="up" data-k="${k}" data-lvl="${k}"><i>▲</i><small>Poziom</small><strong data-v="l${k}"></strong></button>`;
-const worker=k=>`<button class="worker" data-act="tap" data-k="${k}" data-w="${k}"><em>${emoji(k)}</em><span class="badge" data-v="b${k}"></span></button>`;
+const worker=k=>`<button class="worker" data-act="tap" data-k="${k}" data-w="${k}">${charSVG(k==='e'?'lift':'seller')}<span class="badge" data-v="b${k}"></span></button>`;
 const mgr=k=>`<button class="mgr" data-act="mgr" data-k="${k}" data-m="${k}"></button>`;
 function build(){
   const n=S.shafts.length;
-  mine.innerHTML=`<div class="surface">
+  mine.innerHTML=`<div class="surface" id="surf">
    <svg viewBox="0 0 400 270" preserveAspectRatio="xMidYMax slice" aria-hidden="true">
     <circle cx="300" cy="50" r="26" fill="#fff6c9" opacity=".8"/>
     <path d="M-10 230 L90 95 L150 170 L230 60 L330 190 L410 120 L410 240 Z" fill="#dfe9f7"/>
@@ -152,29 +253,42 @@ function build(){
     <rect x="-10" y="246" width="420" height="30" fill="#5fb14a"/>
     ${[40,120,280,350].map((x,i)=>`<path d="M${x} ${236-i%2*6} l-12 0 l12 -34 l12 34z" fill="#2f8a4a"/>`).join('')}
    </svg>
-   <div class="stations">${station('e')}
-    <div class="mid"><span class="chip boost" id="vBoost" hidden></span><span class="chip" id="vPot"></span><span class="chip">🪨 <span id="vStock"></span></span><span style="font-size:34px">⛺</span></div>
-    ${station('w')}</div></div>`+
-  S.shafts.map((s,i)=>{const k='s'+i;return`<div class="shaft"><div class="rail"><span>${i+1}</span></div><div class="rock"><div class="tun">
-    <div class="info"><b>${title(k).toUpperCase()}</b><span>🪨 <span data-v="d${k}"></span></span><small data-v="r${k}"></small></div>
-    ${mgr(k)}${worker(k)}${lvlBtn(k)}</div></div></div>`}).join('')+
+   <div class="mid"><span class="chip boost" id="vBoost" hidden></span><span class="chip" id="vPot"></span><span class="chip">🪨 <span id="vStock"></span></span></div>
+   <div class="hauler">${haulerSVG()}</div>
+   <div class="stations">${station('e')}${station('w')}</div></div>`+
+  S.shafts.map((s,i)=>{const k='s'+i;return`<div class="shaft"><div class="rail"><span>${i+1}</span></div><div class="rock">
+    <div class="tun" data-act="tap" data-k="${k}" data-scene="${k}"><span class="lamp"></span><span class="floor"></span>
+     <div class="wall">${wallSVG(i)}</div>${chipsSVG}
+     <div class="crate">${crateSVG}</div><span class="dep">🪨 <span data-v="d${k}"></span></span><span class="rateL" data-v="r${k}"></span>
+     <div class="boss" data-boss="${k}" hidden>${charSVG('boss')}</div>${mgr(k)}
+     <div class="walker">${charSVG('miner')}</div><span class="hint">DOTKNIJ</span>
+     ${lvlBtn(k)}</div></div></div>`}).join('')+
+  `<div class="liftcol" id="liftcol" style="height:${n*118}px;--dur:${Math.max(3,1.4*n+1.6)}s"><div class="cabin"><span class="ore"></span>${charSVG('lift')}</div></div>`+
   `<div class="newshaft">${n<MAX_SHAFTS?`<h3>Nowy szyb</h3><div class="row2"><button class="big" id="unC" data-act="unc">💰 ${fmt(unlockCost(n))}</button><button class="big blue" data-act="und">💎 ${unlockDia(n)}</button></div>`:'<h3>🏆 Wszystkie szyby odblokowane!</h3>'}</div>`;
   update();
 }
 function setV(sel,txt){const el=mine.querySelector(sel);if(el&&el.textContent!==txt)el.textContent=txt}
+let popAt=0,popCash=0;
 function update(){
   const t=Date.now();
   $('vIdle').textContent=fmt(thru(true)*mult(t))+'/s';$('vCash').textContent=fmt(S.cash);$('vDia').textContent=S.dia;
   const keys=['e','w',...S.shafts.map((_,i)=>'s'+i)];
-  for(const k of keys){const u=unit(k);
+  for(const k of keys){const u=unit(k),on=working(u,t),c=mgrCost(k);
     setV(`[data-v="l${k}"]`,String(u.l));mine.querySelector(`[data-lvl="${k}"]`).classList.toggle('ok',canUp(k));
-    const w=mine.querySelector(`[data-w="${k}"]`),on=working(u,t);w.classList.toggle('on',on);
+    const m=mine.querySelector(`[data-m="${k}"]`);
+    if(k[0]==='s'){const sc=mine.querySelector(`[data-scene="${k}"]`);sc.classList.toggle('on',on);
+      setV(`[data-v="d${k}"]`,fmt(S.shafts[sh(k)].dep));setV(`[data-v="r${k}"]`,fmt(rate(k,u.l))+'/s');
+      mine.querySelector(`[data-boss="${k}"]`).hidden=!u.m;m.hidden=u.m;
+      const html=`🧑‍💼 Zatrudnij<br>💰 ${fmt(c)}`;if(m.innerHTML!==html)m.innerHTML=html;m.className='mgr'+(S.cash>=c?' ok':'');continue}
+    const w=mine.querySelector(`[data-w="${k}"]`);w.classList.toggle('on',on);
     w.style.setProperty('--p',!u.m&&u.a>t?(u.a-t)/CYCLE:0);
     const b=mine.querySelector(`[data-v="b${k}"]`);b.hidden=on&&!u.m;b.className='badge'+(u.m?' auto':'');setV(`[data-v="b${k}"]`,u.m?'AUTO':'DOTKNIJ');
-    const m=mine.querySelector(`[data-m="${k}"]`),c=mgrCost(k);
     const html=u.m?'🧑‍💼 Kierownik':`🧑‍💼 Zatrudnij<br>💰 ${fmt(c)}`;if(m.innerHTML!==html)m.innerHTML=html;
-    m.className='mgr'+(u.m?' has':S.cash>=c?' ok':'');
-    if(k[0]==='s'){setV(`[data-v="d${k}"]`,fmt(S.shafts[sh(k)].dep));setV(`[data-v="r${k}"]`,fmt(rate(k,u.l))+'/s')}}
+    m.className='mgr'+(u.m?' has':S.cash>=c?' ok':'')}
+  $('liftcol').classList.toggle('on',working(S.e,t));
+  const surf=$('surf'),won=working(S.w,t);surf.classList.toggle('on',won);
+  if(won&&t-popAt>1500){const gain=S.cash-popCash;if(popAt&&gain>=1){const p=document.createElement('span');p.className='pop';p.textContent='+💰 '+fmt(gain);surf.append(p);setTimeout(()=>p.remove(),1500)}popAt=t;popCash=S.cash}
+  if(!won){popAt=0}
   $('vPot').textContent='💰 '+fmt(thru(false)*mult(t))+'/s';$('vStock').textContent=fmt(S.stock);
   const bo=$('vBoost');bo.hidden=S.boost<=t;if(S.boost>t)bo.textContent='🚀 x2  '+dur(S.boost-t);
   const unc=$('unC');if(unc)unc.classList.toggle('off',S.cash<unlockCost(S.shafts.length));

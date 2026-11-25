@@ -13,8 +13,15 @@ struct MineView: View {
             ScrollView {
                 VStack(spacing: 0) {
                     SurfaceView(upgradeTarget: $upgradeTarget)
-                    ForEach(engine.state.shafts.indices, id: \.self) { index in
-                        ShaftRow(index: index, upgradeTarget: $upgradeTarget)
+                    VStack(spacing: 0) {
+                        ForEach(engine.state.shafts.indices, id: \.self) { index in
+                            ShaftRow(index: index, upgradeTarget: $upgradeTarget)
+                        }
+                    }
+                    .overlay(alignment: .topLeading) {
+                        ElevatorTrack(shaftCount: engine.state.shafts.count,
+                                      working: engine.isWorking(.elevator))
+                            .frame(width: 48)
                     }
                     NewShaftPanel(showShop: $showShop)
                 }
@@ -77,37 +84,41 @@ private struct SurfaceView: View {
                 .fill(Color.grass)
                 .frame(height: 30)
 
+            HaulerWalker(working: engine.isWorking(.warehouse))
+                .padding(.bottom, 2)
+
             HStack(alignment: .bottom, spacing: 8) {
                 Station(kind: .elevator, upgradeTarget: $upgradeTarget)
-                Spacer(minLength: 0)
-                VStack(spacing: 4) {
-                    if engine.boostRemaining > 0 {
-                        Text("🚀 x2  \(NumberFormat.duration(engine.boostRemaining))")
-                            .font(.caption.weight(.heavy).monospacedDigit())
-                            .foregroundStyle(.white)
-                            .padding(.horizontal, 8)
-                            .padding(.vertical, 3)
-                            .background(Color.orange, in: Capsule())
-                    }
-                    Text("💰 \(NumberFormat.short(engine.potentialIncomePerSecond))/s")
-                        .font(.caption.weight(.heavy).monospacedDigit())
-                        .foregroundStyle(.white)
-                        .padding(.horizontal, 8)
-                        .padding(.vertical, 3)
-                        .background(Color.black.opacity(0.35), in: Capsule())
-                    Text("🪨 \(NumberFormat.short(engine.state.surfaceStock))")
-                        .font(.subheadline.weight(.heavy).monospacedDigit())
-                        .foregroundStyle(.white)
-                        .shadow(radius: 2)
-                    Text("🏔️⛺")
-                        .font(.system(size: 34))
-                }
-                .padding(.bottom, 6)
                 Spacer(minLength: 0)
                 Station(kind: .warehouse, upgradeTarget: $upgradeTarget)
             }
             .padding(.horizontal, 10)
             .padding(.bottom, 8)
+
+            VStack(spacing: 4) {
+                if engine.boostRemaining > 0 {
+                    Text("🚀 x2  \(NumberFormat.duration(engine.boostRemaining))")
+                        .font(.caption.weight(.heavy).monospacedDigit())
+                        .foregroundStyle(.white)
+                        .padding(.horizontal, 8)
+                        .padding(.vertical, 3)
+                        .background(Color.orange, in: Capsule())
+                }
+                Text("💰 \(NumberFormat.short(engine.potentialIncomePerSecond))/s")
+                    .font(.caption.weight(.heavy).monospacedDigit())
+                    .foregroundStyle(.white)
+                    .padding(.horizontal, 8)
+                    .padding(.vertical, 3)
+                    .background(Color.black.opacity(0.35), in: Capsule())
+                Text("🪨 \(NumberFormat.short(engine.state.surfaceStock))")
+                    .font(.caption.weight(.heavy).monospacedDigit())
+                    .foregroundStyle(.white)
+                    .padding(.horizontal, 8)
+                    .padding(.vertical, 3)
+                    .background(Color.black.opacity(0.35), in: Capsule())
+                Spacer()
+            }
+            .padding(.top, 10)
         }
         .frame(height: 250)
     }
@@ -138,14 +149,12 @@ private struct Station: View {
 // MARK: - Szyb
 
 private struct ShaftRow: View {
-    @EnvironmentObject private var engine: MineEngine
     let index: Int
     @Binding var upgradeTarget: UnitKind?
 
     var body: some View {
-        let kind = UnitKind.shaft(index)
         HStack(spacing: 0) {
-            // Szyb windy biegnący w dół
+            // Szyb windy biegnący w dół (kabina rysowana jest nad wszystkimi szybami)
             ZStack {
                 Color.tunnel.opacity(0.9)
                 Rectangle()
@@ -161,32 +170,88 @@ private struct ShaftRow: View {
 
             ZStack {
                 LinearGradient(colors: [.dirt, .dirtDark], startPoint: .top, endPoint: .bottom)
-                RoundedRectangle(cornerRadius: 14)
-                    .fill(Color.tunnel)
-                    .padding(.vertical, 12)
+                ShaftTunnel(index: index, upgradeTarget: $upgradeTarget)
+                    .padding(.vertical, 11)
                     .padding(.horizontal, 6)
-
-                HStack(spacing: 10) {
-                    VStack(alignment: .leading, spacing: 6) {
-                        Text(kind.title.uppercased())
-                            .font(.system(size: 11, weight: .black))
-                            .foregroundStyle(Color.gold)
-                        Text("🪨 \(NumberFormat.short(engine.state.shafts[index].deposit))")
-                            .font(.headline.weight(.heavy).monospacedDigit())
-                            .foregroundStyle(.white)
-                        Text("\(NumberFormat.short(engine.currentRate(kind)))/s")
-                            .font(.caption.weight(.semibold).monospacedDigit())
-                            .foregroundStyle(.white.opacity(0.7))
-                    }
-                    Spacer(minLength: 0)
-                    ManagerButton(kind: kind)
-                    WorkerButton(kind: kind)
-                    LevelButton(kind: kind) { upgradeTarget = kind }
-                }
-                .padding(.horizontal, 18)
             }
         }
         .frame(height: 120)
+    }
+}
+
+/// Wnętrze szybu: skrzynia z urobkiem, kierownik, górnik chodzący do ściany rudy.
+private struct ShaftTunnel: View {
+    @EnvironmentObject private var engine: MineEngine
+    let index: Int
+    @Binding var upgradeTarget: UnitKind?
+
+    var body: some View {
+        let kind = UnitKind.shaft(index)
+        let working = engine.isWorking(kind)
+        GeometryReader { geo in
+            let w = geo.size.width
+            let h = geo.size.height
+            let floorY = h - 5
+            ZStack(alignment: .topLeading) {
+                RoundedRectangle(cornerRadius: 14)
+                    .fill(LinearGradient(colors: [Color(red: 0.23, green: 0.17, blue: 0.15), .tunnel],
+                                         startPoint: .top, endPoint: .bottom))
+                Circle()
+                    .fill(Color(red: 1, green: 0.91, blue: 0.63))
+                    .frame(width: 8, height: 8)
+                    .shadow(color: .yellow.opacity(0.6), radius: 10)
+                    .offset(x: w * 0.42, y: 6)
+                OreWall(seed: index)
+                    .frame(width: w * 0.22, height: h)
+                    .offset(x: w - 72 - w * 0.22)
+                OreCrate()
+                    .frame(width: 44, height: 32)
+                    .offset(x: 4, y: floorY - 32)
+                VStack(alignment: .leading, spacing: 0) {
+                    Text("🪨 \(NumberFormat.short(engine.state.shafts[index].deposit))")
+                        .font(.subheadline.weight(.heavy).monospacedDigit())
+                    Text("\(NumberFormat.short(engine.currentRate(kind)))/s")
+                        .font(.caption2.weight(.semibold).monospacedDigit())
+                        .opacity(0.7)
+                }
+                .foregroundStyle(.white)
+                .shadow(radius: 2)
+                .offset(x: 6, y: 4)
+
+                if engine.isManaged(kind) {
+                    IdleCharacter(role: .boss)
+                        .frame(width: 30, height: 42)
+                        .offset(x: 46, y: floorY - 42)
+                } else {
+                    ManagerButton(kind: kind)
+                        .offset(x: 50, y: 4)
+                }
+
+                MinerWalker(working: working, startX: 86, endX: max(90, w * 0.78 - 98), floorY: floorY)
+
+                if !working {
+                    Text("DOTKNIJ")
+                        .font(.system(size: 10, weight: .black))
+                        .foregroundStyle(.black)
+                        .padding(.horizontal, 7)
+                        .padding(.vertical, 2)
+                        .background(Color.gold, in: Capsule())
+                        .offset(x: 112, y: floorY - 66)
+                        .allowsHitTesting(false)
+                }
+
+                LevelButton(kind: kind) { upgradeTarget = kind }
+                    .offset(x: w - 68, y: (h - 58) / 2)
+            }
+            .contentShape(Rectangle())
+            .onTapGesture {
+                Haptics.tap()
+                engine.tap(kind)
+            }
+        }
+        .clipShape(RoundedRectangle(cornerRadius: 14))
+        .accessibilityElement(children: .contain)
+        .accessibilityLabel(working ? "\(kind.title) pracuje" : "\(kind.title). Dotknij, aby uruchomić")
     }
 }
 
