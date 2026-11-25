@@ -8,3 +8,11 @@ build/
 *.dSYM.zip
 *.dSYM
 .DS_Store
+# Android
+android/.gradle/
+android/build/
+android/app/build/
+android/local.properties
+android/app/google-services.json
+*.jks
+*.keystore

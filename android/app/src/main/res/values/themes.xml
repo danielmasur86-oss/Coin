@@ -1,0 +1,7 @@
+<resources>
+    <color name="game_blue">#1F6FE0</color>
+    <style name="Theme.ImperiumKopalni" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:windowBackground">@color/game_blue</item>
+        <item name="colorPrimary">@color/game_blue</item>
+    </style>
+</resources>

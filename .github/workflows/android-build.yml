@@ -1,0 +1,60 @@
+name: Android build
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - uses: gradle/actions/setup-gradle@v4
+
+      - name: Build test APK (debug, test ads, Play purchases need upload to Play)
+        working-directory: android
+        run: ./gradlew assembleDebug --stacktrace
+
+      - name: Upload test APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: imperium-kopalni-test-apk
+          path: android/app/build/outputs/apk/debug/*.apk
+
+      # Wersja do Google Play (.aab). Działa, gdy w Settings → Secrets → Actions dodasz:
+      # KEYSTORE_BASE64, KEYSTORE_PASSWORD, KEY_ALIAS, KEY_PASSWORD
+      # oraz opcjonalnie ADMOB_APP_ID i ADMOB_REWARDED_ID (bez nich: reklamy testowe).
+      - name: Build release bundle for Google Play
+        working-directory: android
+        env:
+          KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+          ADMOB_APP_ID: ${{ secrets.ADMOB_APP_ID }}
+          ADMOB_REWARDED_ID: ${{ secrets.ADMOB_REWARDED_ID }}
+        run: |
+          if [ -z "$KEYSTORE_BASE64" ]; then
+            echo "Brak klucza podpisu – pomijam wersję do Google Play."
+            exit 0
+          fi
+          echo "$KEYSTORE_BASE64" | base64 -d > "$RUNNER_TEMP/release.jks"
+          export KEYSTORE_FILE="$RUNNER_TEMP/release.jks"
+          EXTRA=""
+          [ -n "$ADMOB_APP_ID" ] && EXTRA="$EXTRA -PadmobAppId=$ADMOB_APP_ID"
+          [ -n "$ADMOB_REWARDED_ID" ] && EXTRA="$EXTRA -PadmobRewardedId=$ADMOB_REWARDED_ID"
+          ./gradlew bundleRelease $EXTRA --stacktrace
+
+      - name: Upload Google Play bundle
+        uses: actions/upload-artifact@v4
+        with:
+          name: imperium-kopalni-release-aab
+          path: android/app/build/outputs/bundle/release/*.aab
+          if-no-files-found: ignore
