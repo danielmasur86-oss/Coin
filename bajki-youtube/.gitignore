@@ -1,0 +1,5 @@
+build/*-video.mp4
+build/*.wav
+build/*.json
+build/log*.txt
+build/*still*.png

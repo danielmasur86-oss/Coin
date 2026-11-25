@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="pl"><head><meta charset="utf-8">
+<link rel="stylesheet" href="fonts/baloo.css"><style>
+
+html,body{margin:0;width:1920px;height:1080px;overflow:hidden;background:#000}
+#st{position:absolute;inset:0;width:1920px;height:1080px}
+.ov{position:absolute;left:0;right:0;font-family:"Baloo 2",sans-serif;color:#fff;text-align:center}
+#sub{top:40px;display:flex;justify-content:center}
+#sub span{max-width:1560px;background:rgba(40,24,10,.78);border-radius:28px;padding:18px 40px 14px;font-size:50px;line-height:1.2;font-weight:700}
+#card{inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:rgba(255,247,214,.0)}
+#card .box{background:#fff7d6;color:#2a1a0c;border:10px solid #7a4b2a;border-radius:48px;padding:40px 90px 34px;box-shadow:0 14px 0 #5a3418}
+#card .s{font-size:56px;color:#3fa34d;font-weight:800;line-height:1}
+#card .t{font-size:120px;font-weight:800;line-height:1.05;margin-top:10px}
+#card .n{font-size:44px;color:#ef5a3c;font-weight:800;margin-top:6px}
+</style></head><body>
+<svg id="st" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMax slice" role="img" aria-label="Animowana scena z Lasu Kropki">
+<defs>
+<linearGradient id="gDay" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#5ec3ff"/><stop offset="1" stop-color="#c9efff"/></linearGradient>
+<linearGradient id="gStorm" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2b3550"/><stop offset="1" stop-color="#6b7896"/></linearGradient>
+<linearGradient id="gEve" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3a2a6b"/><stop offset=".6" stop-color="#e5739b"/><stop offset="1" stop-color="#ffc27a"/></linearGradient>
+<g id="tree"><rect x="-14" y="-40" width="28" height="80" fill="#7a4b2a"/><circle cy="-90" r="70" fill="#2f8a3e"/><circle cx="-40" cy="-60" r="48" fill="#37994a"/><circle cx="42" cy="-58" r="44" fill="#287a35"/></g>
+</defs>
+<rect width="1600" height="900" fill="url(#gDay)"/>
+<rect id="skyStorm" class="layer" width="1600" height="900" fill="url(#gStorm)" opacity="0"/>
+<rect id="skyEve" class="layer" width="1600" height="900" fill="url(#gEve)" opacity="0"/>
+<g id="sun" class="layer"><circle cx="1360" cy="150" r="72" fill="#ffd83c"/><circle cx="1360" cy="150" r="100" fill="#ffd83c" opacity=".25"/></g>
+<g id="stars" class="layer" opacity="0" fill="#fff6c4"></g>
+<g id="clouds" class="layer" fill="#fff"><g transform="translate(300 150)"><ellipse rx="90" ry="34"/><ellipse cx="50" cy="-22" rx="56" ry="36"/></g><g transform="translate(900 110)"><ellipse rx="110" ry="36"/><ellipse cx="-40" cy="-24" rx="60" ry="38"/></g></g>
+<g id="darkClouds" class="layer" opacity="0" fill="#3d465e"><g transform="translate(500 120)"><ellipse rx="260" ry="70"/><ellipse cx="120" cy="-40" rx="150" ry="80"/></g><g transform="translate(1180 140)"><ellipse rx="280" ry="74"/><ellipse cx="-90" cy="-46" rx="160" ry="80"/></g></g>
+<polygon id="flash" class="prop" points="1000,170 940,330 990,330 930,490 1070,290 1010,290 1060,170" fill="#fff38a"/>
+<g id="rainbow" class="prop" fill="none" stroke-width="26" opacity="0"><path d="M300 820 A500 500 0 0 1 1300 820" stroke="#ef5a3c"/><path d="M326 820 A474 474 0 0 1 1274 820" stroke="#ffc93c"/><path d="M352 820 A448 448 0 0 1 1248 820" stroke="#5ed16a"/><path d="M378 820 A422 422 0 0 1 1222 820" stroke="#4aa8ff"/><path d="M404 820 A396 396 0 0 1 1196 820" stroke="#9b6cff"/></g>
+<path d="M0 640 C300 560 520 610 800 590 C1100 570 1300 520 1600 600 V900 H0Z" fill="#6cc45e"/>
+<g id="trees"></g>
+<path d="M0 730 C400 690 900 720 1600 700 V900 H0Z" fill="#53ad4a"/>
+<g transform="translate(330 820)"><rect x="-40" y="-260" width="80" height="260" fill="#6b3f20"/><ellipse cx="0" cy="-130" rx="20" ry="30" fill="#3b220f"/><circle cy="-330" r="150" fill="#2b8139"/><circle cx="-110" cy="-280" r="90" fill="#33914a"/><circle cx="110" cy="-280" r="95" fill="#23702f"/></g>
+<ellipse cx="1330" cy="830" rx="210" ry="48" fill="#3c9be0"/><ellipse cx="1300" cy="822" rx="120" ry="18" fill="#7fc7ff" opacity=".6"/>
+<g fill="#2f8a3e"><ellipse cx="1040" cy="790" rx="110" ry="60"/><ellipse cx="1110" cy="800" rx="80" ry="50" fill="#287a35"/></g>
+<g id="acorn1" class="prop" transform="translate(1060 775)"><ellipse rx="16" ry="20" fill="#ffc93c"/><path d="M-18 -10 Q0 -30 18 -10Z" fill="#9a6a2a"/><circle r="40" fill="#fff4a8" opacity=".35"/></g>
+<g id="leaf" class="prop" transform="translate(800 520)"><path d="M-320 120 C-260 -80 260 -80 320 120 C150 70 -150 70 -320 120Z" fill="#2f9e48"/><path d="M-300 115 C-100 30 100 30 300 115" stroke="#1f6f30" stroke-width="8" fill="none"/><rect x="-10" y="80" width="20" height="230" fill="#1f6f30"/></g>
+<g id="rainG" class="layer" opacity="0"><g id="rain" stroke="#bcd6ff" stroke-width="4" stroke-linecap="round"></g></g>
+<g id="cake" transform="translate(800 830)">
+<rect id="c1" class="prop" x="-130" y="-70" width="260" height="70" rx="16" fill="#f7b7c8"/>
+<rect id="c2" class="prop" x="-100" y="-130" width="200" height="60" rx="14" fill="#ffe08a"/>
+<g id="c3" class="prop"><rect x="-70" y="-180" width="140" height="50" rx="12" fill="#fff"/><circle cx="-40" cy="-185" r="10" fill="#d42f4f"/><circle cx="0" cy="-188" r="10" fill="#d42f4f"/><circle cx="40" cy="-185" r="10" fill="#d42f4f"/></g>
+<g id="candles" class="prop"><rect x="-35" y="-230" width="10" height="45" fill="#7ac7ff"/><rect x="25" y="-230" width="10" height="45" fill="#ff9be0"/><ellipse class="flame" cx="-30" cy="-240" rx="7" ry="12" fill="#ffb02e"/><ellipse class="flame" cx="30" cy="-240" rx="7" ry="12" fill="#ffb02e"/></g>
+</g>
+<g id="nuts" class="prop" transform="translate(560 850)" fill="#a66a2c"><ellipse cx="-20" rx="14" ry="11"/><ellipse cx="10" cy="-4" rx="14" ry="11"/><ellipse cx="-4" cy="-20" rx="14" ry="11"/></g>
+<g id="berries" class="prop" transform="translate(1000 850)" fill="#5b3fd1"><circle cx="-14" r="11"/><circle cx="10" r="11"/><circle cy="-18" r="11"/></g>
+<g id="apples" class="prop" transform="translate(660 860)" fill="#e2402f"><circle cx="-14" r="16"/><circle cx="18" r="16"/></g>
+<g id="fireflies" class="prop" fill="#fff58a"></g>
+<g id="b" class="actor"><g class="bob" id="bb"><ellipse cx="0" cy="-50" rx="78" ry="52" fill="#4fbf4a"/><ellipse cx="0" cy="-36" rx="50" ry="28" fill="#bff07a"/><ellipse cx="-50" cy="-6" rx="30" ry="10" fill="#3a9e37"/><ellipse cx="50" cy="-6" rx="30" ry="10" fill="#3a9e37"/><circle cx="-32" cy="-100" r="24" fill="#4fbf4a"/><circle cx="32" cy="-100" r="24" fill="#4fbf4a"/><circle cx="-32" cy="-102" r="15" fill="#fff"/><circle cx="32" cy="-102" r="15" fill="#fff"/><circle cx="-28" cy="-102" r="7" fill="#1b1b1b"/><circle cx="36" cy="-102" r="7" fill="#1b1b1b"/><circle cx="-48" cy="-60" r="9" fill="#ff9aa8" opacity=".8"/><circle cx="48" cy="-60" r="9" fill="#ff9aa8" opacity=".8"/><path class="m" transform="translate(0 -66) scale(2 1.4)" stroke="#1b1b1b" stroke-width="3" fill="none" stroke-linecap="round"/></g></g>
+<g id="p" class="actor"><g class="bob" id="pb"><path d="M-25 -20 C-140 -30 -140 -220 -50 -210 C10 -205 -5 -140 -45 -130 C-25 -90 -10 -55 -25 -20Z" fill="#c85a1e"/><ellipse cx="0" cy="-58" rx="42" ry="58" fill="#f07a2b"/><ellipse cx="10" cy="-50" rx="22" ry="38" fill="#ffd8a8"/><polygon points="8,-150 18,-185 34,-152" fill="#f07a2b"/><circle cx="22" cy="-125" r="38" fill="#f07a2b"/><circle cx="36" cy="-132" r="7" fill="#1b1b1b"/><circle cx="38" cy="-134" r="2.5" fill="#fff"/><circle cx="58" cy="-118" r="6" fill="#5a2a10"/><circle cx="30" cy="-108" r="7" fill="#ff9aa8" opacity=".8"/><path class="m" transform="translate(46 -104)" stroke="#1b1b1b" stroke-width="3" fill="none" stroke-linecap="round"/><ellipse cx="-12" cy="-4" rx="18" ry="8" fill="#c85a1e"/><ellipse cx="22" cy="-4" rx="18" ry="8" fill="#c85a1e"/></g></g>
+<g id="f" class="actor"><g class="bob" id="fb"><path d="M-95 -40 L-110 -70 L-88 -78 L-100 -108 L-70 -105 L-70 -138 L-42 -122 L-30 -150 L-8 -125 L10 -150 L22 -120 L44 -138 L50 -105 L76 -108 L66 -80 Z" fill="#5b3b23"/><ellipse cx="-10" cy="-58" rx="88" ry="56" fill="#8a5a36"/><path d="M40 -100 C100 -100 140 -70 132 -50 C120 -24 60 -14 40 -20Z" fill="#f2d2a6"/><circle cx="134" cy="-52" r="10" fill="#1b1b1b"/><circle cx="84" cy="-72" r="8" fill="#1b1b1b"/><circle cx="86" cy="-74" r="2.5" fill="#fff"/><circle cx="74" cy="-46" r="8" fill="#ff9aa8" opacity=".8"/><path class="m" transform="translate(104 -36)" stroke="#1b1b1b" stroke-width="3" fill="none" stroke-linecap="round"/><ellipse cx="-40" cy="-4" rx="18" ry="8" fill="#5b3b23"/><ellipse cx="30" cy="-4" rx="18" ry="8" fill="#5b3b23"/></g></g>
+</svg>
+<div class="ov" id="sub"><span></span></div>
+<div class="ov" id="card"><div class="box"><div class="s"></div><div class="t"></div><div class="n"></div></div></div>
+<script>
+const OFF_L=-260,OFF_R=1860;
+const MOUTH={ok:"M-12 0 Q0 12 12 0",sad:"M-12 8 Q0 -4 12 8",wow:"M-5 2 a5 7 0 1 0 10 0 a5 7 0 1 0 -10 0"};
+const EPS=[
+{t:"Zgubiony żołądź",d:"Pola gubi swój złoty żołądź. Przyjaciele szukają go razem.",m:"Morał: razem łatwiej pomóc.",s:[
+{sky:"day",c:{f:[700,820,1,"ok"],p:[OFF_L,820,1,"ok"],b:[OFF_R,840,1,"ok"]},t:"Był słoneczny poranek w Lesie Kropki. Jeż Fikuś wyszedł na spacer."},
+{sky:"day",c:{f:[760,820,-1,"wow"],p:[440,830,1,"sad","shake"],b:[OFF_R,840,1,"ok"]},t:"Pod starym dębem płakała wiewiórka Pola. – Zgubiłam mój złoty żołądź!"},
+{sky:"day",c:{f:[620,820,-1,"ok"],p:[440,830,1,"sad"],b:[OFF_R,840,1,"ok"]},t:"– Nie martw się, Polu – powiedział Fikuś. – Poszukamy go razem!"},
+{sky:"day",c:{f:[900,820,1,"ok"],p:[760,830,1,"ok"],b:[1330,820,1,"ok","jump"]},t:"Przy stawie skakała żaba Bąbel. – Kum! Widziałem coś błyszczącego w krzakach!"},
+{sky:"day",on:["acorn1"],c:{f:[900,820,1,"wow"],p:[800,830,1,"wow"],b:[1230,830,-1,"ok"]},t:"Zajrzeli w krzaki… i był tam! Złoty żołądź świecił jak małe słoneczko."},
+{sky:"day",on:["nuts"],c:{f:[720,820,-1,"ok","jump"],p:[460,830,1,"ok","jump"],b:[960,840,-1,"ok","jump"]},t:"Pola podzieliła się orzeszkami z przyjaciółmi. Razem zawsze łatwiej! Koniec."}]},
+{t:"Grzmiąca burza",d:"Nad lasem grzmi, a Fikuś bardzo się boi. Bąbel tłumaczy, czym jest burza.",m:"Morał: o strachu warto powiedzieć przyjaciołom.",s:[
+{sky:"day",c:{f:[640,820,1,"ok"],p:[880,830,-1,"ok"],b:[1330,820,1,"ok"]},t:"Fikuś i Pola bawili się w berka na polanie."},
+{sky:"storm",on:["rainG"],c:{f:[640,820,1,"wow","shake"],p:[880,830,-1,"wow"],b:[1330,820,1,"ok"]},t:"Nagle niebo zrobiło się ciemne i zaczął padać deszcz. Kap, kap, kap!"},
+{sky:"storm",on:["rainG","flash"],c:{f:[560,820,1,"sad","shake"],p:[880,830,-1,"wow"],b:[1260,830,-1,"ok"]},t:"Błysnęło i zagrzmiało: BUM! – Boję się! – pisnął Fikuś i zwinął się w kulkę."},
+{sky:"storm",on:["rainG","leaf"],c:{f:[720,820,1,"sad"],p:[880,830,-1,"ok"],b:[1000,840,-1,"ok"]},t:"Przyjaciele schowali się pod wielkim liściem łopianu. Pola przytuliła Fikusia."},
+{sky:"storm",on:["rainG","leaf","flash"],c:{f:[720,820,1,"wow"],p:[880,830,-1,"ok"],b:[1000,840,-1,"ok","jump"]},t:"– Grzmot to tylko głos burzy, jest daleko – powiedział Bąbel. – Policzmy: raz, dwa, trzy… BUM!"},
+{sky:"day",on:["rainbow"],c:{f:[700,820,1,"ok","jump"],p:[880,830,-1,"ok","jump"],b:[1040,840,-1,"ok","jump"]},t:"Burza odeszła, a na niebie pojawiła się tęcza. Fikuś już się nie bał. Koniec."}]},
+{t:"Tort dla Bąbla",d:"Bąbel ma urodziny. Fikuś i Pola pieką tort, a każdy dokłada coś od siebie.",m:"Morał: każdy może dać coś dobrego.",s:[
+{sky:"day",c:{f:[560,820,1,"ok"],p:[1040,830,-1,"ok"],b:[OFF_R,840,1,"ok"]},t:"Dziś są urodziny żaby Bąbla! Fikuś i Pola mają sekretny plan."},
+{sky:"day",on:["c1","nuts"],c:{f:[520,820,1,"ok"],p:[620,830,1,"ok","jump"],b:[OFF_R,840,1,"ok"]},t:"Pola przyniosła orzechy na pierwszą warstwę tortu."},
+{sky:"day",on:["c1","c2","nuts","apples"],c:{f:[620,820,1,"ok","jump"],p:[1040,830,-1,"ok"],b:[OFF_R,840,1,"ok"]},t:"Fikuś dodał słodkie jabłka. Tort rósł i rósł!"},
+{sky:"eve",on:["c1","c2","c3","nuts","apples","berries"],c:{f:[560,820,1,"wow"],p:[1040,830,-1,"ok"],b:[OFF_R,840,1,"ok"]},t:"Na górę poszły jagody. Zrobił się wieczór. – Ciii, ktoś idzie!"},
+{sky:"eve",on:["c1","c2","c3","candles","nuts","apples","berries","fireflies"],c:{f:[540,820,1,"ok"],p:[1040,830,-1,"ok"],b:[1300,840,-1,"wow"]},t:"– Niespodzianka! Sto lat, Bąblu! – zawołali przyjaciele. Świetliki zapaliły świeczki."},
+{sky:"eve",on:["c1","c2","c3","candles","nuts","apples","berries","fireflies"],c:{f:[560,820,1,"ok","jump"],p:[1040,830,-1,"ok","jump"],b:[1160,840,-1,"ok","jump"]},t:"Bąbel pomyślał życzenie: żeby zawsze byli razem. I tak już zostało. Koniec."}]}];
+const $=id=>document.getElementById(id);
+const rnd=(()=>{let s=7;return()=>(s=s*16807%2147483647)/2147483647})();
+$("trees").innerHTML=[120,620,820,1500,1180].map((x,i)=>`<use href="#tree" transform="translate(${x} ${640-(i%2)*30}) scale(${.8+rnd()*.5})"/>`).join("");
+$("rain").innerHTML=Array.from({length:160},()=>{const x=rnd()*1760-80,y=rnd()*1020-120;return`<line x1="${x}" y1="${y}" x2="${x-10}" y2="${y+30}"/>`}).join("");
+$("stars").innerHTML=Array.from({length:40},()=>`<circle cx="${rnd()*1600}" cy="${rnd()*300}" r="${2+rnd()*2}"/>`).join("");
+$("fireflies").innerHTML=Array.from({length:18},()=>`<circle cx="${450+rnd()*700}" cy="${420+rnd()*300}" r="${4+rnd()*3}" opacity="${.5+rnd()*.5}"/>`).join("");
+const PROPS=["acorn1","nuts","berries","apples","leaf","rainG","flash","rainbow","c1","c2","c3","candles","fireflies"];
+const LAYERS={skyStorm:s=>s=="storm",skyEve:s=>s=="eve",sun:s=>s=="day",clouds:s=>s=="day",darkClouds:s=>s=="storm",stars:s=>s=="eve"};
+const NUM=["pierwszy","drugi","trzeci","czwarty","piąty"];
+const INTRO=4,OUTRO=5;
+let E,TL=[],TOTAL=0;
+function setup(ep){E=EPS[ep];let t=INTRO;TL=E.s.map(s=>{const d=Math.min(9,Math.max(5,s.t.length*.075+1.4));const r={s,start:t,dur:d};t+=d;return r});TOTAL=t+OUTRO;
+document.querySelector("#card .s").textContent="Bajki z Lasu Kropki";document.querySelector("#card .t").textContent=E.t;document.querySelector("#card .n").textContent="Odcinek "+NUM[ep];
+const thunder=[],rain=[];TL.forEach(r=>{const on=r.s.on||[];if(on.includes("rainG"))rain.push([r.start,r.start+r.dur]);if(on.includes("flash")){for(let k=Math.floor(r.start/2.6);k*2.6<r.start+r.dur;k++){const tt=k*2.6+2.6*.83;if(tt>=r.start&&tt<r.start+r.dur)thunder.push(tt)}}});
+const subs=TL.map(r=>({a:r.start,b:r.start+r.dur,t:r.s.t}));
+return{total:TOTAL,thunder,rain,subs}}
+const ease=x=>x<0?0:x>1?1:x<.5?2*x*x:1-2*(1-x)*(1-x);
+const clamp=x=>Math.max(0,Math.min(1,x));
+function idx(t){let i=0;for(let k=0;k<TL.length;k++)if(t>=TL[k].start)i=k;return i}
+function setT(t){
+const i=idx(t),cur=TL[i],prev=TL[Math.max(0,i-1)];const lt=t-cur.start;const pa=i==0?1:ease(lt/1.8),po=i==0?1:clamp(lt/1.2);
+for(const k in LAYERS){const v=+LAYERS[k](cur.s.sky),w=+LAYERS[k](prev.s.sky);$(k).setAttribute("opacity",w+(v-w)*po)}
+const on=cur.s.on||[],pon=prev.s.on||[];const op={};
+PROPS.forEach(p=>{const v=+on.includes(p),w=+pon.includes(p);op[p]=w+(v-w)*po;$(p).style.opacity=op[p];$(p).setAttribute("opacity",op[p])});
+for(const k in cur.s.c){const[x,y,fl,mood,anim]=cur.s.c[k];const[px,py]=prev.s.c[k];const X=px+(x-px)*pa,Y=py+(y-py)*pa;
+$(k).setAttribute("transform",`translate(${X} ${Y}) scale(${fl} 1)`);
+let dx=0,dy=-6*(.5-.5*Math.cos(2*Math.PI*t/2.2));if(anim=="jump")dy=-34*Math.abs(Math.sin(Math.PI*t/1.2));if(anim=="shake"){dx=3*Math.sin(2*Math.PI*t/.36);dy=0}
+$(k+"b").setAttribute("transform",`translate(${dx} ${dy})`);$(k).querySelector(".m").setAttribute("d",MOUTH[mood])}
+const kf=(t/.5)%1;$("rain").setAttribute("transform",`translate(${-20*kf} ${60*kf})`);
+const ph=(t/2.6)%1;let f=0;if(ph>=.83&&ph<.86)f=1;else if(ph>=.86&&ph<.88)f=.2;else if(ph>=.88&&ph<.9)f=1;$("flash").setAttribute("opacity",f*op.flash);$("flash").style.opacity=f*op.flash;
+document.querySelectorAll(".flame").forEach((e,j)=>{const s=.9+.1*Math.sin(t*20+j);e.setAttribute("ry",12*s)});
+const card=$("card");let co=0;if(t<INTRO)co=1-clamp((t-(INTRO-.6))/.6);else if(t>TOTAL-OUTRO)co=clamp((t-(TOTAL-OUTRO))/.6);
+card.style.opacity=co;if(t>TOTAL-OUTRO){document.querySelector("#card .s").textContent="Bajki z Lasu Kropki";document.querySelector("#card .t").textContent="Koniec!";document.querySelector("#card .n").textContent="Do zobaczenia w kolejnej bajce"}
+else{document.querySelector("#card .t").textContent=E.t;document.querySelector("#card .n").textContent="Odcinek "+NUM[EPS.indexOf(E)]}
+const sub=$("sub");if(t>=INTRO&&t<TOTAL-OUTRO){sub.style.opacity=clamp((t-cur.start)/.3);sub.firstElementChild.textContent=cur.s.t}else sub.style.opacity=0;
+}
+window.setup=setup;window.setT=setT;
+</script></body></html>
