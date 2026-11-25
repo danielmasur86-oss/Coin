@@ -1,4 +1,4 @@
-<title>Imperium Kopalni – test</title>
+<title>Imperium Kopalni</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Lilita+One&family=Nunito:wght@600;800;900&display=swap" rel="stylesheet">
@@ -127,9 +127,31 @@ button{font:inherit;color:inherit;border:0;background:none;cursor:pointer;paddin
 .pop{position:absolute;right:70px;bottom:80px;font-weight:900;font-size:16px;color:#fff;text-shadow:0 1px 3px #000;animation:pop 1.4s ease-out forwards;pointer-events:none;white-space:nowrap}
 @keyframes pop{from{transform:translateY(0);opacity:1}to{transform:translateY(-50px);opacity:0}}
 @media (prefers-reduced-motion:reduce){.on .walker,.on .walker *,.liftcol.on .cabin,.surface.on .hauler,.surface.on .hauler *,.boss .bod,.hint{animation:none!important}}
-
+/* --- prestiż, zadania, nagrody, reklamy --- */
+.minechip{position:absolute;left:8px;top:8px;background:rgba(18,63,153,.9);border-radius:10px;padding:4px 9px;font:13px Lilita One,sans-serif;letter-spacing:.02em;z-index:1;line-height:1.15}
+.minechip small{display:block;font:800 11px Nunito,sans-serif;color:var(--gold)}
+.prest{background:linear-gradient(#5a3a28,#3b261b);padding:16px;text-align:center}
+.prest h3{margin:0 0 4px;font:19px Lilita One,sans-serif}
+.prest p{margin:0 0 10px;font-size:13px;opacity:.85}
+.bar{height:12px;border-radius:99px;background:rgba(0,0,0,.35);overflow:hidden;margin:0 0 10px}
+.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--gold),#ff9d2e);border-radius:99px}
+.bottom{grid-template-columns:1fr 1fr 1fr auto}
+.bottom .big{font-size:14px;min-height:48px;position:relative;padding:0 6px}
+.dot{position:absolute;top:-5px;right:-5px;min-width:20px;height:20px;border-radius:99px;background:#e8352c;color:#fff;font-size:12px;display:grid;place-items:center;padding:0 5px;box-shadow:0 0 0 2px var(--blue)}
+.q{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid #eee}
+.q div{flex:1}.q b{display:block;font-size:14px}
+.qbar{height:8px;border-radius:99px;background:#eceef3;margin-top:5px;overflow:hidden}.qbar i{display:block;height:100%;background:var(--green)}
+.days{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin:14px 0}
+.day{border-radius:12px;background:#f1f3f7;padding:8px 4px;text-align:center;font-size:12px;font-weight:800;color:#555}
+.day b{display:block;font-size:22px;margin:2px 0}
+.day.done{background:#d9f5e1;color:#1d7a3a}.day.now{background:var(--gold);color:#000;box-shadow:0 0 0 3px #ff9d2e}
+.day.last{grid-column:span 2}
+.adveil{position:absolute;inset:0;background:#111;z-index:20;display:grid;place-items:center;text-align:center;color:#fff;padding:24px}
+.adveil h2{font:28px Lilita One,sans-serif;margin:8px 0}
+.adveil .cnt{font:56px Lilita One,sans-serif;color:var(--gold)}
+.green-t{color:#1d9c45}
+[hidden]{display:none!important}
 </style>
-
 <div id="app">
   <div class="top">
     <div class="pill"><span class="ic">💤</span><div><b>Pasywnie</b><span id="vIdle">0/s</span></div></div>
@@ -139,21 +161,42 @@ button{font:inherit;color:inherit;border:0;background:none;cursor:pointer;paddin
   <div class="mine" id="mine"></div>
   <div class="bottom">
     <button class="big" data-act="shop">🛒 Sklep</button>
-    <button class="big green" id="freeBtn" data-act="free">🎁 Darmowy x2</button>
-    <button class="big blue" data-act="tools" aria-label="Narzędzia testowe">⚙️</button>
+    <button class="big green" id="adBtn" data-act="adboost">📺 x2</button>
+    <button class="big blue" data-act="quests">📋 Zadania<span class="dot" id="qDot" hidden></span></button>
+    <button class="big blue" id="toolsBtn" data-act="tools" aria-label="Narzędzia testowe" style="width:48px">⚙️</button>
   </div>
   <div id="layer"></div>
 </div>
 
 <script>
 {
-const MAX_SHAFTS=10,CYCLE=8000,H=3600e3;
+// ===== Platforma: w aplikacji Android jest window.AndroidBridge, w przeglądarce wszystko jest symulowane =====
+const BR=window.AndroidBridge||null, APP=!!BR;
+function track(name,params={}){try{if(BR&&BR.track)BR.track(name,JSON.stringify(params));else console.log('[analytics]',name,params)}catch(e){}}
+
+const MAX_SHAFTS=10,CYCLE=8000,H=3600e3,DAY=24*H;
 const PRODUCTS=[
  {id:'diamonds80',n:'80 diamentów',d:'Garść diamentów',p:'$0.99',dia:80},
  {id:'diamonds500',n:'500 diamentów',d:'Najpopularniejsze',p:'$4.99',dia:500},
  {id:'diamonds1200',n:'1200 diamentów',d:'Najlepsza cena',p:'$9.99',dia:1200},
  {id:'doubleincome',n:'Podwójny dochód',d:'Cały dochód x2 – na zawsze',p:'$6.99',e:'✖️2'},
  {id:'offlinevault',n:'Sejf offline',d:'Dochód offline do 24 h zamiast 4 h',p:'$2.99',e:'🏦'}];
+// Kolejne kopalnie (prestiż). Każda następna: urobek 4× cenniejszy.
+const MINES=[
+ {n:'Kopalnia Węgla',gem:'#2b2b2b',sky:['#5aa6f2','#b5ddfa']},
+ {n:'Kopalnia Miedzi',gem:'#ff7a59',sky:['#f2a35a','#fad9b5']},
+ {n:'Kopalnia Srebra',gem:'#e4ecf5',sky:['#6a8fd8','#c9d7f5']},
+ {n:'Kopalnia Złota',gem:'#ffcc2e',sky:['#e8b23c','#fbe7a8']},
+ {n:'Kopalnia Kryształów',gem:'#b48cff',sky:['#7a5ad8','#d6c6fa']},
+ {n:'Kopalnia Diamentów',gem:'#7ee0ff',sky:['#2f7fae','#a9e3f7']}];
+const mineInfo=t=>t<MINES.length?MINES[t]:{...MINES[MINES.length-1],n:'Głębia '+(t-MINES.length+2)};
+const PRESTIGE_MIN=1e6;
+const barsFor=e=>Math.floor(Math.sqrt(Math.max(0,e)/1e5));
+const ADS_DIA_PER_DAY=5, ADS_BOOST_CAP=4*H;
+const DAILY=[{e:'💰',t:'cash',v:.5,l:'30 min'},{e:'💎',t:'dia',v:5,l:'5'},{e:'🚀',t:'boost',v:30,l:'30 min'},{e:'💰',t:'cash',v:2,l:'2 h'},{e:'💎',t:'dia',v:10,l:'10'},{e:'🚀',t:'boost',v:60,l:'60 min'},{e:'💎',t:'dia',v:30,l:'30'}];
+const QUESTS=[{k:'tap',g:30,t:'Dotknij pracowników 30 razy',r:5},{k:'up',g:25,t:'Kup 25 poziomów ulepszeń',r:5},{k:'earn',t:'Zarób',r:8},
+ {k:'ad',g:2,t:'Obejrzyj 2 reklamy',r:5},{k:'mgr',g:1,t:'Zatrudnij kierownika',r:5},{k:'shaft',g:1,t:'Otwórz nowy szyb',r:8},{k:'boostq',g:1,t:'Włącz boost x2',r:4}];
+
 const mil=l=>2**Math.floor(l/25);
 const rate=(k,l)=>k==='e'?5*l*1.08**(l-1):k==='w'?5.5*l*1.08**(l-1):2*10**sh(k)*l*mil(l);
 const ucost=(k,l)=>k==='e'?20*1.17**(l-1):k==='w'?25*1.17**(l-1):10*10**sh(k)*1.14**(l-1);
@@ -167,26 +210,79 @@ const emoji=k=>k==='e'?'🛗':k==='w'?'🚚':'⛏️';
 const U=[''].concat(['K','M','B','T']);for(const a of 'abcdef')for(const b of 'abcdefghijklmnopqrstuvwxyz')U.push(a+b);
 function fmt(v){if(!isFinite(v))return'∞';let x=Math.max(0,v);if(x<1000)return String(Math.floor(x));let i=0;while(x>=1000&&i<U.length-1){x/=1000;i++}const f=x>=100?1:x>=10?10:100;return(Math.floor(x*f)/f).toFixed(f===1?0:f===10?1:2)+U[i]}
 function dur(ms){const t=Math.max(0,Math.floor(ms/1000)),h=Math.floor(t/3600),m=Math.floor(t%3600/60),s=t%60;return h?`${h}h ${m}m`:m?`${m}m ${s}s`:`${s}s`}
+const today=(t=Date.now())=>{const d=new Date(t);return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate()};
 
-const fresh=()=>({cash:25,dia:10,shafts:[{u:{l:1,m:false,a:0},dep:0}],e:{l:1,m:false,a:0},w:{l:1,m:false,a:0},stock:0,boost:0,free:0,saved:Date.now(),dbl:false,vault:false});
+const freshRun=()=>({cash:25,shafts:[{u:{l:1,m:false,a:0},dep:0}],e:{l:1,m:false,a:0},w:{l:1,m:false,a:0},stock:0,runEarned:0});
+const fresh=()=>({...freshRun(),dia:10,tier:0,bars:0,totalEarned:0,boost:0,saved:Date.now(),dbl:false,vault:false,tx:[],
+  daily:{last:'',streak:0},q:{date:'',list:[],bonus:false},ads:{date:'',dia:0},cnt:{}});
 let S=null;
 const hot=window.claude&&window.claude.hot;
-function load(d){try{const j=localStorage.getItem('imperium-kopalni');if(j)return JSON.parse(j)}catch(e){}return d&&d.cash!=null?d:fresh()}
+function load(d){let s=null;try{const j=localStorage.getItem('imperium-kopalni');if(j)s=JSON.parse(j)}catch(e){}
+  if(!s&&d&&d.cash!=null)s=d;const f=fresh();return s?{...f,...s,daily:{...f.daily,...s.daily},q:{...f.q,...s.q},ads:{...f.ads,...s.ads},cnt:s.cnt||{}}:f}
 function save(){S.saved=Date.now();try{localStorage.setItem('imperium-kopalni',JSON.stringify(S))}catch(e){}}
 const unit=k=>k==='e'?S.e:k==='w'?S.w:S.shafts[sh(k)].u;
 const working=(u,t)=>u.m||u.a>t;
-const mult=(t,b=true)=>(S.dbl?2:1)*(b&&S.boost>t?2:1);
+const permMult=()=>(S.dbl?2:1)*4**S.tier*(1+.1*S.bars);
+const mult=(t,b=true)=>permMult()*(b&&S.boost>t?2:1);
 function thru(onlyM){const c=u=>!onlyM||u.m;let m=0;S.shafts.forEach((s,i)=>{if(c(s.u))m+=rate('s'+i,s.u.l)});return Math.min(m,c(S.e)?rate('e',S.e.l):0,c(S.w)?rate('w',S.w.l):0)}
 function upCost(k,n){const u=unit(k);let t=0;for(let l=u.l;l<Math.min(u.l+n,maxL(k));l++)t+=ucost(k,l);return t}
 function maxAff(k){let l=unit(k).l,b=S.cash,n=0;while(l<maxL(k)){const c=ucost(k,l);if(c>b)break;b-=c;l++;n++}return Math.max(n,1)}
 const canUp=k=>unit(k).l<maxL(k)&&S.cash>=ucost(k,unit(k).l);
+const hourCash=h=>Math.max(500,thru(false)*mult(Date.now(),false)*h*3600);
+function earn(x){S.cash+=x;S.runEarned+=x;S.totalEarned+=x;bump('earn',x)}
 
 function step(dt,t){
   S.shafts.forEach((s,i)=>{if(working(s.u,t))s.dep+=rate('s'+i,s.u.l)*dt});
   if(working(S.e,t)){let c=rate('e',S.e.l)*dt;for(const s of S.shafts){if(c<=0)break;const x=Math.min(c,s.dep);s.dep-=x;S.stock+=x;c-=x}}
-  if(working(S.w,t)){const x=Math.min(S.stock,rate('w',S.w.l)*dt);S.stock-=x;S.cash+=x*mult(t)}
+  if(working(S.w,t)){const x=Math.min(S.stock,rate('w',S.w.l)*dt);S.stock-=x;earn(x*mult(t))}
 }
-function offline(){const t=Date.now(),el=t-S.saved;S.saved=t;if(el<60e3)return;const sec=Math.min(el,(S.vault?24:4)*H)/1000;const amt=thru(true)*mult(t,false)*sec;if(amt>=1)sheet('offline',{sec,amt})}
+function offline(){const t=Date.now(),el=t-S.saved;S.saved=t;if(el<60e3)return false;const sec=Math.min(el,(S.vault?24:4)*H)/1000;const amt=thru(true)*mult(t,false)*sec;if(amt>=1){sheet('offline',{sec,amt});return true}return false}
+
+// ===== Zadania dzienne =====
+function ensureDay(){const d=today();
+  if(S.q.date!==d){let seed=[...d].reduce((a,c)=>a*31+c.charCodeAt(0)|0,7)>>>0;const pool=[...QUESTS],list=[];
+    while(list.length<3){seed=seed*16807%2147483647;const q=pool.splice(seed%pool.length,1)[0];
+      list.push({k:q.k,g:q.k==='earn'?Math.max(5000,Math.round(hourCash(.5))):q.g,t:q.t,r:q.r,p:0,c:false})}
+    S.q={date:d,list,bonus:false}}
+  if(S.ads.date!==d)S.ads={date:d,dia:0}}
+function bump(k,n=1){if(!S.q.list)return;for(const q of S.q.list)if(q.k===k&&!q.c)q.p=Math.min(q.g,q.p+n)}
+const questsReady=()=>S.q.list.filter(q=>q.p>=q.g&&!q.c).length+(S.q.list.every(q=>q.c)&&!S.q.bonus?1:0);
+function dailyDue(){return S.daily.last!==today()}
+function dailyIndex(){const y=today(Date.now()-DAY);return S.daily.last===y?(S.daily.streak%7):0}
+
+// ===== Reklamy za nagrodę =====
+let adCb=null;
+function showAd(kind,onReward){
+  if(BR&&BR.showRewarded){adCb={kind,onReward};BR.showRewarded(kind);return}
+  // symulacja w przeglądarce
+  const v=document.createElement('div');v.className='adveil';let n=3;
+  v.innerHTML=`<div><span class="test">REKLAMA TESTOWA</span><h2>Tu będzie reklama AdMob</h2><div class="cnt">${n}</div><p>W aplikacji Android gracz obejrzy krótką reklamę wideo.</p></div>`;
+  layer.append(v);const iv=setInterval(()=>{n--;if(n>0)v.querySelector('.cnt').textContent=n;else{clearInterval(iv);v.remove();rewardAd(kind,onReward)}},1000)}
+function rewardAd(kind,cb){bump('ad');track('ad_reward',{kind});cb();save();update()}
+window.onAdReward=kind=>{if(adCb){const c=adCb;adCb=null;rewardAd(kind,c.onReward)}};
+window.onAdFailed=kind=>{adCb=null;toast('Reklama niedostępna – spróbuj za chwilę')};
+window.onAdCancelled=kind=>{adCb=null;toast('Obejrzyj reklamę do końca, aby dostać nagrodę')};
+
+// ===== Zakupy (Google Play Billing w aplikacji, symulacja w przeglądarce) =====
+function grant(id,token){
+  if(token&&S.tx.includes(token))return true;
+  const p=PRODUCTS.find(x=>x.id===id);if(!p)return false;
+  if(token)S.tx.push(token);if(S.tx.length>200)S.tx=S.tx.slice(-200);
+  if(p.dia)S.dia+=p.dia;if(id==='doubleincome')S.dbl=true;if(id==='offlinevault')S.vault=true;
+  save();track('purchase',{id});toast(p.dia?`Dodano ${p.dia} 💎`:`Odblokowano: ${p.n} ✨`);if(cur==='pay'||cur==='shop')sheet('shop');update();return true}
+window.onPurchase=(id,token)=>grant(id,token);
+window.onEntitlements=json=>{try{const e=typeof json==='string'?JSON.parse(json):json;S.dbl=!!e.doubleincome;S.vault=!!e.offlinevault;save();update()}catch(err){}};
+window.onPrices=json=>{try{const pr=typeof json==='string'?JSON.parse(json):json;for(const p of PRODUCTS)if(pr[p.id])p.p=pr[p.id];if(cur==='shop')refreshSheet(true)}catch(err){}};
+window.onBillingMessage=m=>toast(m);
+window.onBack=()=>{if(layer.querySelector('.adveil'))return true;if(cur&&cur!=='offline'&&cur!=='daily'){close();return true}return false};
+window.onAppPause=()=>save();
+window.onAppResume=()=>{last=Date.now();ensureDay();if(!offline()&&dailyDue())sheet('daily');update()};
+
+// ===== Prestiż =====
+function prestige(){const b=barsFor(S.runEarned);if(S.runEarned<PRESTIGE_MIN)return;
+  const keep={dia:S.dia,bars:S.bars+b,tier:S.tier+1,totalEarned:S.totalEarned,boost:S.boost,dbl:S.dbl,vault:S.vault,tx:S.tx,daily:S.daily,q:S.q,ads:S.ads,cnt:S.cnt};
+  S={...fresh(),...freshRun(),...keep,cash:25*4**keep.tier};track('prestige',{tier:S.tier,bars:b});close();build();save();
+  toast(`Witaj w: ${mineInfo(S.tier).n}! +${b} 🥇`)}
 
 const $=id=>document.getElementById(id),mine=$('mine'),layer=$('layer');
 // --- postacie (SVG) ---
@@ -222,7 +318,7 @@ function haulerSVG(){return `<svg class="ch" viewBox="0 0 74 56" aria-hidden="tr
   <svg x="0" y="0" width="40" height="56" viewBox="0 0 40 56" overflow="visible">${charSVG('hauler').replace(/^<svg[^>]*>/,'').replace(/<\/svg>$/,'')}</svg></svg>`}
 const crateSVG=`<svg viewBox="0 0 44 32" aria-hidden="true"><rect x="1" y="6" width="42" height="25" rx="2" fill="#a86f3c" stroke="#6e4522" stroke-width="2"/><path d="M1 18 H43 M14 6 V31 M30 6 V31" stroke="#6e4522" stroke-width="1.6"/><circle cx="12" cy="6" r="5" fill="#6b5144"/><circle cx="22" cy="4" r="6" fill="#7d6152"/><circle cx="32" cy="6" r="5" fill="#6b5144"/><circle cx="24" cy="2" r="1.8" fill="#ffcc2e"/></svg>`;
 function wallSVG(i){let s=i*977+13;const rnd=()=>(s=s*16807%2147483647)/2147483647;
- const gem=['#ffcc2e','#ff7a59','#7ee0ff','#b48cff','#7dff9a'][i%5];let dots='';
+ const gem=mineInfo(S.tier).gem;let dots='';
  for(let j=0;j<9;j++)dots+=`<circle cx="${10+rnd()*70}" cy="${10+rnd()*80}" r="${3+rnd()*4}" fill="${j%3?'#4a342c':gem}"/>`;
  return `<svg viewBox="0 0 80 100" preserveAspectRatio="none" aria-hidden="true"><path d="M14 0 Q2 25 10 50 Q0 75 12 100 H80 V0Z" fill="#c07b5a"/><path d="M14 0 Q2 25 10 50 Q0 75 12 100 H22 Q12 75 20 50 Q12 25 24 0Z" fill="#a8654a"/>${dots}</svg>`}
 const chipsSVG=`<svg class="chips" viewBox="0 0 14 14" aria-hidden="true"><path d="M7 0 L8.5 5 L14 7 L8.5 9 L7 14 L5.5 9 L0 7 L5.5 5Z" fill="#fff6a0"/></svg>`;
@@ -243,8 +339,8 @@ const lvlBtn=k=>`<button class="lvl" data-act="up" data-k="${k}" data-lvl="${k}"
 const worker=k=>`<button class="worker" data-act="tap" data-k="${k}" data-w="${k}">${charSVG(k==='e'?'lift':'seller')}<span class="badge" data-v="b${k}"></span></button>`;
 const mgr=k=>`<button class="mgr" data-act="mgr" data-k="${k}" data-m="${k}"></button>`;
 function build(){
-  const n=S.shafts.length;
-  mine.innerHTML=`<div class="surface" id="surf">
+  const n=S.shafts.length,mi=mineInfo(S.tier);
+  mine.innerHTML=`<div class="surface" id="surf" style="background:linear-gradient(${mi.sky[0]},${mi.sky[1]})">
    <svg viewBox="0 0 400 270" preserveAspectRatio="xMidYMax slice" aria-hidden="true">
     <circle cx="300" cy="50" r="26" fill="#fff6c9" opacity=".8"/>
     <path d="M-10 230 L90 95 L150 170 L230 60 L330 190 L410 120 L410 240 Z" fill="#dfe9f7"/>
@@ -253,7 +349,8 @@ function build(){
     <rect x="-10" y="246" width="420" height="30" fill="#5fb14a"/>
     ${[40,120,280,350].map((x,i)=>`<path d="M${x} ${236-i%2*6} l-12 0 l12 -34 l12 34z" fill="#2f8a4a"/>`).join('')}
    </svg>
-   <div class="mid"><span class="chip boost" id="vBoost" hidden></span><span class="chip" id="vPot"></span><span class="chip">🪨 <span id="vStock"></span></span></div>
+   <div class="minechip">${mi.n}<small>🥇 ${S.bars} sztabek • x${fmt(4**S.tier*(1+.1*S.bars))}</small></div>
+   <div class="mid" style="top:52px"><span class="chip boost" id="vBoost" hidden></span><span class="chip" id="vPot"></span><span class="chip">🪨 <span id="vStock"></span></span></div>
    <div class="hauler">${haulerSVG()}</div>
    <div class="stations">${station('e')}${station('w')}</div></div>`+
   S.shafts.map((s,i)=>{const k='s'+i;return`<div class="shaft"><div class="rail"><span>${i+1}</span></div><div class="rock">
@@ -264,7 +361,9 @@ function build(){
      <div class="walker">${charSVG('miner')}</div><span class="hint">DOTKNIJ</span>
      ${lvlBtn(k)}</div></div></div>`}).join('')+
   `<div class="liftcol" id="liftcol" style="height:${n*118}px;--dur:${Math.max(3,1.4*n+1.6)}s"><div class="cabin"><span class="ore"></span>${charSVG('lift')}</div></div>`+
-  `<div class="newshaft">${n<MAX_SHAFTS?`<h3>Nowy szyb</h3><div class="row2"><button class="big" id="unC" data-act="unc">💰 ${fmt(unlockCost(n))}</button><button class="big blue" data-act="und">💎 ${unlockDia(n)}</button></div>`:'<h3>🏆 Wszystkie szyby odblokowane!</h3>'}</div>`;
+  `<div class="newshaft">${n<MAX_SHAFTS?`<h3>Nowy szyb</h3><div class="row2"><button class="big" id="unC" data-act="unc">💰 ${fmt(unlockCost(n))}</button><button class="big blue" data-act="und">💎 ${unlockDia(n)}</button></div>`:'<h3>🏆 Wszystkie szyby odblokowane!</h3>'}</div>`+
+  `<div class="prest"><h3>🏔️ Następna: ${mineInfo(S.tier+1).n}</h3><p id="pDesc"></p><div class="bar"><i id="pBar"></i></div><button class="big" id="pBtn" data-act="prestige" style="width:100%">Przenieś się</button></div>`;
+  $('toolsBtn').hidden=APP;
   update();
 }
 function setV(sel,txt){const el=mine.querySelector(sel);if(el&&el.textContent!==txt)el.textContent=txt}
@@ -292,75 +391,114 @@ function update(){
   $('vPot').textContent='💰 '+fmt(thru(false)*mult(t))+'/s';$('vStock').textContent=fmt(S.stock);
   const bo=$('vBoost');bo.hidden=S.boost<=t;if(S.boost>t)bo.textContent='🚀 x2  '+dur(S.boost-t);
   const unc=$('unC');if(unc)unc.classList.toggle('off',S.cash<unlockCost(S.shafts.length));
-  const fw=S.free+4*H-t,fb=$('freeBtn');fb.textContent=fw>0?'🎁 '+dur(fw):'🎁 Darmowy x2';fb.className='big '+(fw>0?'off':'green');
+  // prestiż
+  const pr=Math.min(1,S.runEarned/PRESTIGE_MIN),pb=barsFor(S.runEarned),ready=S.runEarned>=PRESTIGE_MIN;
+  $('pBar').style.width=(pr*100).toFixed(1)+'%';
+  setV('#pDesc',ready?`Dostaniesz 🥇 ${pb} sztabek złota (+${pb*10}% dochodu na zawsze), a urobek będzie 4× cenniejszy. Kopalnia zacznie się od nowa.`:`Zarób w tej kopalni 💰 ${fmt(PRESTIGE_MIN)}, aby się przenieść. Teraz: 💰 ${fmt(S.runEarned)}`);
+  $('pBtn').className='big'+(ready?'':' off');
+  // reklama x2
+  const left=Math.max(0,S.boost-t),ab=$('adBtn'),capped=left>=ADS_BOOST_CAP-30*60e3;
+  ab.textContent=capped?'🚀 '+dur(left):'📺 x2 30 min';ab.className='big '+(capped?'off':'green');
+  const qd=$('qDot'),qn=questsReady()+(dailyDue()?1:0);qd.hidden=!qn;qd.textContent=qn;
   if(cur)refreshSheet();
 }
 let toastT;function toast(m){layer.querySelector('.toast')?.remove();const d=document.createElement('div');d.className='toast';d.textContent=m;layer.append(d);clearTimeout(toastT);toastT=setTimeout(()=>d.remove(),1800)}
 
 let cur=null,curArg=null,upN=1;
-function sheet(name,arg){cur=name;curArg=arg;layer.querySelector('.veil')?.remove();const v=document.createElement('div');v.className='veil';v.innerHTML='<div class="sheet"></div>';v.addEventListener('click',e=>{if(e.target===v&&name!=='offline')close()});layer.prepend(v);refreshSheet(true)}
+function sheet(name,arg){cur=name;curArg=arg;layer.querySelector('.veil')?.remove();const v=document.createElement('div');v.className='veil';v.innerHTML='<div class="sheet"></div>';v.addEventListener('click',e=>{if(e.target===v&&name!=='offline'&&name!=='daily')close()});layer.prepend(v);refreshSheet(true)}
 function close(){cur=null;layer.querySelector('.veil')?.remove()}
+const X='<button class="x" data-act="close">Zamknij</button>';
 function refreshSheet(force){
   const el=layer.querySelector('.sheet');if(!el)return;let h='';const t=Date.now();
   if(cur==='up'){const k=curArg,u=unit(k),N={1:1,10:10,50:50,0:maxAff(k)}[upN],n=Math.min(N,maxL(k)-u.l),c=upCost(k,n),ok=n>0&&S.cash>=c;
-    h=`<button class="x" data-act="close">Zamknij</button><h2>${emoji(k)} ${title(k)}</h2><div>Poziom ${u.l}</div>
+    h=`${X}<h2>${emoji(k)} ${title(k)}</h2><div>Poziom ${u.l}</div>
     <div class="seg">${[[1,'x1'],[10,'x10'],[50,'x50'],[0,'MAX']].map(([v,l])=>`<button data-act="n" data-n="${v}" class="${upN===v?'sel':''}">${l}</button>`).join('')}</div>
     <div class="stats"><div><span>${k==='e'?'Transport':k==='w'?'Sprzedaż':'Wydobycie'}</span><span>${fmt(rate(k,u.l))}/s → <em>${fmt(rate(k,u.l+n))}/s</em></span></div>
     <div><span>Poziom</span><span>${u.l} → <em>${u.l+n}</em></span></div>${k[0]==='s'&&Math.floor((u.l+n)/25)>Math.floor(u.l/25)?'<div><b style="color:#e07a00">⭐ Kamień milowy – wydajność x2!</b></div>':''}</div>
     ${n>0?`<button class="big ${ok?'':'off'}" style="width:100%" data-act="buyup" data-n="${n}">Ulepsz +${n} • 💰 ${fmt(c)}</button>`:'<b>Maksymalny poziom 🏆</b>'}`}
-  else if(cur==='shop'){h=`<button class="x" data-act="close">Zamknij</button><h2>Sklep</h2><div>Twoje diamenty: <b>💎 ${S.dia}</b></div>
+  else if(cur==='shop'){const adLeft=ADS_DIA_PER_DAY-S.ads.dia;h=`${X}<h2>Sklep</h2><div>Twoje diamenty: <b>💎 ${S.dia}</b></div>
+    <h4>Za darmo</h4>
+    <div class="item"><span class="e">📺</span><div><b>5 diamentów za reklamę</b><small>Zostało dziś: ${adLeft} z ${ADS_DIA_PER_DAY}</small></div><button class="buy green-b" style="background:var(--green)" data-act="addia" ${adLeft<=0?'disabled':''}>Obejrzyj</button></div>
     <h4>Wydaj diamenty</h4>
     <div class="item"><span class="e">🚀</span><div><b>Boost x2 na 30 min</b><small>Podwaja cały dochód</small></div><button class="buy dia" data-act="boost" ${S.dia<15?'disabled':''}>💎 15</button></div>
-    <div class="item"><span class="e">💰</span><div><b>Walizka gotówki</b><small>+${fmt(Math.max(1000,thru(false)*mult(t,false)*3600))} od razu</small></div><button class="buy dia" data-act="cashpack" ${S.dia<25?'disabled':''}>💎 25</button></div>
+    <div class="item"><span class="e">💰</span><div><b>Walizka gotówki</b><small>+${fmt(hourCash(1))} od razu</small></div><button class="buy dia" data-act="cashpack" ${S.dia<25?'disabled':''}>💎 25</button></div>
     <h4>Diamenty</h4>${PRODUCTS.slice(0,3).map(prod).join('')}
     <h4>Ulepszenia na zawsze</h4>${PRODUCTS.slice(3).map(prod).join('')}
-    <p class="note"><span class="test">TEST</span> To symulacja sklepu – nic nie płacisz. W aplikacji iOS płatność obsługuje App Store.</p>
+    ${APP?'':'<p class="note"><span class="test">TEST</span> To symulacja sklepu – nic nie płacisz. W aplikacji płatność obsługuje Google Play.</p>'}
     <p class="note"><button class="buy dia" data-act="restore">Przywróć zakupy</button></p>`}
   else if(cur==='pay'){const p=curArg;h=`<div class="pay"><span class="test">ZAKUP TESTOWY</span><h2 style="margin-top:12px">${p.e||'💎'} ${p.n}</h2><div class="price">${p.p}</div>
-    <p class="note">W prawdziwej grze tu pojawi się okno płatności App Store. Teraz nic nie zostanie pobrane.</p>
+    <p class="note">W aplikacji tu pojawi się okno płatności Google Play. Teraz nic nie zostanie pobrane.</p>
     <div class="row2" style="margin-top:16px"><button class="big off" data-act="shop">Anuluj</button><button class="big blue" data-act="confirm">Kup (test)</button></div></div>`}
   else if(cur==='offline'){const r=curArg;h=`<div class="pay"><h2>Witaj z powrotem! 👋</h2><p class="note">Twoi kierownicy pracowali przez ${dur(r.sec*1000)}.</p><div class="price">💰 ${fmt(r.amt)}</div>
+    <button class="big green" style="width:100%;margin-bottom:10px" data-act="offad">📺 Odbierz x2 za reklamę</button>
     <button class="big blue ${S.dia<10?'off':''}" style="width:100%;margin-bottom:10px" data-act="off2">Odbierz x2 • 💎 10</button><button class="big" style="width:100%" data-act="off1">Odbierz</button>
     <p class="note">Limit dochodu offline: ${S.vault?24:4} h</p></div>`}
-  else if(cur==='tools'){h=`<button class="x" data-act="close">Zamknij</button><h2>Narzędzia testowe</h2><p class="note">Tylko w wersji testowej – do sprawdzania balansu.</p>
+  else if(cur==='daily'){const idx=dailyIndex(),due=dailyDue();h=`<div class="pay"><h2>Nagroda dzienna 🎁</h2><p class="note">Wracaj codziennie – 7. dzień to 💎 30! Przerwa zeruje serię.</p>
+    <div class="days">${DAILY.map((d,i)=>`<div class="day ${i<idx?'done':i===idx&&due?'now':''} ${i===6?'last':''}">Dzień ${i+1}<b>${d.e}</b>${d.l}</div>`).join('')}</div>
+    ${due?`<button class="big" style="width:100%" data-act="daily">Odbierz: ${DAILY[idx].e} ${DAILY[idx].t==='cash'?fmt(hourCash(DAILY[idx].v)):DAILY[idx].l}</button>`:`<button class="big off" style="width:100%" data-act="close">Wróć jutro</button>`}</div>`}
+  else if(cur==='quests'){const all=S.q.list.every(q=>q.c);h=`${X}<h2>Zadania dzienne</h2><p class="note">Nowe zadania codziennie o północy.</p>
+    <div class="q"><span class="e" style="font-size:26px">🎁</span><div><b>Nagroda dzienna</b><small>${dailyDue()?'Czeka na odbiór':'Odebrana – wróć jutro'}</small></div><button class="buy" data-act="opendaily" ${dailyDue()?'':'disabled'}>Otwórz</button></div>
+    ${S.q.list.map((q,i)=>`<div class="q"><span class="e" style="font-size:26px">${q.c?'✅':'📋'}</span><div><b>${q.t}${q.k==='earn'?' 💰 '+fmt(q.g):''}</b><small>${fmt(q.p)} / ${fmt(q.g)}</small><div class="qbar"><i style="width:${q.p/q.g*100}%"></i></div></div>
+      ${q.c?'<span class="owned">✓</span>':`<button class="buy dia" data-act="qclaim" data-i="${i}" ${q.p>=q.g?'':'disabled'}>💎 ${q.r}</button>`}</div>`).join('')}
+    <div class="q"><span class="e" style="font-size:26px">🏅</span><div><b>Wykonaj wszystkie 3</b><small>Premia za komplet</small></div>${S.q.bonus?'<span class="owned">✓</span>':`<button class="buy dia" data-act="qbonus" ${all?'':'disabled'}>💎 10</button>`}</div>`}
+  else if(cur==='prestige'){const b=barsFor(S.runEarned),nx=mineInfo(S.tier+1);h=`${X}<h2>🏔️ ${nx.n}</h2>
+    <div class="stats"><div><span>Sztabki złota</span><span>${S.bars} → <em>${S.bars+b}</em></span></div><div><span>Mnożnik dochodu</span><span>x${fmt(permMult()/(S.dbl?2:1))} → <em>x${fmt(4**(S.tier+1)*(1+.1*(S.bars+b)))}</em></span></div></div>
+    <p class="note">Gotówka, szyby, poziomy i kierownicy zaczną się od nowa. Zostają: diamenty 💎, sztabki 🥇, zakupy i boost.</p>
+    <div class="row2" style="margin-top:14px"><button class="big off" data-act="close">Jeszcze nie</button><button class="big" data-act="doprestige">Przenieś się!</button></div>`}
+  else if(cur==='tools'){h=`${X}<h2>Narzędzia testowe</h2><p class="note">Tylko w wersji testowej – do sprawdzania balansu.</p>
     <div class="item"><span class="e">⏩</span><div><b>Przewiń czas o 1 h</b><small>Sprawdź dochód offline (działa z kierownikami)</small></div><button class="buy dia" data-act="skip">+1 h</button></div>
+    <div class="item"><span class="e">📅</span><div><b>Następny dzień</b><small>Nowe zadania i nagroda dzienna</small></div><button class="buy dia" data-act="nextday">+1 dzień</button></div>
     <div class="item"><span class="e">💵</span><div><b>Dodaj gotówkę</b><small>+10× obecnej gotówki</small></div><button class="buy dia" data-act="addcash">Dodaj</button></div>
     <div class="item"><span class="e">🔄</span><div><b>Zacznij od nowa</b><small>Kasuje postęp i zakupy testowe</small></div><button class="buy" data-act="reset">Reset</button></div>`}
   if(force||el.dataset.h!==h){el.dataset.h=h;el.innerHTML=h}
 }
 function prod(p){const own=(p.id==='doubleincome'&&S.dbl)||(p.id==='offlinevault'&&S.vault);
   return`<div class="item"><span class="e">${p.e||'💎'}</span><div><b>${p.n}</b><small>${p.d}</small></div>${own?'<span class="owned">Kupione ✓</span>':`<button class="buy" data-act="iap" data-id="${p.id}">${p.p}</button>`}</div>`}
+function addBoost(ms){const t=Date.now();S.boost=Math.min(Math.max(t,S.boost)+ms,t+ADS_BOOST_CAP+ms);bump('boostq')}
 
 document.getElementById('app').addEventListener('click',e=>{
-  const b=e.target.closest('[data-act]');if(!b)return;const a=b.dataset.act,k=b.dataset.k,t=Date.now();
-  if(a==='tap'){const u=unit(k);if(!u.m&&u.a<=t)u.a=t+CYCLE}
+  const b=e.target.closest('[data-act]');if(!b||b.disabled)return;const a=b.dataset.act,k=b.dataset.k,t=Date.now();
+  if(a==='tap'){const u=unit(k);if(!u.m&&u.a<=t){u.a=t+CYCLE;bump('tap')}}
   else if(a==='up'){upN=1;sheet('up',k)}
   else if(a==='n'){upN=+b.dataset.n}
-  else if(a==='buyup'){const n=+b.dataset.n,c=upCost(curArg,n);if(S.cash>=c){S.cash-=c;unit(curArg).l+=n}}
-  else if(a==='mgr'){const u=unit(k),c=mgrCost(k);if(!u.m&&S.cash>=c){S.cash-=c;u.m=true;u.a=0;toast('Kierownik zatrudniony – praca automatyczna')}}
-  else if(a==='unc'){const n=S.shafts.length,c=unlockCost(n);if(S.cash>=c){S.cash-=c;S.shafts.push({u:{l:1,m:false,a:0},dep:0});build();save()}else toast('Za mało gotówki')}
-  else if(a==='und'){const n=S.shafts.length,c=unlockDia(n);if(S.dia>=c){S.dia-=c;S.shafts.push({u:{l:1,m:false,a:0},dep:0});build();save()}else sheet('shop')}
-  else if(a==='shop')sheet('shop');
+  else if(a==='buyup'){const n=+b.dataset.n,c=upCost(curArg,n);if(S.cash>=c){S.cash-=c;unit(curArg).l+=n;bump('up',n);track('level_up',{unit:curArg,level:unit(curArg).l})}}
+  else if(a==='mgr'){const u=unit(k),c=mgrCost(k);if(!u.m&&S.cash>=c){S.cash-=c;u.m=true;u.a=0;bump('mgr');track('manager_hire',{unit:k});toast('Kierownik zatrudniony – praca automatyczna')}}
+  else if(a==='unc'){const n=S.shafts.length,c=unlockCost(n);if(S.cash>=c){S.cash-=c;S.shafts.push({u:{l:1,m:false,a:0},dep:0});bump('shaft');track('shaft_unlock',{shaft:n+1,with:'cash'});build();save()}else toast('Za mało gotówki')}
+  else if(a==='und'){const n=S.shafts.length,c=unlockDia(n);if(S.dia>=c){S.dia-=c;S.shafts.push({u:{l:1,m:false,a:0},dep:0});bump('shaft');track('shaft_unlock',{shaft:n+1,with:'diamonds'});build();save()}else sheet('shop')}
+  else if(a==='shop'){sheet('shop');track('shop_open')}
   else if(a==='tools')sheet('tools');
+  else if(a==='quests')sheet('quests');
+  else if(a==='opendaily')sheet('daily');
   else if(a==='close')close();
-  else if(a==='free'){if(S.free+4*H<=t){S.free=t;S.boost=Math.max(t,S.boost)+10*60e3;toast('🚀 Dochód x2 przez 10 minut!')}}
-  else if(a==='boost'){if(S.dia>=15){S.dia-=15;S.boost=Math.max(t,S.boost)+30*60e3;toast('🚀 Dochód x2 przez 30 minut!')}}
-  else if(a==='cashpack'){if(S.dia>=25){const x=Math.max(1000,thru(false)*mult(t,false)*3600);S.dia-=25;S.cash+=x;toast('+💰 '+fmt(x))}}
-  else if(a==='iap')sheet('pay',PRODUCTS.find(p=>p.id===b.dataset.id));
-  else if(a==='confirm'){const p=curArg;if(p.dia)S.dia+=p.dia;if(p.id==='doubleincome')S.dbl=true;if(p.id==='offlinevault')S.vault=true;save();sheet('shop');toast(p.dia?`Dodano ${p.dia} 💎`:`Odblokowano: ${p.n} ✨`)}
-  else if(a==='restore')toast(S.dbl||S.vault?'Zakupy przywrócone':'Brak zakupów do przywrócenia');
-  else if(a==='off1'||a==='off2'){if(a==='off2'){if(S.dia<10)return;S.dia-=10}S.cash+=curArg.amt*(a==='off2'?2:1);close();save()}
-  else if(a==='skip'){S.saved-=H;close();offline();if(!cur)toast('Brak dochodu offline – zatrudnij kierowników')}
-  else if(a==='addcash'){S.cash=Math.max(100,S.cash*10);toast('Dodano gotówkę')}
-  else if(a==='reset'){S=fresh();close();build();save();toast('Nowa gra')}
+  else if(a==='adboost'){if(S.boost-t<ADS_BOOST_CAP-30*60e3)showAd('boost',()=>{addBoost(30*60e3);toast('🚀 Dochód x2 przez 30 minut!')});else toast('Boost jest już na maksimum (4 h)')}
+  else if(a==='addia'){if(S.ads.dia<ADS_DIA_PER_DAY)showAd('diamonds',()=>{S.ads.dia++;S.dia+=5;toast('+5 💎')})}
+  else if(a==='boost'){if(S.dia>=15){S.dia-=15;addBoost(30*60e3);track('spend_diamonds',{item:'boost'});toast('🚀 Dochód x2 przez 30 minut!')}}
+  else if(a==='cashpack'){if(S.dia>=25){const x=hourCash(1);S.dia-=25;earn(x);track('spend_diamonds',{item:'cash'});toast('+💰 '+fmt(x))}}
+  else if(a==='iap'){const p=PRODUCTS.find(p=>p.id===b.dataset.id);track('iap_click',{id:p.id});if(BR&&BR.buy)BR.buy(p.id);else sheet('pay',p)}
+  else if(a==='confirm'){grant(curArg.id,'test-'+t)}
+  else if(a==='restore'){if(BR&&BR.restore)BR.restore();else toast(S.dbl||S.vault?'Zakupy przywrócone':'Brak zakupów do przywrócenia')}
+  else if(a==='off1'||a==='off2'){if(a==='off2'){if(S.dia<10)return;S.dia-=10}earn(curArg.amt*(a==='off2'?2:1));close();save();if(dailyDue())sheet('daily')}
+  else if(a==='offad'){const r=curArg;showAd('offline',()=>{earn(r.amt*2);close();toast('+💰 '+fmt(r.amt*2));if(dailyDue())sheet('daily')})}
+  else if(a==='daily'){if(dailyDue()){const i=dailyIndex(),d=DAILY[i];if(d.t==='cash')earn(hourCash(d.v));else if(d.t==='dia')S.dia+=d.v;else addBoost(d.v*60e3);
+    S.daily={last:today(),streak:i+1};track('daily_claim',{day:i+1});toast('Odebrano nagrodę dnia '+(i+1));close();save()}}
+  else if(a==='qclaim'){const q=S.q.list[+b.dataset.i];if(q&&q.p>=q.g&&!q.c){q.c=true;S.dia+=q.r;track('quest_claim',{quest:q.k});toast('+'+q.r+' 💎')}}
+  else if(a==='qbonus'){if(S.q.list.every(q=>q.c)&&!S.q.bonus){S.q.bonus=true;S.dia+=10;toast('+10 💎')}}
+  else if(a==='prestige'){if(S.runEarned>=PRESTIGE_MIN)sheet('prestige');else toast('Zarób najpierw 💰 '+fmt(PRESTIGE_MIN))}
+  else if(a==='doprestige')prestige();
+  else if(a==='skip'){S.saved-=H;close();if(!offline())toast('Brak dochodu offline – zatrudnij kierowników')}
+  else if(a==='nextday'){S.daily.last=S.daily.last?today(Date.now()-DAY):'';S.q.date='';ensureDay();sheet('daily')}
+  else if(a==='addcash'){earn(Math.max(100,S.cash*9));toast('Dodano gotówkę')}
+  else if(a==='reset'){S=fresh();ensureDay();close();build();save();toast('Nowa gra')}
   update();
 });
 
 let last=Date.now(),lastSave=last;
-function start(d){S=load(d);build();offline();
-  setInterval(()=>{const t=Date.now(),dt=Math.min(Math.max(t-last,0),1000)/1000;last=t;step(dt,t);update();if(t-lastSave>5000){lastSave=t;save()}},100);
-  document.addEventListener('visibilitychange',()=>{if(document.hidden)save();else{offline();last=Date.now()}});
-  if(hot&&hot.snapshot)hot.snapshot(()=>S)}
+function start(d){S=load(d);ensureDay();build();if(!offline()&&dailyDue())sheet('daily');
+  setInterval(()=>{const t=Date.now(),dt=Math.min(Math.max(t-last,0),1000)/1000;last=t;step(dt,t);if(S.q.date!==today())ensureDay();update();if(t-lastSave>5000){lastSave=t;save()}},100);
+  document.addEventListener('visibilitychange',()=>{if(document.hidden)save();else window.onAppResume()});
+  if(hot&&hot.snapshot)hot.snapshot(()=>S);
+  if(BR&&BR.ready)BR.ready();
+  track('app_open',{tier:S.tier})}
 hot&&hot.ready?hot.ready(start):start(hot&&hot.data||{});
 }
 </script>
