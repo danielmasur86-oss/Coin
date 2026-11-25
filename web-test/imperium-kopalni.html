@@ -1,0 +1,252 @@
+<title>Imperium Kopalni – test</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Lilita+One&family=Nunito:wght@600;800;900&display=swap" rel="stylesheet">
+<style>
+/* VOICE occasion – a mobile game, bright and toy-like
+   IDEA a cut-away mine: sky and mountains on top, brown earth with lit tunnels below
+   PICTURE the mine itself is the whole page – surface stations and shaft rows
+   COLOUR game blue panels #1f6fe0, earth browns, gold #ffcc2e accent, green for buy/auto
+   TYPE Lilita One display + Nunito
+   LAYOUT one phone-width column centred; top bar, scrolling mine, bottom bar */
+:root{color-scheme:light;--blue:#1f6fe0;--blue2:#123f99;--gold:#ffcc2e;--green:#33c25a;--dirt:#c9915f;--dirt2:#8a5a3a;--tunnel:#2f2320;--ink:#fff}
+*{box-sizing:border-box;min-width:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%}
+body{margin:0;background:#0d2a66;color:var(--ink);font:600 15px/1.3 Nunito,system-ui,sans-serif;overflow:hidden;user-select:none}
+button{font:inherit;color:inherit;border:0;background:none;cursor:pointer;padding:0}
+#app{max-width:520px;height:100%;margin:0 auto;display:flex;flex-direction:column;background:var(--dirt);position:relative}
+.top{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;padding:calc(8px + env(safe-area-inset-top,0px)) 8px 8px;background:var(--blue)}
+.pill{display:flex;align-items:center;gap:6px;background:var(--blue2);border-radius:10px;padding:5px 8px;text-align:left}
+.pill b{display:block;font-size:10px;color:var(--gold);font-weight:900;text-transform:uppercase}
+.pill span{font-weight:900;font-size:15px;white-space:nowrap;font-variant-numeric:tabular-nums}
+.pill .ic{font-size:19px}
+.plus{margin-left:auto;background:var(--green);border-radius:6px;width:22px;height:22px;display:grid;place-items:center;font-weight:900}
+.mine{flex:1;overflow-y:auto;overscroll-behavior:contain}
+.surface{position:relative;height:270px;background:linear-gradient(#5aa6f2,#b5ddfa);overflow:hidden}
+.surface svg{position:absolute;inset:0;width:100%;height:100%}
+.stations{position:absolute;inset:auto 8px 10px;display:flex;align-items:flex-end;justify-content:space-between;gap:6px}
+.station{background:rgba(31,111,224,.93);border-radius:14px;padding:7px;display:flex;flex-direction:column;align-items:center;gap:6px;box-shadow:0 3px 0 var(--blue2)}
+.tag{font:12px Lilita One,sans-serif;letter-spacing:.02em;background:var(--blue2);border-radius:99px;padding:1px 9px}
+.mid{display:flex;flex-direction:column;align-items:center;gap:4px;padding-bottom:4px}
+.chip{background:rgba(0,0,0,.38);border-radius:99px;padding:2px 9px;font-weight:900;font-size:13px;white-space:nowrap}
+.chip.boost{background:#ff8a1f}
+.lvl{width:62px;height:58px;border-radius:12px;background:linear-gradient(var(--blue),var(--blue2));border:1.5px solid rgba(255,255,255,.4);display:grid;place-items:center;line-height:1}
+.lvl small{font-size:10px;font-weight:800}.lvl strong{font-size:17px;font-weight:900}.lvl i{font-style:normal;font-weight:900;opacity:.5}
+.lvl.ok{border:3px solid var(--gold);animation:glow 1.2s ease-in-out infinite}.lvl.ok i{opacity:1;color:var(--gold)}
+@keyframes glow{50%{box-shadow:0 0 12px var(--gold)}}
+.worker{position:relative;width:60px;height:60px;border-radius:50%;background:rgba(0,0,0,.28) ;display:grid;place-items:center;font-size:30px}
+.worker::before{content:"";position:absolute;inset:0;border-radius:50%;background:conic-gradient(var(--gold) calc(var(--p,0)*1turn),transparent 0);-webkit-mask:radial-gradient(circle,transparent 25px,#000 26px);mask:radial-gradient(circle,transparent 25px,#000 26px)}
+.worker em{font-style:normal;display:inline-block;transition:transform .15s}
+.worker.on em{animation:dig .5s ease-in-out infinite alternate}
+@keyframes dig{from{transform:rotate(-18deg) translateY(-2px)}to{transform:rotate(14deg)}}
+.badge{position:absolute;bottom:-7px;font-size:9px;font-weight:900;padding:2px 6px;border-radius:99px;background:var(--gold);color:#000}
+.badge.auto{background:var(--green);color:#fff}
+.mgr{font-size:11px;font-weight:900;border-radius:8px;padding:4px 7px;background:rgba(0,0,0,.35);color:rgba(255,255,255,.75);line-height:1.2;text-align:center;white-space:nowrap}
+.mgr.ok{background:var(--gold);color:#000}.mgr.has{background:var(--green);color:#fff;border-radius:99px}
+.shaft{display:grid;grid-template-columns:46px minmax(0,1fr);height:118px}
+.rail{background:#251a18;position:relative;display:grid;place-items:center}
+.rail::before{content:"";position:absolute;top:0;bottom:0;left:50%;width:3px;background:#9a9aa6;transform:translateX(-50%)}
+.rail span{position:relative;font:17px Lilita One,sans-serif;background:var(--blue2);width:32px;height:32px;border-radius:8px;display:grid;place-items:center}
+.rock{background:linear-gradient(var(--dirt),var(--dirt2));padding:11px 6px;position:relative}
+.tun{height:100%;background:var(--tunnel);border-radius:14px;display:flex;align-items:center;gap:8px;padding:0 10px;box-shadow:inset 0 4px 0 rgba(0,0,0,.35)}
+.info{flex:1}.info b{display:block;font:12px Lilita One,sans-serif;color:var(--gold);letter-spacing:.03em}
+.info span{display:block;font-weight:900;font-size:17px;white-space:nowrap}.info small{opacity:.7;font-size:12px}
+.newshaft{background:var(--dirt2);padding:16px;text-align:center}
+.newshaft h3{margin:0 0 10px;font:20px Lilita One,sans-serif}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.big{min-height:50px;border-radius:14px;font-weight:900;font-size:16px;background:var(--gold);color:#000;box-shadow:0 3px 0 rgba(0,0,0,.25);transition:transform .1s}
+.big:active{transform:scale(.96)}
+.big.blue{background:var(--blue);color:#fff}.big.green{background:var(--green);color:#fff}.big.off{background:#9a9a9a;color:#eee}
+.bottom{display:grid;grid-template-columns:1fr 1fr 54px;gap:8px;padding:8px 10px calc(8px + env(safe-area-inset-bottom,0px));background:var(--blue)}
+.veil{position:absolute;inset:0;background:rgba(0,0,0,.45);display:flex;align-items:flex-end;z-index:5}
+.sheet{width:100%;max-height:88%;overflow-y:auto;background:#fff;color:#1b1b1f;border-radius:20px 20px 0 0;padding:18px 18px calc(18px + env(safe-area-inset-bottom,0px))}
+.sheet h2{margin:0;font:26px Lilita One,sans-serif;color:var(--blue2)}
+.sheet h4{margin:18px 0 6px;font-size:13px;color:#666}
+.sheet .x{float:right;font-weight:900;color:var(--blue);font-size:16px;padding:6px}
+.seg{display:grid;grid-template-columns:repeat(4,1fr);background:#eceef3;border-radius:10px;padding:3px;margin:14px 0}
+.seg button{padding:7px;border-radius:8px;font-weight:900}.seg .sel{background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.2)}
+.stats{background:#f1f3f7;border-radius:14px;padding:12px;margin-bottom:14px}
+.stats div{display:flex;justify-content:space-between;gap:8px;padding:3px 0}.stats em{font-style:normal;color:#1d9c45;font-weight:900}
+.item{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid #eee}
+.item .e{font-size:28px;width:36px;text-align:center}.item div{flex:1}.item b{display:block}.item small{color:#666}
+.buy{background:#ff8a1f;color:#fff;font-weight:900;border-radius:99px;padding:8px 14px;white-space:nowrap}
+.buy.dia{background:var(--blue)}.buy:disabled{opacity:.4}.owned{color:#1d9c45;font-weight:900}
+.note{font-size:13px;color:#666;margin:12px 0 0}
+.pay{text-align:center}.pay .price{font:40px Lilita One,sans-serif;color:#1b1b1f;margin:8px 0}
+.test{display:inline-block;background:#fff1c2;color:#7a5400;border-radius:8px;padding:4px 10px;font-weight:900;font-size:13px}
+.toast{position:absolute;left:50%;top:80px;transform:translateX(-50%);background:#1b1b1f;color:#fff;padding:10px 16px;border-radius:99px;font-weight:900;z-index:9;white-space:nowrap;transition:opacity .3s}
+@media (prefers-reduced-motion:reduce){.worker.on em,.lvl.ok{animation:none}}
+</style>
+
+<div id="app">
+  <div class="top">
+    <div class="pill"><span class="ic">💤</span><div><b>Pasywnie</b><span id="vIdle">0/s</span></div></div>
+    <div class="pill"><span class="ic">💰</span><div><b>Gotówka</b><span id="vCash">0</span></div></div>
+    <button class="pill" data-act="shop"><span class="ic">💎</span><div><b>Diamenty</b><span id="vDia">0</span></div><span class="plus">+</span></button>
+  </div>
+  <div class="mine" id="mine"></div>
+  <div class="bottom">
+    <button class="big" data-act="shop">🛒 Sklep</button>
+    <button class="big green" id="freeBtn" data-act="free">🎁 Darmowy x2</button>
+    <button class="big blue" data-act="tools" aria-label="Narzędzia testowe">⚙️</button>
+  </div>
+  <div id="layer"></div>
+</div>
+
+<script>
+{
+const MAX_SHAFTS=10,CYCLE=8000,H=3600e3;
+const PRODUCTS=[
+ {id:'diamonds80',n:'80 diamentów',d:'Garść diamentów',p:'$0.99',dia:80},
+ {id:'diamonds500',n:'500 diamentów',d:'Najpopularniejsze',p:'$4.99',dia:500},
+ {id:'diamonds1200',n:'1200 diamentów',d:'Najlepsza cena',p:'$9.99',dia:1200},
+ {id:'doubleincome',n:'Podwójny dochód',d:'Cały dochód x2 – na zawsze',p:'$6.99',e:'✖️2'},
+ {id:'offlinevault',n:'Sejf offline',d:'Dochód offline do 24 h zamiast 4 h',p:'$2.99',e:'🏦'}];
+const mil=l=>2**Math.floor(l/25);
+const rate=(k,l)=>k==='e'?5*l*1.08**(l-1):k==='w'?5.5*l*1.08**(l-1):2*10**sh(k)*l*mil(l);
+const ucost=(k,l)=>k==='e'?20*1.17**(l-1):k==='w'?25*1.17**(l-1):10*10**sh(k)*1.14**(l-1);
+const maxL=k=>k[0]==='s'?800:1000;
+const unlockCost=i=>i===0?0:500*25**(i-1);
+const unlockDia=i=>20+10*i*i;
+const mgrCost=k=>k==='e'?150:k==='w'?100:(sh(k)===0?50:unlockCost(sh(k))*.6);
+function sh(k){return +k.slice(1)}
+const title=k=>k==='e'?'Winda':k==='w'?'Magazyn':'Szyb '+(sh(k)+1);
+const emoji=k=>k==='e'?'🛗':k==='w'?'🚚':'⛏️';
+const U=[''].concat(['K','M','B','T']);for(const a of 'abcdef')for(const b of 'abcdefghijklmnopqrstuvwxyz')U.push(a+b);
+function fmt(v){if(!isFinite(v))return'∞';let x=Math.max(0,v);if(x<1000)return String(Math.floor(x));let i=0;while(x>=1000&&i<U.length-1){x/=1000;i++}const f=x>=100?1:x>=10?10:100;return(Math.floor(x*f)/f).toFixed(f===1?0:f===10?1:2)+U[i]}
+function dur(ms){const t=Math.max(0,Math.floor(ms/1000)),h=Math.floor(t/3600),m=Math.floor(t%3600/60),s=t%60;return h?`${h}h ${m}m`:m?`${m}m ${s}s`:`${s}s`}
+
+const fresh=()=>({cash:25,dia:10,shafts:[{u:{l:1,m:false,a:0},dep:0}],e:{l:1,m:false,a:0},w:{l:1,m:false,a:0},stock:0,boost:0,free:0,saved:Date.now(),dbl:false,vault:false});
+let S=null;
+const hot=window.claude&&window.claude.hot;
+function load(d){try{const j=localStorage.getItem('imperium-kopalni');if(j)return JSON.parse(j)}catch(e){}return d&&d.cash!=null?d:fresh()}
+function save(){S.saved=Date.now();try{localStorage.setItem('imperium-kopalni',JSON.stringify(S))}catch(e){}}
+const unit=k=>k==='e'?S.e:k==='w'?S.w:S.shafts[sh(k)].u;
+const working=(u,t)=>u.m||u.a>t;
+const mult=(t,b=true)=>(S.dbl?2:1)*(b&&S.boost>t?2:1);
+function thru(onlyM){const c=u=>!onlyM||u.m;let m=0;S.shafts.forEach((s,i)=>{if(c(s.u))m+=rate('s'+i,s.u.l)});return Math.min(m,c(S.e)?rate('e',S.e.l):0,c(S.w)?rate('w',S.w.l):0)}
+function upCost(k,n){const u=unit(k);let t=0;for(let l=u.l;l<Math.min(u.l+n,maxL(k));l++)t+=ucost(k,l);return t}
+function maxAff(k){let l=unit(k).l,b=S.cash,n=0;while(l<maxL(k)){const c=ucost(k,l);if(c>b)break;b-=c;l++;n++}return Math.max(n,1)}
+const canUp=k=>unit(k).l<maxL(k)&&S.cash>=ucost(k,unit(k).l);
+
+function step(dt,t){
+  S.shafts.forEach((s,i)=>{if(working(s.u,t))s.dep+=rate('s'+i,s.u.l)*dt});
+  if(working(S.e,t)){let c=rate('e',S.e.l)*dt;for(const s of S.shafts){if(c<=0)break;const x=Math.min(c,s.dep);s.dep-=x;S.stock+=x;c-=x}}
+  if(working(S.w,t)){const x=Math.min(S.stock,rate('w',S.w.l)*dt);S.stock-=x;S.cash+=x*mult(t)}
+}
+function offline(){const t=Date.now(),el=t-S.saved;S.saved=t;if(el<60e3)return;const sec=Math.min(el,(S.vault?24:4)*H)/1000;const amt=thru(true)*mult(t,false)*sec;if(amt>=1)sheet('offline',{sec,amt})}
+
+const $=id=>document.getElementById(id),mine=$('mine'),layer=$('layer');
+function station(k){return`<div class="station"><span class="tag">${title(k).toUpperCase()}</span>${lvlBtn(k)}${worker(k)}${mgr(k)}</div>`}
+const lvlBtn=k=>`<button class="lvl" data-act="up" data-k="${k}" data-lvl="${k}"><i>▲</i><small>Poziom</small><strong data-v="l${k}"></strong></button>`;
+const worker=k=>`<button class="worker" data-act="tap" data-k="${k}" data-w="${k}"><em>${emoji(k)}</em><span class="badge" data-v="b${k}"></span></button>`;
+const mgr=k=>`<button class="mgr" data-act="mgr" data-k="${k}" data-m="${k}"></button>`;
+function build(){
+  const n=S.shafts.length;
+  mine.innerHTML=`<div class="surface">
+   <svg viewBox="0 0 400 270" preserveAspectRatio="xMidYMax slice" aria-hidden="true">
+    <circle cx="300" cy="50" r="26" fill="#fff6c9" opacity=".8"/>
+    <path d="M-10 230 L90 95 L150 170 L230 60 L330 190 L410 120 L410 240 Z" fill="#dfe9f7"/>
+    <path d="M230 60 L262 104 L244 98 L230 118 L214 100 L200 108 Z M90 95 L112 125 L96 120 L84 132 L72 118Z" fill="#fff"/>
+    <path d="M-10 240 Q80 205 200 228 T410 222 L410 270 L-10 270Z" fill="#7cc964"/>
+    <rect x="-10" y="246" width="420" height="30" fill="#5fb14a"/>
+    ${[40,120,280,350].map((x,i)=>`<path d="M${x} ${236-i%2*6} l-12 0 l12 -34 l12 34z" fill="#2f8a4a"/>`).join('')}
+   </svg>
+   <div class="stations">${station('e')}
+    <div class="mid"><span class="chip boost" id="vBoost" hidden></span><span class="chip" id="vPot"></span><span class="chip">🪨 <span id="vStock"></span></span><span style="font-size:34px">⛺</span></div>
+    ${station('w')}</div></div>`+
+  S.shafts.map((s,i)=>{const k='s'+i;return`<div class="shaft"><div class="rail"><span>${i+1}</span></div><div class="rock"><div class="tun">
+    <div class="info"><b>${title(k).toUpperCase()}</b><span>🪨 <span data-v="d${k}"></span></span><small data-v="r${k}"></small></div>
+    ${mgr(k)}${worker(k)}${lvlBtn(k)}</div></div></div>`}).join('')+
+  `<div class="newshaft">${n<MAX_SHAFTS?`<h3>Nowy szyb</h3><div class="row2"><button class="big" id="unC" data-act="unc">💰 ${fmt(unlockCost(n))}</button><button class="big blue" data-act="und">💎 ${unlockDia(n)}</button></div>`:'<h3>🏆 Wszystkie szyby odblokowane!</h3>'}</div>`;
+  update();
+}
+function setV(sel,txt){const el=mine.querySelector(sel);if(el&&el.textContent!==txt)el.textContent=txt}
+function update(){
+  const t=Date.now();
+  $('vIdle').textContent=fmt(thru(true)*mult(t))+'/s';$('vCash').textContent=fmt(S.cash);$('vDia').textContent=S.dia;
+  const keys=['e','w',...S.shafts.map((_,i)=>'s'+i)];
+  for(const k of keys){const u=unit(k);
+    setV(`[data-v="l${k}"]`,String(u.l));mine.querySelector(`[data-lvl="${k}"]`).classList.toggle('ok',canUp(k));
+    const w=mine.querySelector(`[data-w="${k}"]`),on=working(u,t);w.classList.toggle('on',on);
+    w.style.setProperty('--p',!u.m&&u.a>t?(u.a-t)/CYCLE:0);
+    const b=mine.querySelector(`[data-v="b${k}"]`);b.hidden=on&&!u.m;b.className='badge'+(u.m?' auto':'');setV(`[data-v="b${k}"]`,u.m?'AUTO':'DOTKNIJ');
+    const m=mine.querySelector(`[data-m="${k}"]`),c=mgrCost(k);
+    const html=u.m?'🧑‍💼 Kierownik':`🧑‍💼 Zatrudnij<br>💰 ${fmt(c)}`;if(m.innerHTML!==html)m.innerHTML=html;
+    m.className='mgr'+(u.m?' has':S.cash>=c?' ok':'');
+    if(k[0]==='s'){setV(`[data-v="d${k}"]`,fmt(S.shafts[sh(k)].dep));setV(`[data-v="r${k}"]`,fmt(rate(k,u.l))+'/s')}}
+  $('vPot').textContent='💰 '+fmt(thru(false)*mult(t))+'/s';$('vStock').textContent=fmt(S.stock);
+  const bo=$('vBoost');bo.hidden=S.boost<=t;if(S.boost>t)bo.textContent='🚀 x2  '+dur(S.boost-t);
+  const unc=$('unC');if(unc)unc.classList.toggle('off',S.cash<unlockCost(S.shafts.length));
+  const fw=S.free+4*H-t,fb=$('freeBtn');fb.textContent=fw>0?'🎁 '+dur(fw):'🎁 Darmowy x2';fb.className='big '+(fw>0?'off':'green');
+  if(cur)refreshSheet();
+}
+let toastT;function toast(m){layer.querySelector('.toast')?.remove();const d=document.createElement('div');d.className='toast';d.textContent=m;layer.append(d);clearTimeout(toastT);toastT=setTimeout(()=>d.remove(),1800)}
+
+let cur=null,curArg=null,upN=1;
+function sheet(name,arg){cur=name;curArg=arg;layer.querySelector('.veil')?.remove();const v=document.createElement('div');v.className='veil';v.innerHTML='<div class="sheet"></div>';v.addEventListener('click',e=>{if(e.target===v&&name!=='offline')close()});layer.prepend(v);refreshSheet(true)}
+function close(){cur=null;layer.querySelector('.veil')?.remove()}
+function refreshSheet(force){
+  const el=layer.querySelector('.sheet');if(!el)return;let h='';const t=Date.now();
+  if(cur==='up'){const k=curArg,u=unit(k),N={1:1,10:10,50:50,0:maxAff(k)}[upN],n=Math.min(N,maxL(k)-u.l),c=upCost(k,n),ok=n>0&&S.cash>=c;
+    h=`<button class="x" data-act="close">Zamknij</button><h2>${emoji(k)} ${title(k)}</h2><div>Poziom ${u.l}</div>
+    <div class="seg">${[[1,'x1'],[10,'x10'],[50,'x50'],[0,'MAX']].map(([v,l])=>`<button data-act="n" data-n="${v}" class="${upN===v?'sel':''}">${l}</button>`).join('')}</div>
+    <div class="stats"><div><span>${k==='e'?'Transport':k==='w'?'Sprzedaż':'Wydobycie'}</span><span>${fmt(rate(k,u.l))}/s → <em>${fmt(rate(k,u.l+n))}/s</em></span></div>
+    <div><span>Poziom</span><span>${u.l} → <em>${u.l+n}</em></span></div>${k[0]==='s'&&Math.floor((u.l+n)/25)>Math.floor(u.l/25)?'<div><b style="color:#e07a00">⭐ Kamień milowy – wydajność x2!</b></div>':''}</div>
+    ${n>0?`<button class="big ${ok?'':'off'}" style="width:100%" data-act="buyup" data-n="${n}">Ulepsz +${n} • 💰 ${fmt(c)}</button>`:'<b>Maksymalny poziom 🏆</b>'}`}
+  else if(cur==='shop'){h=`<button class="x" data-act="close">Zamknij</button><h2>Sklep</h2><div>Twoje diamenty: <b>💎 ${S.dia}</b></div>
+    <h4>Wydaj diamenty</h4>
+    <div class="item"><span class="e">🚀</span><div><b>Boost x2 na 30 min</b><small>Podwaja cały dochód</small></div><button class="buy dia" data-act="boost" ${S.dia<15?'disabled':''}>💎 15</button></div>
+    <div class="item"><span class="e">💰</span><div><b>Walizka gotówki</b><small>+${fmt(Math.max(1000,thru(false)*mult(t,false)*3600))} od razu</small></div><button class="buy dia" data-act="cashpack" ${S.dia<25?'disabled':''}>💎 25</button></div>
+    <h4>Diamenty</h4>${PRODUCTS.slice(0,3).map(prod).join('')}
+    <h4>Ulepszenia na zawsze</h4>${PRODUCTS.slice(3).map(prod).join('')}
+    <p class="note"><span class="test">TEST</span> To symulacja sklepu – nic nie płacisz. W aplikacji iOS płatność obsługuje App Store.</p>
+    <p class="note"><button class="buy dia" data-act="restore">Przywróć zakupy</button></p>`}
+  else if(cur==='pay'){const p=curArg;h=`<div class="pay"><span class="test">ZAKUP TESTOWY</span><h2 style="margin-top:12px">${p.e||'💎'} ${p.n}</h2><div class="price">${p.p}</div>
+    <p class="note">W prawdziwej grze tu pojawi się okno płatności App Store. Teraz nic nie zostanie pobrane.</p>
+    <div class="row2" style="margin-top:16px"><button class="big off" data-act="shop">Anuluj</button><button class="big blue" data-act="confirm">Kup (test)</button></div></div>`}
+  else if(cur==='offline'){const r=curArg;h=`<div class="pay"><h2>Witaj z powrotem! 👋</h2><p class="note">Twoi kierownicy pracowali przez ${dur(r.sec*1000)}.</p><div class="price">💰 ${fmt(r.amt)}</div>
+    <button class="big blue ${S.dia<10?'off':''}" style="width:100%;margin-bottom:10px" data-act="off2">Odbierz x2 • 💎 10</button><button class="big" style="width:100%" data-act="off1">Odbierz</button>
+    <p class="note">Limit dochodu offline: ${S.vault?24:4} h</p></div>`}
+  else if(cur==='tools'){h=`<button class="x" data-act="close">Zamknij</button><h2>Narzędzia testowe</h2><p class="note">Tylko w wersji testowej – do sprawdzania balansu.</p>
+    <div class="item"><span class="e">⏩</span><div><b>Przewiń czas o 1 h</b><small>Sprawdź dochód offline (działa z kierownikami)</small></div><button class="buy dia" data-act="skip">+1 h</button></div>
+    <div class="item"><span class="e">💵</span><div><b>Dodaj gotówkę</b><small>+10× obecnej gotówki</small></div><button class="buy dia" data-act="addcash">Dodaj</button></div>
+    <div class="item"><span class="e">🔄</span><div><b>Zacznij od nowa</b><small>Kasuje postęp i zakupy testowe</small></div><button class="buy" data-act="reset">Reset</button></div>`}
+  if(force||el.dataset.h!==h){el.dataset.h=h;el.innerHTML=h}
+}
+function prod(p){const own=(p.id==='doubleincome'&&S.dbl)||(p.id==='offlinevault'&&S.vault);
+  return`<div class="item"><span class="e">${p.e||'💎'}</span><div><b>${p.n}</b><small>${p.d}</small></div>${own?'<span class="owned">Kupione ✓</span>':`<button class="buy" data-act="iap" data-id="${p.id}">${p.p}</button>`}</div>`}
+
+document.getElementById('app').addEventListener('click',e=>{
+  const b=e.target.closest('[data-act]');if(!b)return;const a=b.dataset.act,k=b.dataset.k,t=Date.now();
+  if(a==='tap'){const u=unit(k);if(!u.m&&u.a<=t)u.a=t+CYCLE}
+  else if(a==='up'){upN=1;sheet('up',k)}
+  else if(a==='n'){upN=+b.dataset.n}
+  else if(a==='buyup'){const n=+b.dataset.n,c=upCost(curArg,n);if(S.cash>=c){S.cash-=c;unit(curArg).l+=n}}
+  else if(a==='mgr'){const u=unit(k),c=mgrCost(k);if(!u.m&&S.cash>=c){S.cash-=c;u.m=true;u.a=0;toast('Kierownik zatrudniony – praca automatyczna')}}
+  else if(a==='unc'){const n=S.shafts.length,c=unlockCost(n);if(S.cash>=c){S.cash-=c;S.shafts.push({u:{l:1,m:false,a:0},dep:0});build();save()}else toast('Za mało gotówki')}
+  else if(a==='und'){const n=S.shafts.length,c=unlockDia(n);if(S.dia>=c){S.dia-=c;S.shafts.push({u:{l:1,m:false,a:0},dep:0});build();save()}else sheet('shop')}
+  else if(a==='shop')sheet('shop');
+  else if(a==='tools')sheet('tools');
+  else if(a==='close')close();
+  else if(a==='free'){if(S.free+4*H<=t){S.free=t;S.boost=Math.max(t,S.boost)+10*60e3;toast('🚀 Dochód x2 przez 10 minut!')}}
+  else if(a==='boost'){if(S.dia>=15){S.dia-=15;S.boost=Math.max(t,S.boost)+30*60e3;toast('🚀 Dochód x2 przez 30 minut!')}}
+  else if(a==='cashpack'){if(S.dia>=25){const x=Math.max(1000,thru(false)*mult(t,false)*3600);S.dia-=25;S.cash+=x;toast('+💰 '+fmt(x))}}
+  else if(a==='iap')sheet('pay',PRODUCTS.find(p=>p.id===b.dataset.id));
+  else if(a==='confirm'){const p=curArg;if(p.dia)S.dia+=p.dia;if(p.id==='doubleincome')S.dbl=true;if(p.id==='offlinevault')S.vault=true;save();sheet('shop');toast(p.dia?`Dodano ${p.dia} 💎`:`Odblokowano: ${p.n} ✨`)}
+  else if(a==='restore')toast(S.dbl||S.vault?'Zakupy przywrócone':'Brak zakupów do przywrócenia');
+  else if(a==='off1'||a==='off2'){if(a==='off2'){if(S.dia<10)return;S.dia-=10}S.cash+=curArg.amt*(a==='off2'?2:1);close();save()}
+  else if(a==='skip'){S.saved-=H;close();offline();if(!cur)toast('Brak dochodu offline – zatrudnij kierowników')}
+  else if(a==='addcash'){S.cash=Math.max(100,S.cash*10);toast('Dodano gotówkę')}
+  else if(a==='reset'){S=fresh();close();build();save();toast('Nowa gra')}
+  update();
+});
+
+let last=Date.now(),lastSave=last;
+function start(d){S=load(d);build();offline();
+  setInterval(()=>{const t=Date.now(),dt=Math.min(Math.max(t-last,0),1000)/1000;last=t;step(dt,t);update();if(t-lastSave>5000){lastSave=t;save()}},100);
+  document.addEventListener('visibilitychange',()=>{if(document.hidden)save();else{offline();last=Date.now()}});
+  if(hot&&hot.snapshot)hot.snapshot(()=>S)}
+hot&&hot.ready?hot.ready(start):start(hot&&hot.data||{});
+}
+</script>

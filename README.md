@@ -60,7 +60,9 @@ W Xcode wybierz symulator iPhone'a i naciśnij ▶︎. Sklep działa od razu –
 
 ## Uwagi
 
-- Monety są zapisywane lokalnie (`UserDefaults`). Każda transakcja jest naliczana tylko raz. Przy większej skali warto dodać własny serwer i weryfikację transakcji po stronie serwera (App Store Server API).
+- Monety są zapisywane lokalnie (`UserDefaults`). Ceny są w USD. W App Store Connect ustaw cenę bazową w USD (kraj bazowy: United States) – Apple samo przeliczy ją na inne waluty. W kodzie nie ma wpisanych cen: aplikacja pokazuje to, co zwraca App Store.
+
+Każda transakcja jest naliczana tylko raz. Przy większej skali warto dodać własny serwer i weryfikację transakcji po stronie serwera (App Store Server API).
 - Jeśli dodajesz nowe pakiety monet, dopisz je w `ProductID.coinAmounts` i w App Store Connect.
 - GitHub Actions (`.github/workflows/ios-build.yml`) kompiluje projekt na macOS przy każdym pushu.
 
@@ -91,17 +93,19 @@ Waluta premium to **diamenty 💎**.
 
 | Produkt | Typ (App Store Connect) | Product ID | Cena (propozycja) |
 |---|---|---|---|
-| 80 diamentów | Consumable | `com.twojafirma.mineempire.diamonds80` | 4,99 zł |
-| 500 diamentów | Consumable | `com.twojafirma.mineempire.diamonds500` | 24,99 zł |
-| 1200 diamentów | Consumable | `com.twojafirma.mineempire.diamonds1200` | 49,99 zł |
-| Podwójny dochód (na zawsze) | Non-Consumable | `com.twojafirma.mineempire.doubleincome` | 29,99 zł |
-| Sejf offline – 24 h (na zawsze) | Non-Consumable | `com.twojafirma.mineempire.offlinevault` | 14,99 zł |
+| 80 diamentów | Consumable | `com.twojafirma.mineempire.diamonds80` | $0.99 |
+| 500 diamentów | Consumable | `com.twojafirma.mineempire.diamonds500` | $4.99 |
+| 1200 diamentów | Consumable | `com.twojafirma.mineempire.diamonds1200` | $9.99 |
+| Podwójny dochód (na zawsze) | Non-Consumable | `com.twojafirma.mineempire.doubleincome` | $6.99 |
+| Sejf offline – 24 h (na zawsze) | Non-Consumable | `com.twojafirma.mineempire.offlinevault` | $2.99 |
 
 Na co gracz wydaje diamenty:
 - **Boost x2 na 30 min** – 15 💎,
 - **Walizka gotówki** (1 h produkcji od razu) – 25 💎,
 - **Odbierz dochód offline x2** – 10 💎,
 - **Odblokowanie szybu** bez czekania – od 30 💎 (drożej za dalsze szyby).
+
+Ceny są w USD. W App Store Connect ustaw cenę bazową w USD (kraj bazowy: United States) – Apple samo przeliczy ją na inne waluty. W kodzie nie ma wpisanych cen: aplikacja pokazuje to, co zwraca App Store.
 
 Każda transakcja jest naliczana tylko raz (zapamiętane ID transakcji), zwroty odbierają ulepszenia na zawsze, jest przycisk **„Przywróć zakupy”**.
 

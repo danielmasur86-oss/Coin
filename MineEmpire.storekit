@@ -1,70 +1,93 @@
 {
-  "identifier" : "9A1C3E55-2B7D-4F0A-8C61-3D2E4F5A6B70",
-  "nonRenewingSubscriptions" : [ ],
-  "products" : [
+  "identifier": "9A1C3E55-2B7D-4F0A-8C61-3D2E4F5A6B70",
+  "nonRenewingSubscriptions": [],
+  "products": [
     {
-      "displayPrice" : "4.99",
-      "familyShareable" : false,
-      "internalID" : "6750000001",
-      "localizations" : [
-        { "description" : "Garść 80 diamentów", "displayName" : "80 diamentów", "locale" : "pl" }
+      "displayPrice": "0.99",
+      "familyShareable": false,
+      "internalID": "6750000001",
+      "localizations": [
+        {
+          "description": "Garść 80 diamentów",
+          "displayName": "80 diamentów",
+          "locale": "pl"
+        }
       ],
-      "productID" : "com.twojafirma.mineempire.diamonds80",
-      "referenceName" : "80 Diamonds",
-      "type" : "Consumable"
+      "productID": "com.twojafirma.mineempire.diamonds80",
+      "referenceName": "80 Diamonds",
+      "type": "Consumable"
     },
     {
-      "displayPrice" : "24.99",
-      "familyShareable" : false,
-      "internalID" : "6750000002",
-      "localizations" : [
-        { "description" : "Skrzynia 500 diamentów – najpopularniejsza", "displayName" : "500 diamentów", "locale" : "pl" }
+      "displayPrice": "4.99",
+      "familyShareable": false,
+      "internalID": "6750000002",
+      "localizations": [
+        {
+          "description": "Skrzynia 500 diamentów – najpopularniejsza",
+          "displayName": "500 diamentów",
+          "locale": "pl"
+        }
       ],
-      "productID" : "com.twojafirma.mineempire.diamonds500",
-      "referenceName" : "500 Diamonds",
-      "type" : "Consumable"
+      "productID": "com.twojafirma.mineempire.diamonds500",
+      "referenceName": "500 Diamonds",
+      "type": "Consumable"
     },
     {
-      "displayPrice" : "49.99",
-      "familyShareable" : false,
-      "internalID" : "6750000003",
-      "localizations" : [
-        { "description" : "Skarbiec 1200 diamentów – najlepsza cena", "displayName" : "1200 diamentów", "locale" : "pl" }
+      "displayPrice": "9.99",
+      "familyShareable": false,
+      "internalID": "6750000003",
+      "localizations": [
+        {
+          "description": "Skarbiec 1200 diamentów – najlepsza cena",
+          "displayName": "1200 diamentów",
+          "locale": "pl"
+        }
       ],
-      "productID" : "com.twojafirma.mineempire.diamonds1200",
-      "referenceName" : "1200 Diamonds",
-      "type" : "Consumable"
+      "productID": "com.twojafirma.mineempire.diamonds1200",
+      "referenceName": "1200 Diamonds",
+      "type": "Consumable"
     },
     {
-      "displayPrice" : "29.99",
-      "familyShareable" : true,
-      "internalID" : "6750000004",
-      "localizations" : [
-        { "description" : "Cały dochód kopalni x2 – na zawsze", "displayName" : "Podwójny dochód", "locale" : "pl" }
+      "displayPrice": "6.99",
+      "familyShareable": true,
+      "internalID": "6750000004",
+      "localizations": [
+        {
+          "description": "Cały dochód kopalni x2 – na zawsze",
+          "displayName": "Podwójny dochód",
+          "locale": "pl"
+        }
       ],
-      "productID" : "com.twojafirma.mineempire.doubleincome",
-      "referenceName" : "Double Income",
-      "type" : "NonConsumable"
+      "productID": "com.twojafirma.mineempire.doubleincome",
+      "referenceName": "Double Income",
+      "type": "NonConsumable"
     },
     {
-      "displayPrice" : "14.99",
-      "familyShareable" : true,
-      "internalID" : "6750000005",
-      "localizations" : [
-        { "description" : "Dochód offline do 24 h zamiast 4 h", "displayName" : "Sejf offline", "locale" : "pl" }
+      "displayPrice": "2.99",
+      "familyShareable": true,
+      "internalID": "6750000005",
+      "localizations": [
+        {
+          "description": "Dochód offline do 24 h zamiast 4 h",
+          "displayName": "Sejf offline",
+          "locale": "pl"
+        }
       ],
-      "productID" : "com.twojafirma.mineempire.offlinevault",
-      "referenceName" : "Offline Vault",
-      "type" : "NonConsumable"
+      "productID": "com.twojafirma.mineempire.offlinevault",
+      "referenceName": "Offline Vault",
+      "type": "NonConsumable"
     }
   ],
-  "settings" : {
-    "_applicationInternalID" : "6750000000",
-    "_failTransactionsEnabled" : false,
-    "_locale" : "pl",
-    "_storefront" : "POL",
-    "_storeKitErrors" : [ ]
+  "settings": {
+    "_applicationInternalID": "6750000000",
+    "_failTransactionsEnabled": false,
+    "_locale": "pl",
+    "_storefront": "USA",
+    "_storeKitErrors": []
   },
-  "subscriptionGroups" : [ ],
-  "version" : { "major" : 4, "minor" : 0 }
+  "subscriptionGroups": [],
+  "version": {
+    "major": 4,
+    "minor": 0
+  }
 }
