@@ -8,3 +8,10 @@ build/
 *.dSYM.zip
 *.dSYM
 .DS_Store
+
+# HausiHelfer is a Flutter app: its Xcode project files must be committed
+!hausihelfer/app/ios/Runner.xcodeproj/
+!hausihelfer/app/ios/Runner.xcworkspace/
+hausihelfer/app/ios/Runner.xcodeproj/xcuserdata/
+hausihelfer/app/ios/Runner.xcworkspace/xcuserdata/
+!hausihelfer/app/ios/Runner.xcodeproj/project.xcworkspace/

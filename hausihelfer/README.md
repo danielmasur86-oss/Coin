@@ -90,7 +90,7 @@ Sprawdź, czy działają adresy: `https://api.twojadomena.de/health` i `https://
 > Bundle ID / nazwę pakietu możesz zmienić przed pierwszą publikacją (potem już nie).
 
 ### 5. Zbuduj aplikację
-Potrzebujesz Fluttera 3.50+ (flutter.dev) i Android Studio. Do iOS potrzebny jest Mac z Xcode.
+Potrzebujesz Fluttera 3.50+ (flutter.dev) i Android Studio (z Javą 21; starsza Java psuje budowanie wersji release). Do iOS potrzebny jest Mac z Xcode.
 
 **Android: klucz do podpisywania** (raz, i **zrób kopię zapasową**, bo bez niego nie wydasz aktualizacji):
 ```bash
