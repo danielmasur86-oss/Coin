@@ -92,6 +92,15 @@ Google przeliczy ceny na inne waluty, a gra pokazuje ceny pobrane z Google Play.
    - % płacących i przychód z reklam na gracza.
 5. Popraw balans w jednym miejscu: stałe na górze `game-web/index.html` (koszty, nagrody, limity reklam). Wypuść aktualizację i dopiero przy dobrych liczbach otwórz kolejne kraje i włącz promocję.
 
+### Automatyczne wysyłanie do Google Play
+Gdy gra jest już w Play Console (pierwszy plik `.aab` trzeba wgrać ręcznie), GitHub może wysyłać każdą nową wersję sam:
+1. Play Console → **Ustawienia → Dostęp do API**. Połącz projekt Google Cloud.
+2. W Google Cloud (**IAM → Konta usługi**) utwórz konto usługi i pobierz **klucz JSON**.
+3. W Play Console → **Użytkownicy i uprawnienia** zaproś e-mail konta usługi z uprawnieniem do wydawania wersji w testach.
+4. W GitHubie (**Settings → Secrets → Actions**) dodaj sekret `PLAY_SERVICE_ACCOUNT_JSON` z całą zawartością pliku JSON.
+5. Każdy push do gałęzi `main` (z ustawionym kluczem podpisu) wyśle nową wersję jako szkic na ścieżkę **Test wewnętrzny**. Wystarczy ją zatwierdzić w Play Console.
+Pamiętaj o zwiększeniu `versionCode` przed każdą wysyłką.
+
 ### Aktualizacje
 Przy każdej nowej wersji zwiększ `versionCode` (o 1) i `versionName` w `android/app/build.gradle.kts`.
 

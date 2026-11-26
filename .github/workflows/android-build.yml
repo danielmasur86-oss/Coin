@@ -58,3 +58,18 @@ jobs:
           name: imperium-kopalni-release-aab
           path: android/app/build/outputs/bundle/release/*.aab
           if-no-files-found: ignore
+
+      # Automatyczne wysłanie do Google Play (ścieżka „Test wewnętrzny”).
+      # Działa, gdy dodasz sekret PLAY_SERVICE_ACCOUNT_JSON (klucz konta usługi z Google Cloud,
+      # z dostępem nadanym w Play Console → Użytkownicy i uprawnienia). Tylko z gałęzi main.
+      - name: Upload to Google Play (internal testing)
+        if: github.ref == 'refs/heads/main' && env.PLAY_JSON != '' && hashFiles('android/app/build/outputs/bundle/release/*.aab') != ''
+        env:
+          PLAY_JSON: ${{ secrets.PLAY_SERVICE_ACCOUNT_JSON }}
+        uses: r0adkll/upload-google-play@v1.1.3
+        with:
+          serviceAccountJsonPlainText: ${{ secrets.PLAY_SERVICE_ACCOUNT_JSON }}
+          packageName: com.twojafirma.imperiumkopalni
+          releaseFiles: android/app/build/outputs/bundle/release/*.aab
+          track: internal
+          status: draft
