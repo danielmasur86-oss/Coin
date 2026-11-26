@@ -1,0 +1,42 @@
+name: HausiHelfer tests
+
+on:
+  push:
+    paths: ["hausihelfer/**", ".github/workflows/hausihelfer.yml"]
+  pull_request:
+    paths: ["hausihelfer/**", ".github/workflows/hausihelfer.yml"]
+  workflow_dispatch:
+
+jobs:
+  backend:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: hausihelfer/backend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: hausihelfer/backend/package-lock.json
+      - run: npm ci
+      - run: npm run typecheck
+      - run: npm test
+        env:
+          ANTHROPIC_API_KEY: dummy-not-used-by-tests
+
+  app:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: hausihelfer/app
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          flutter-version: 3.50.1
+      - run: flutter pub get
+      - run: flutter analyze
+      - run: flutter test

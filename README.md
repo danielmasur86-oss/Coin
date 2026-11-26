@@ -1,3 +1,5 @@
+> 📚 W tym repozytorium jest też **HausiHelfer** – aplikacja na Androida i iOS dla rodziców w Niemczech (pomoc w zadaniach domowych w 7 językach). Zobacz [`hausihelfer/README.md`](hausihelfer/README.md).
+
 # 🪙 Coin Rush – gra iOS z mikropłatnościami
 
 Gra zręcznościowa na iPhone'a: przesuwasz koszyk palcem, łapiesz spadające monety 🪙 i diamenty 💎, unikasz bomb 💣. Gra przyspiesza z czasem.

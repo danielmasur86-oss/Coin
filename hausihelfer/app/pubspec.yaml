@@ -1,0 +1,30 @@
+name: hausihelfer
+description: "A new Flutter project."
+publish_to: 'none'
+version: 0.1.0+1
+
+environment:
+  sdk: ^3.14.0
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+  http: ^1.6.0
+  image_picker: ^1.2.4
+  intl: ^0.20.3
+  material_ui: ^1.1.0
+  purchases_flutter: ^11.0.5
+  shared_preferences: ^2.5.6
+  url_launcher: ^6.3.3
+  uuid: ^4.6.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+
+flutter:
+  generate: true
+  uses-material-design: true
