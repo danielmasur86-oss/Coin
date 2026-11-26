@@ -258,4 +258,45 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get close => 'إغلاق';
+
+  @override
+  String get errorDailyLimit => 'لقد وصلت إلى الحد اليومي. يرجى المتابعة غدًا.';
+
+  @override
+  String get reportHint => 'ما الخطأ؟ (اختياري)';
+
+  @override
+  String get send => 'إرسال';
+
+  @override
+  String get cancel => 'إلغاء';
+
+  @override
+  String get deleteData => 'حذف بياناتي';
+
+  @override
+  String get deleteDataConfirm =>
+      'سيؤدي هذا إلى حذف سجل الواجبات والإعدادات على هذا الجهاز. يبقى اشتراكك فعّالًا.';
+
+  @override
+  String get deleteDataDone => 'تم حذف بياناتك.';
+
+  @override
+  String get delete => 'حذف';
+
+  @override
+  String get manageSubscription => 'إدارة الاشتراك';
+
+  @override
+  String get planMonthly => 'شهريًا';
+
+  @override
+  String get planYearly => 'سنويًا';
+
+  @override
+  String get paywallLegal =>
+      'يتجدد الاشتراك تلقائيًا ما لم يتم إلغاؤه قبل 24 ساعة على الأقل من نهاية الفترة. يمكنك الإلغاء في أي وقت من إعدادات حسابك في App Store أو Google Play.';
+
+  @override
+  String get solutionTitle => 'الحل';
 }

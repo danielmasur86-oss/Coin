@@ -10,10 +10,9 @@ class AppConfig {
   static const premiumEntitlement = 'premium';
 
   /// Pages for Impressum, Datenschutz and AGB (required in Germany).
-  static const legalBaseUrl =
-      String.fromEnvironment('LEGAL_BASE_URL', defaultValue: 'https://hausihelfer.example');
+  /// The backend serves them, so by default they come from the API server.
+  static const legalBaseUrl = String.fromEnvironment('LEGAL_BASE_URL', defaultValue: apiBaseUrl);
 
-  /// Where "Report a mistake" e-mails go.
-  static const supportEmail =
-      String.fromEnvironment('SUPPORT_EMAIL', defaultValue: 'support@hausihelfer.example');
+  static const manageSubscriptionIos = 'https://apps.apple.com/account/subscriptions';
+  static const manageSubscriptionAndroid = 'https://play.google.com/store/account/subscriptions';
 }

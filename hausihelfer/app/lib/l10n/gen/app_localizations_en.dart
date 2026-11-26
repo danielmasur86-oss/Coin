@@ -258,4 +258,46 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get close => 'Close';
+
+  @override
+  String get errorDailyLimit =>
+      'You have reached today\'s limit. Please continue tomorrow.';
+
+  @override
+  String get reportHint => 'What is wrong? (optional)';
+
+  @override
+  String get send => 'Send';
+
+  @override
+  String get cancel => 'Cancel';
+
+  @override
+  String get deleteData => 'Delete my data';
+
+  @override
+  String get deleteDataConfirm =>
+      'This deletes your task history and settings on this device. Your subscription stays active.';
+
+  @override
+  String get deleteDataDone => 'Your data was deleted.';
+
+  @override
+  String get delete => 'Delete';
+
+  @override
+  String get manageSubscription => 'Manage subscription';
+
+  @override
+  String get planMonthly => 'Monthly';
+
+  @override
+  String get planYearly => 'Yearly';
+
+  @override
+  String get paywallLegal =>
+      'The subscription renews automatically unless cancelled at least 24 hours before the end of the period. You can cancel anytime in your App Store or Google Play account settings.';
+
+  @override
+  String get solutionTitle => 'Solution';
 }

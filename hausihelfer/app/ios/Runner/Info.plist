@@ -4,14 +4,24 @@
 <dict>
 	<key>CADisableMinimumFrameDurationOnPhone</key>
 	<true/>
-	<key>CFBundleDevelopmentRegion</key>
-	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>NSCameraUsageDescription</key>
 	<string>Die Kamera wird genutzt, um Hausaufgaben zu fotografieren.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Fotos von Hausaufgaben können aus der Mediathek gewählt werden.</string>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
+	<key>CFBundleLocalizations</key>
+	<array>
+		<string>de</string>
+		<string>pl</string>
+		<string>en</string>
+		<string>tr</string>
+		<string>uk</string>
+		<string>ru</string>
+		<string>ar</string>
+	</array>
+	<key>CFBundleDevelopmentRegion</key>
+	<string>de</string>
 	<key>CFBundleDisplayName</key>
 	<string>HausiHelfer</string>
 	<key>CFBundleExecutable</key>

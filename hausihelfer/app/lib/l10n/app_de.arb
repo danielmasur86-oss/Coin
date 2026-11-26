@@ -75,5 +75,18 @@
   "imprint": "Impressum",
   "privacy": "Datenschutzerklärung",
   "terms": "AGB",
-  "close": "Schließen"
+  "close": "Schließen",
+  "errorDailyLimit": "Sie haben das Tageslimit erreicht. Bitte machen Sie morgen weiter.",
+  "reportHint": "Was ist falsch? (optional)",
+  "send": "Senden",
+  "cancel": "Abbrechen",
+  "deleteData": "Meine Daten löschen",
+  "deleteDataConfirm": "Dadurch werden Ihr Aufgabenverlauf und Ihre Einstellungen auf diesem Gerät gelöscht. Ihr Abo bleibt aktiv.",
+  "deleteDataDone": "Ihre Daten wurden gelöscht.",
+  "delete": "Löschen",
+  "manageSubscription": "Abo verwalten",
+  "planMonthly": "Monatlich",
+  "planYearly": "Jährlich",
+  "paywallLegal": "Das Abo verlängert sich automatisch, wenn es nicht mindestens 24 Stunden vor Ablauf gekündigt wird. Sie können jederzeit in den Einstellungen Ihres App-Store- oder Google-Play-Kontos kündigen.",
+  "solutionTitle": "Lösung"
 }

@@ -257,4 +257,45 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get close => 'Закрити';
+
+  @override
+  String get errorDailyLimit => 'Ви досягли денного ліміту. Продовжіть завтра.';
+
+  @override
+  String get reportHint => 'Що не так? (необов\'язково)';
+
+  @override
+  String get send => 'Надіслати';
+
+  @override
+  String get cancel => 'Скасувати';
+
+  @override
+  String get deleteData => 'Видалити мої дані';
+
+  @override
+  String get deleteDataConfirm =>
+      'Буде видалено історію завдань і налаштування на цьому пристрої. Підписка залишиться активною.';
+
+  @override
+  String get deleteDataDone => 'Ваші дані видалено.';
+
+  @override
+  String get delete => 'Видалити';
+
+  @override
+  String get manageSubscription => 'Керувати підпискою';
+
+  @override
+  String get planMonthly => 'Щомісяця';
+
+  @override
+  String get planYearly => 'Щороку';
+
+  @override
+  String get paywallLegal =>
+      'Підписка поновлюється автоматично, якщо її не скасувати щонайменше за 24 години до кінця періоду. Скасувати можна будь-коли в налаштуваннях облікового запису App Store або Google Play.';
+
+  @override
+  String get solutionTitle => 'Розв\'язок';
 }

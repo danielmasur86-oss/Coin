@@ -7,7 +7,7 @@ import '../config.dart';
 import '../models/explanation.dart';
 import '../models/profile.dart';
 
-enum ApiErrorKind { limitReached, busy, network, generic }
+enum ApiErrorKind { limitReached, dailyLimit, busy, network, generic }
 
 class ApiException implements Exception {
   ApiException(this.kind);
@@ -72,6 +72,27 @@ class ApiClient {
     );
   }
 
+  Future<void> feedback({
+    required String language,
+    required String subject,
+    required String topicDe,
+    required String taskDe,
+    required String comment,
+  }) async {
+    String cut(String s, int n) => s.length <= n ? s : s.substring(0, n);
+    await _send(() => _http.post(
+          _uri('/v1/feedback'),
+          headers: _headers,
+          body: jsonEncode({
+            'language': language,
+            'subject': subject,
+            'topicDe': cut(topicDe, 200),
+            'taskDe': cut(taskDe, 4000),
+            'comment': cut(comment, 2000),
+          }),
+        ));
+  }
+
   Future<http.Response> _send(
     Future<http.Response> Function() request, {
     Duration timeout = const Duration(seconds: 15),
@@ -88,6 +109,10 @@ class ApiClient {
     }
     if (res.statusCode == 200) return res;
     if (res.statusCode == 402) throw ApiException(ApiErrorKind.limitReached);
+    if (res.statusCode == 429) {
+      final daily = res.body.contains('daily_limit_reached');
+      throw ApiException(daily ? ApiErrorKind.dailyLimit : ApiErrorKind.busy);
+    }
     if (res.statusCode == 503) throw ApiException(ApiErrorKind.busy);
     throw ApiException(ApiErrorKind.generic);
   }

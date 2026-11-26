@@ -75,5 +75,18 @@
   "imprint": "Künye (Impressum)",
   "privacy": "Gizlilik politikası",
   "terms": "Kullanım koşulları",
-  "close": "Kapat"
+  "close": "Kapat",
+  "errorDailyLimit": "Bugünkü sınıra ulaştınız. Lütfen yarın devam edin.",
+  "reportHint": "Ne yanlış? (isteğe bağlı)",
+  "send": "Gönder",
+  "cancel": "İptal",
+  "deleteData": "Verilerimi sil",
+  "deleteDataConfirm": "Bu işlem bu cihazdaki ödev geçmişinizi ve ayarlarınızı siler. Aboneliğiniz etkin kalır.",
+  "deleteDataDone": "Verileriniz silindi.",
+  "delete": "Sil",
+  "manageSubscription": "Aboneliği yönet",
+  "planMonthly": "Aylık",
+  "planYearly": "Yıllık",
+  "paywallLegal": "Abonelik, dönem bitiminden en az 24 saat önce iptal edilmezse otomatik olarak yenilenir. App Store veya Google Play hesap ayarlarınızdan istediğiniz zaman iptal edebilirsiniz.",
+  "solutionTitle": "Çözüm"
 }

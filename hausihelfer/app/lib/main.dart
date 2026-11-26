@@ -52,8 +52,19 @@ class HausiHelferApp extends StatelessWidget {
     );
   }
 
-  ThemeData _theme(Brightness b) => ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF2E7D5B), brightness: b),
-        useMaterial3: true,
-      );
+  ThemeData _theme(Brightness b) {
+    final scheme = ColorScheme.fromSeed(seedColor: const Color(0xFF2E7D5B), brightness: b);
+    return ThemeData(
+      colorScheme: scheme,
+      useMaterial3: true,
+      cardTheme: CardThemeData(
+        elevation: 0,
+        color: scheme.surfaceContainerLow,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(14),
+          side: BorderSide(color: scheme.outlineVariant),
+        ),
+      ),
+    );
+  }
 }

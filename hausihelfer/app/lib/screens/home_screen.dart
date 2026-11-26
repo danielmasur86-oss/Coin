@@ -67,6 +67,8 @@ class _HomeScreenState extends State<HomeScreen> {
         case ApiErrorKind.limitReached:
           state.updateRemaining(0);
           navigator.push(PaywallScreen.route(limitReached: true));
+        case ApiErrorKind.dailyLimit:
+          messenger.showSnackBar(SnackBar(content: Text(l.errorDailyLimit)));
         case ApiErrorKind.busy:
           messenger.showSnackBar(SnackBar(content: Text(l.errorBusy)));
         case ApiErrorKind.network:

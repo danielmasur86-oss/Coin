@@ -258,4 +258,45 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get close => 'Zamknij';
+
+  @override
+  String get errorDailyLimit => 'Osiągnięto dzisiejszy limit. Wróć jutro.';
+
+  @override
+  String get reportHint => 'Co jest nie tak? (opcjonalnie)';
+
+  @override
+  String get send => 'Wyślij';
+
+  @override
+  String get cancel => 'Anuluj';
+
+  @override
+  String get deleteData => 'Usuń moje dane';
+
+  @override
+  String get deleteDataConfirm =>
+      'Usunie to historię zadań i ustawienia na tym urządzeniu. Subskrypcja pozostanie aktywna.';
+
+  @override
+  String get deleteDataDone => 'Twoje dane zostały usunięte.';
+
+  @override
+  String get delete => 'Usuń';
+
+  @override
+  String get manageSubscription => 'Zarządzaj subskrypcją';
+
+  @override
+  String get planMonthly => 'Miesięcznie';
+
+  @override
+  String get planYearly => 'Rocznie';
+
+  @override
+  String get paywallLegal =>
+      'Subskrypcja odnawia się automatycznie, jeśli nie zrezygnujesz co najmniej 24 godziny przed końcem okresu. Możesz zrezygnować w każdej chwili w ustawieniach konta App Store lub Google Play.';
+
+  @override
+  String get solutionTitle => 'Rozwiązanie';
 }

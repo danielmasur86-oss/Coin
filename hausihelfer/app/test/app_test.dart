@@ -7,6 +7,7 @@ import 'package:hausihelfer/main.dart';
 import 'package:hausihelfer/models/explanation.dart';
 import 'package:hausihelfer/models/profile.dart';
 import 'package:hausihelfer/screens/result_screen.dart';
+import 'package:hausihelfer/screens/settings_screen.dart';
 import 'package:hausihelfer/services/api_client.dart';
 import 'package:hausihelfer/services/purchases.dart';
 import 'package:hausihelfer/services/storage.dart';
@@ -135,5 +136,93 @@ void main() {
     await tester.pumpAndSettle();
     final ctx = tester.element(find.text('التقط صورة'));
     expect(Directionality.of(ctx), TextDirection.rtl);
+  });
+
+  test('API maps 429 daily limit and 402 free limit to the right errors', () async {
+    Future<ApiErrorKind?> kindFor(int status, String body) async {
+      final api = ApiClient(userId: 'test-user-123', client: MockClient((_) async => http.Response(body, status)));
+      try {
+        await api.quota();
+        return null;
+      } on ApiException catch (e) {
+        return e.kind;
+      }
+    }
+
+    expect(await kindFor(429, '{"error":"daily_limit_reached"}'), ApiErrorKind.dailyLimit);
+    expect(await kindFor(429, '{"error":"too_many_requests"}'), ApiErrorKind.busy);
+    expect(await kindFor(402, '{"error":"free_limit_reached"}'), ApiErrorKind.limitReached);
+    expect(await kindFor(500, '{}'), ApiErrorKind.generic);
+  });
+
+  testWidgets('"Delete my data" clears history and returns to onboarding', (tester) async {
+    tester.view.physicalSize = const Size(1170, 4000);
+    tester.view.devicePixelRatio = 3;
+    addTearDown(tester.view.reset);
+    final state = await makeState(
+      profile: const Profile(language: 'en', bundesland: 'BY', schoolType: 'grundschule', grade: 2),
+    );
+    await state.addHistory(HistoryEntry(
+      createdAt: DateTime(2026, 11, 26),
+      subject: 'mathe',
+      mode: 'explain',
+      explanation: Explanation.fromJson(sampleJson),
+    ));
+    await tester.pumpWidget(HausiHelferApp(state: state));
+    await tester.pumpAndSettle();
+    expect(find.text('Dzielenie pisemne'), findsOneWidget); // history entry
+
+    await tester.tap(find.byTooltip('Settings'));
+    await tester.pumpAndSettle();
+    expect(find.byType(SettingsScreen), findsOneWidget);
+    await tester.tap(find.text('Delete my data'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.widgetWithText(FilledButton, 'Delete'));
+    await tester.pumpAndSettle();
+
+    expect(state.profile, isNull);
+    expect(state.history, isEmpty);
+    expect(find.byType(DropdownButtonFormField<String>), findsNWidgets(3)); // onboarding again
+  });
+
+  testWidgets('"Report a mistake" sends the task and comment to the backend', (tester) async {
+    tester.view.physicalSize = const Size(1170, 4000);
+    tester.view.devicePixelRatio = 3;
+    addTearDown(tester.view.reset);
+    Map<String, dynamic>? sent;
+    SharedPreferences.setMockInitialValues({});
+    final storage = await Storage.open();
+    final api = ApiClient(
+      userId: storage.userId,
+      client: MockClient((req) async {
+        if (req.url.path == '/v1/feedback') sent = jsonDecode(req.body) as Map<String, dynamic>;
+        return http.Response('{"ok":true}', 200);
+      }),
+    );
+    final state = AppState(storage: storage, api: api, purchases: PurchaseService());
+    final entry = HistoryEntry(
+      createdAt: DateTime(2026, 11, 26),
+      subject: 'mathe',
+      mode: 'explain',
+      explanation: Explanation.fromJson(sampleJson),
+    );
+    await tester.pumpWidget(AppScope(
+      state: state,
+      child: MaterialApp(
+        localizationsDelegates: appLocalizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        home: ResultScreen(entry: entry),
+      ),
+    ));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Report a mistake'));
+    await tester.pumpAndSettle();
+    await tester.enterText(find.byType(TextField), 'Wrong result');
+    await tester.tap(find.widgetWithText(FilledButton, 'Send'));
+    await tester.pumpAndSettle();
+
+    expect(sent?['comment'], 'Wrong result');
+    expect(sent?['taskDe'], 'Rechne schriftlich: 456 : 3');
+    expect(find.text('Thank you! We will look at it.'), findsOneWidget);
   });
 }

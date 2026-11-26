@@ -50,6 +50,13 @@ class Storage {
     return out;
   }
 
+  /// "Delete my data": removes history and profile. The anonymous id is kept so an
+  /// active subscription stays linked to this device.
+  Future<void> clearPersonalData() async {
+    await _prefs.remove(_kHistory);
+    await _prefs.remove(_kProfile);
+  }
+
   Future<void> addHistory(HistoryEntry e) {
     final raw = _prefs.getStringList(_kHistory) ?? <String>[];
     raw.insert(0, jsonEncode(e.toJson()));

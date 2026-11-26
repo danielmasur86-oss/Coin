@@ -8,7 +8,13 @@
   "chooseSchoolType": "School type",
   "chooseGrade": "Grade (Klasse)",
   "gradeLabel": "Grade {grade}",
-  "@gradeLabel": { "placeholders": { "grade": { "type": "int" } } },
+  "@gradeLabel": {
+    "placeholders": {
+      "grade": {
+        "type": "int"
+      }
+    }
+  },
   "continueButton": "Continue",
   "save": "Save",
   "schoolGrundschule": "Primary school (Grundschule)",
@@ -30,7 +36,13 @@
   "takePhoto": "Take photo",
   "fromGallery": "From gallery",
   "freeLeft": "{count, plural, =0{No free tasks left this week} =1{1 free task left this week} other{{count} free tasks left this week}}",
-  "@freeLeft": { "placeholders": { "count": { "type": "int" } } },
+  "@freeLeft": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "premiumActive": "Premium active",
   "historyTitle": "Recent tasks",
   "historyEmpty": "Your explained tasks will appear here.",
@@ -45,7 +57,13 @@
   "resultHowToExplain": "How to explain it",
   "resultSteps": "Step by step with your child",
   "stepN": "Step {n}",
-  "@stepN": { "placeholders": { "n": { "type": "int" } } },
+  "@stepN": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
   "askChild": "Ask your child (in German):",
   "showNextStep": "Show next step",
   "vocabulary": "Important German words",
@@ -78,5 +96,18 @@
   "imprint": "Imprint (Impressum)",
   "privacy": "Privacy policy",
   "terms": "Terms of use",
-  "close": "Close"
+  "close": "Close",
+  "errorDailyLimit": "You have reached today's limit. Please continue tomorrow.",
+  "reportHint": "What is wrong? (optional)",
+  "send": "Send",
+  "cancel": "Cancel",
+  "deleteData": "Delete my data",
+  "deleteDataConfirm": "This deletes your task history and settings on this device. Your subscription stays active.",
+  "deleteDataDone": "Your data was deleted.",
+  "delete": "Delete",
+  "manageSubscription": "Manage subscription",
+  "planMonthly": "Monthly",
+  "planYearly": "Yearly",
+  "paywallLegal": "The subscription renews automatically unless cancelled at least 24 hours before the end of the period. You can cancel anytime in your App Store or Google Play account settings.",
+  "solutionTitle": "Solution"
 }

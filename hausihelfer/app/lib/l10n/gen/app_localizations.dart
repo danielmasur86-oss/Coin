@@ -563,6 +563,84 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Close'**
   String get close;
+
+  /// No description provided for @errorDailyLimit.
+  ///
+  /// In en, this message translates to:
+  /// **'You have reached today\'s limit. Please continue tomorrow.'**
+  String get errorDailyLimit;
+
+  /// No description provided for @reportHint.
+  ///
+  /// In en, this message translates to:
+  /// **'What is wrong? (optional)'**
+  String get reportHint;
+
+  /// No description provided for @send.
+  ///
+  /// In en, this message translates to:
+  /// **'Send'**
+  String get send;
+
+  /// No description provided for @cancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get cancel;
+
+  /// No description provided for @deleteData.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete my data'**
+  String get deleteData;
+
+  /// No description provided for @deleteDataConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'This deletes your task history and settings on this device. Your subscription stays active.'**
+  String get deleteDataConfirm;
+
+  /// No description provided for @deleteDataDone.
+  ///
+  /// In en, this message translates to:
+  /// **'Your data was deleted.'**
+  String get deleteDataDone;
+
+  /// No description provided for @delete.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get delete;
+
+  /// No description provided for @manageSubscription.
+  ///
+  /// In en, this message translates to:
+  /// **'Manage subscription'**
+  String get manageSubscription;
+
+  /// No description provided for @planMonthly.
+  ///
+  /// In en, this message translates to:
+  /// **'Monthly'**
+  String get planMonthly;
+
+  /// No description provided for @planYearly.
+  ///
+  /// In en, this message translates to:
+  /// **'Yearly'**
+  String get planYearly;
+
+  /// No description provided for @paywallLegal.
+  ///
+  /// In en, this message translates to:
+  /// **'The subscription renews automatically unless cancelled at least 24 hours before the end of the period. You can cancel anytime in your App Store or Google Play account settings.'**
+  String get paywallLegal;
+
+  /// No description provided for @solutionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Solution'**
+  String get solutionTitle;
 }
 
 class _AppLocalizationsDelegate

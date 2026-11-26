@@ -258,4 +258,46 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get close => 'Закрыть';
+
+  @override
+  String get errorDailyLimit =>
+      'Вы достигли дневного лимита. Продолжите завтра.';
+
+  @override
+  String get reportHint => 'Что не так? (необязательно)';
+
+  @override
+  String get send => 'Отправить';
+
+  @override
+  String get cancel => 'Отмена';
+
+  @override
+  String get deleteData => 'Удалить мои данные';
+
+  @override
+  String get deleteDataConfirm =>
+      'Будут удалены история заданий и настройки на этом устройстве. Подписка останется активной.';
+
+  @override
+  String get deleteDataDone => 'Ваши данные удалены.';
+
+  @override
+  String get delete => 'Удалить';
+
+  @override
+  String get manageSubscription => 'Управлять подпиской';
+
+  @override
+  String get planMonthly => 'Ежемесячно';
+
+  @override
+  String get planYearly => 'Ежегодно';
+
+  @override
+  String get paywallLegal =>
+      'Подписка продлевается автоматически, если её не отменить как минимум за 24 часа до конца периода. Отменить можно в любой момент в настройках аккаунта App Store или Google Play.';
+
+  @override
+  String get solutionTitle => 'Решение';
 }

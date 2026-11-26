@@ -1,9 +1,9 @@
 import 'package:material_ui/material_ui.dart';
-import 'package:url_launcher/url_launcher.dart';
 
-import '../config.dart';
+import '../app_state.dart';
 import '../l10n/gen/app_localizations.dart';
 import '../models/explanation.dart';
+import '../services/api_client.dart';
 
 /// Shows the explanation for the parent. Steps are revealed one at a time and the full
 /// solution is hidden behind a button, so the parent guides the child instead of dictating.
@@ -25,18 +25,24 @@ class _ResultScreenState extends State<ResultScreen> {
   Explanation get e => widget.entry.explanation;
 
   Future<void> _report() async {
+    final state = AppScope.of(context);
     final l = AppLocalizations.of(context);
     final messenger = ScaffoldMessenger.of(context);
-    final uri = Uri(
-      scheme: 'mailto',
-      path: AppConfig.supportEmail,
-      queryParameters: {
-        'subject': 'HausiHelfer: ${l.reportProblem}',
-        'body': '${e.topicDe}\n\n${e.taskOriginalDe}\n\n---\n',
-      },
-    );
-    await launchUrl(uri);
-    messenger.showSnackBar(SnackBar(content: Text(l.reportThanks)));
+    // The dialog owns its text field, so nothing is disposed while it animates out.
+    final comment = await showDialog<String>(context: context, builder: (_) => const _ReportDialog());
+    if (comment == null) return;
+    try {
+      await state.api.feedback(
+        language: state.profile?.language ?? 'de',
+        subject: widget.entry.subject,
+        topicDe: e.topicDe,
+        taskDe: e.taskOriginalDe,
+        comment: comment,
+      );
+      messenger.showSnackBar(SnackBar(content: Text(l.reportThanks)));
+    } on ApiException {
+      messenger.showSnackBar(SnackBar(content: Text(l.errorNetwork)));
+    }
   }
 
   @override
@@ -131,7 +137,8 @@ class _ResultScreenState extends State<ResultScreen> {
             ),
           if (e.solution.isNotEmpty)
             _Section(
-              title: _showSolution ? l.hideSolution : l.showSolution,
+              // While hidden, the button itself is the heading.
+              title: _showSolution ? l.solutionTitle : null,
               children: [
                 if (!_showSolution) ...[
                   Text(l.solutionWarning, style: theme.textTheme.bodySmall),
@@ -164,7 +171,7 @@ class _ResultScreenState extends State<ResultScreen> {
 
 class _Section extends StatelessWidget {
   const _Section({required this.title, required this.children});
-  final String title;
+  final String? title;
   final List<Widget> children;
 
   @override
@@ -172,8 +179,10 @@ class _Section extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.only(bottom: 20),
       child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-        Text(title, style: Theme.of(context).textTheme.titleMedium),
-        const SizedBox(height: 8),
+        if (title != null) ...[
+          Text(title!, style: Theme.of(context).textTheme.titleMedium),
+          const SizedBox(height: 8),
+        ],
         ...children,
       ]),
     );
@@ -235,6 +244,42 @@ class _Banner extends StatelessWidget {
           ]),
         ),
       ]),
+    );
+  }
+}
+
+/// Asks for an optional comment. Returns the text on "Send", null on "Cancel".
+class _ReportDialog extends StatefulWidget {
+  const _ReportDialog();
+
+  @override
+  State<_ReportDialog> createState() => _ReportDialogState();
+}
+
+class _ReportDialogState extends State<_ReportDialog> {
+  final _controller = TextEditingController();
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context);
+    return AlertDialog(
+      title: Text(l.reportProblem),
+      content: TextField(
+        controller: _controller,
+        maxLines: 4,
+        maxLength: 2000,
+        decoration: InputDecoration(hintText: l.reportHint, border: const OutlineInputBorder()),
+      ),
+      actions: [
+        TextButton(onPressed: () => Navigator.pop(context), child: Text(l.cancel)),
+        FilledButton(onPressed: () => Navigator.pop(context, _controller.text), child: Text(l.send)),
+      ],
     );
   }
 }

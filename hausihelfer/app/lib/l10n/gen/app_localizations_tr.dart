@@ -260,4 +260,46 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get close => 'Kapat';
+
+  @override
+  String get errorDailyLimit =>
+      'Bugünkü sınıra ulaştınız. Lütfen yarın devam edin.';
+
+  @override
+  String get reportHint => 'Ne yanlış? (isteğe bağlı)';
+
+  @override
+  String get send => 'Gönder';
+
+  @override
+  String get cancel => 'İptal';
+
+  @override
+  String get deleteData => 'Verilerimi sil';
+
+  @override
+  String get deleteDataConfirm =>
+      'Bu işlem bu cihazdaki ödev geçmişinizi ve ayarlarınızı siler. Aboneliğiniz etkin kalır.';
+
+  @override
+  String get deleteDataDone => 'Verileriniz silindi.';
+
+  @override
+  String get delete => 'Sil';
+
+  @override
+  String get manageSubscription => 'Aboneliği yönet';
+
+  @override
+  String get planMonthly => 'Aylık';
+
+  @override
+  String get planYearly => 'Yıllık';
+
+  @override
+  String get paywallLegal =>
+      'Abonelik, dönem bitiminden en az 24 saat önce iptal edilmezse otomatik olarak yenilenir. App Store veya Google Play hesap ayarlarınızdan istediğiniz zaman iptal edebilirsiniz.';
+
+  @override
+  String get solutionTitle => 'Çözüm';
 }

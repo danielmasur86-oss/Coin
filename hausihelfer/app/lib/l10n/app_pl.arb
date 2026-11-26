@@ -75,5 +75,18 @@
   "imprint": "Nota prawna (Impressum)",
   "privacy": "Polityka prywatności",
   "terms": "Regulamin",
-  "close": "Zamknij"
+  "close": "Zamknij",
+  "errorDailyLimit": "Osiągnięto dzisiejszy limit. Wróć jutro.",
+  "reportHint": "Co jest nie tak? (opcjonalnie)",
+  "send": "Wyślij",
+  "cancel": "Anuluj",
+  "deleteData": "Usuń moje dane",
+  "deleteDataConfirm": "Usunie to historię zadań i ustawienia na tym urządzeniu. Subskrypcja pozostanie aktywna.",
+  "deleteDataDone": "Twoje dane zostały usunięte.",
+  "delete": "Usuń",
+  "manageSubscription": "Zarządzaj subskrypcją",
+  "planMonthly": "Miesięcznie",
+  "planYearly": "Rocznie",
+  "paywallLegal": "Subskrypcja odnawia się automatycznie, jeśli nie zrezygnujesz co najmniej 24 godziny przed końcem okresu. Możesz zrezygnować w każdej chwili w ustawieniach konta App Store lub Google Play.",
+  "solutionTitle": "Rozwiązanie"
 }

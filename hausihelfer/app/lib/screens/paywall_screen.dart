@@ -4,6 +4,7 @@ import 'package:purchases_flutter/purchases_flutter.dart';
 import '../app_state.dart';
 import '../l10n/gen/app_localizations.dart';
 import '../services/purchases.dart';
+import 'settings_screen.dart' show openLegalPage;
 
 class PaywallScreen extends StatefulWidget {
   const PaywallScreen({super.key, this.limitReached = false});
@@ -76,6 +77,12 @@ class _PaywallScreenState extends State<PaywallScreen> {
     }
   }
 
+  String _planName(AppLocalizations l, Package p) => switch (p.packageType) {
+        PackageType.annual => l.planYearly,
+        PackageType.monthly => l.planMonthly,
+        _ => p.storeProduct.title,
+      };
+
   @override
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context);
@@ -122,7 +129,7 @@ class _PaywallScreenState extends State<PaywallScreen> {
                     Card(
                       child: RadioListTile<Package>(
                         value: p,
-                        title: Text(p.storeProduct.title),
+                        title: Text(_planName(l, p)),
                         subtitle: Text(p.storeProduct.priceString),
                       ),
                     ),
@@ -140,6 +147,12 @@ class _PaywallScreenState extends State<PaywallScreen> {
               ),
             ],
             TextButton(onPressed: _working ? null : _restore, child: Text(l.restorePurchases)),
+            // Apple and Google require the renewal terms and links next to the buy button.
+            Text(l.paywallLegal, style: theme.textTheme.bodySmall, textAlign: TextAlign.center),
+            Wrap(alignment: WrapAlignment.center, children: [
+              TextButton(onPressed: () => openLegalPage('agb'), child: Text(l.terms)),
+              TextButton(onPressed: () => openLegalPage('datenschutz'), child: Text(l.privacy)),
+            ]),
           ],
         ),
       ),

@@ -1,4 +1,4 @@
-name: HausiHelfer tests
+name: HausiHelfer
 
 on:
   push:
@@ -6,6 +6,9 @@ on:
   pull_request:
     paths: ["hausihelfer/**", ".github/workflows/hausihelfer.yml"]
   workflow_dispatch:
+
+env:
+  FLUTTER_VERSION: 3.50.1
 
 jobs:
   backend:
@@ -23,10 +26,10 @@ jobs:
       - run: npm ci
       - run: npm run typecheck
       - run: npm test
-        env:
-          ANTHROPIC_API_KEY: dummy-not-used-by-tests
+      - name: Docker image builds
+        run: docker build -t hausihelfer-backend .
 
-  app:
+  app-tests:
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -36,7 +39,44 @@ jobs:
       - uses: subosito/flutter-action@v2
         with:
           channel: stable
-          flutter-version: 3.50.1
+          flutter-version: ${{ env.FLUTTER_VERSION }}
       - run: flutter pub get
       - run: flutter analyze
-      - run: flutter test
+      - run: flutter test --exclude-tags screenshots
+
+  android-build:
+    needs: app-tests
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: hausihelfer/app
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+      - run: flutter build apk --release
+      - uses: actions/upload-artifact@v4
+        with:
+          name: hausihelfer-android-apk
+          path: hausihelfer/app/build/app/outputs/flutter-apk/app-release.apk
+
+  ios-build:
+    needs: app-tests
+    runs-on: macos-15
+    defaults:
+      run:
+        working-directory: hausihelfer/app
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+      - name: Build for iOS (without signing)
+        run: flutter build ios --release --no-codesign

@@ -60,6 +60,13 @@ class AppState extends ChangeNotifier {
     notifyListeners();
   }
 
+  Future<void> deleteLocalData() async {
+    await storage.clearPersonalData();
+    _profile = null;
+    _history = const [];
+    notifyListeners();
+  }
+
   void setPremium() {
     _premium = true;
     _remainingFree = null;

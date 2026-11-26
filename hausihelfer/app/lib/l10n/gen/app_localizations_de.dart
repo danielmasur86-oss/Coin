@@ -260,4 +260,46 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get close => 'Schließen';
+
+  @override
+  String get errorDailyLimit =>
+      'Sie haben das Tageslimit erreicht. Bitte machen Sie morgen weiter.';
+
+  @override
+  String get reportHint => 'Was ist falsch? (optional)';
+
+  @override
+  String get send => 'Senden';
+
+  @override
+  String get cancel => 'Abbrechen';
+
+  @override
+  String get deleteData => 'Meine Daten löschen';
+
+  @override
+  String get deleteDataConfirm =>
+      'Dadurch werden Ihr Aufgabenverlauf und Ihre Einstellungen auf diesem Gerät gelöscht. Ihr Abo bleibt aktiv.';
+
+  @override
+  String get deleteDataDone => 'Ihre Daten wurden gelöscht.';
+
+  @override
+  String get delete => 'Löschen';
+
+  @override
+  String get manageSubscription => 'Abo verwalten';
+
+  @override
+  String get planMonthly => 'Monatlich';
+
+  @override
+  String get planYearly => 'Jährlich';
+
+  @override
+  String get paywallLegal =>
+      'Das Abo verlängert sich automatisch, wenn es nicht mindestens 24 Stunden vor Ablauf gekündigt wird. Sie können jederzeit in den Einstellungen Ihres App-Store- oder Google-Play-Kontos kündigen.';
+
+  @override
+  String get solutionTitle => 'Lösung';
 }
