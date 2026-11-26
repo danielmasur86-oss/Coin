@@ -1,0 +1,26 @@
+# Render.com Blueprint: test server for HausiHelfer (free plan, Frankfurt).
+# Render dashboard → New → Blueprint → pick this repository and branch.
+# Free plan: the server sleeps after ~15 min without traffic; the first request then
+# takes up to a minute. Data (counters, reports) is reset on each deploy.
+services:
+  - type: web
+    name: hausihelfer-api
+    runtime: docker
+    plan: free
+    region: frankfurt
+    dockerContext: ./hausihelfer/backend
+    dockerfilePath: ./hausihelfer/backend/Dockerfile
+    healthCheckPath: /health
+    envVars:
+      - key: ANTHROPIC_API_KEY
+        sync: false            # you paste the key in the dashboard
+      - key: CLAUDE_MODEL
+        value: claude-opus-5-5
+      - key: CLAUDE_EFFORT
+        value: medium
+      - key: FREE_PER_WEEK
+        value: "50"            # generous for testing; set back to 3 before launch
+      - key: PREMIUM_PER_DAY
+        value: "25"
+      - key: GLOBAL_PER_DAY
+        value: "200"           # cost safety net while testing

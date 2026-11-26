@@ -1,0 +1,60 @@
+name: HausiHelfer – test APK
+
+# Builds an Android APK that talks to your server and publishes it as a download link.
+# Two ways to start it:
+#  - put the server address into hausihelfer/app/test-api-url.txt and push, or
+#  - GitHub → Actions → "HausiHelfer – test APK" → Run workflow (once this file is on the default branch).
+on:
+  push:
+    paths: ["hausihelfer/app/test-api-url.txt"]
+  workflow_dispatch:
+    inputs:
+      api_url:
+        description: "Adres serwera (np. https://hausihelfer-api.onrender.com)"
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  apk:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: hausihelfer/app
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check the address
+        env:
+          INPUT_URL: ${{ inputs.api_url }}
+        run: |
+          API_URL="${INPUT_URL:-$(head -n1 test-api-url.txt | tr -d '[:space:]')}"
+          if [[ ! "$API_URL" =~ ^https://[A-Za-z0-9.-]+(:[0-9]+)?/?$ ]]; then
+            echo "::error::Adres musi zaczynać się od https:// i nie mieć ścieżki, np. https://hausihelfer-api.onrender.com"
+            exit 1
+          fi
+          echo "API_URL=${API_URL%/}" >> "$GITHUB_ENV"
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          flutter-version: 3.50.1
+      - name: Check the server answers
+        run: curl -fsS --retry 6 --retry-delay 10 --max-time 90 "$API_URL/health"
+      - name: Build APK
+        run: flutter build apk --release --dart-define=API_BASE_URL="$API_URL"
+      - name: Publish download link
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          TAG="test-apk-${GITHUB_RUN_NUMBER}"
+          cp build/app/outputs/flutter-apk/app-release.apk "hausihelfer-test-${GITHUB_RUN_NUMBER}.apk"
+          gh release create "$TAG" "hausihelfer-test-${GITHUB_RUN_NUMBER}.apk" \
+            --repo "$GITHUB_REPOSITORY" --target "$GITHUB_SHA" --prerelease \
+            --title "HausiHelfer – wersja testowa ${GITHUB_RUN_NUMBER}" \
+            --notes "Serwer: $API_URL. Otwórz tę stronę na telefonie z Androidem, pobierz plik .apk i zainstaluj (zezwól na instalację z nieznanych źródeł)."
+          echo "### APK gotowy: https://github.com/$GITHUB_REPOSITORY/releases/tag/$TAG" >> "$GITHUB_STEP_SUMMARY"
